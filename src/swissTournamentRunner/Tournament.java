@@ -340,40 +340,33 @@ public class Tournament {
 		print("Admin functions enabled.");
 		waitForUserInput();
 		String adminCommand = readInput();
-		
-		switch (adminCommand.toLowerCase()) {
 
+		switch (adminCommand.toLowerCase()) {
 		case "topcut":
 			print("Enter the number of players that constitutes a Top Cut for this tournament.\n");
 			print("(Must be less than the number of players.)\n");
 			print("Alternatively, enter '0' to remove the Top Cut.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			int tC = Integer.parseInt(userSelection);
+			int tC = Integer.parseInt(readInput());
 			if (tC < players.size()) {
 				setTopCut(tC);
 			} else {
 				print("Invalid - Top Cut size is too large.");
 			}
-			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "matchesof":
 			print("Enter player whose game history you'd like to see.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			String showHistory = userSelection;
+			String showHistory = readInput();
 			printHistory(showHistory);
-			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "roundrobin":
 			generateRRpairings();
 			break;
 		case "load":
 			print("Enter the file name to load.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			String fileName = userSelection;
-			userSelection = null; // TODO - deprecate manual assignment
+			String fileName = readInput();
 			if (!fileName.contains(".tnt")) {
 				fileName += ".tnt";
 			}
@@ -394,9 +387,8 @@ public class Tournament {
 			break;
 		case "setrounds":
 			print("Enter the new number of desired rounds for the tournament.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			int newNoOfRounds = Integer.parseInt(userSelection);
+			int newNoOfRounds = Integer.parseInt(readInput());
 			if (newNoOfRounds < players.size() && newNoOfRounds >= logBase2(players.size())) {
 				setNumberOfRounds(newNoOfRounds);
 				print("Number of rounds updated to " + getNumberOfRounds() + ".");
@@ -404,8 +396,11 @@ public class Tournament {
 				print("Invalid number of rounds for a Swiss tournament.");
 				print("We need to have less rounds than the number of players, and at least logBase2(number of players).");
 			}
-			userSelection = null; // TODO - deprecate manual assignment
 			break;
+			
+			
+		//	TODO - here on down
+			
 		case "addround":
 			print("Enter the new number of desired rounds for the tournament.\n");
 			userSelection = null; // TODO - deprecate manual assignment
@@ -851,7 +846,8 @@ public class Tournament {
 		Player p2 = fetchHighestTBPlayer();
 		output += "Congratulations to " + players.get(0).getName() + " on winning this tournament!\n";
 		output += "Props to " + p1.getName() + " for enduring the toughest range of opponents.\n";
-		output += "Shoutout to " + p2.getName() + " for generally playing against opponents on top of their peer group.";
+		output += "Shoutout to " + p2.getName()
+				+ " for generally playing against opponents on top of their peer group.";
 		return output;
 	}
 
