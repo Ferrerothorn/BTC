@@ -12,28 +12,37 @@ public class PlayerCreator {
 		GUI.wipePane();
 		while (!t.allParticipantsIn) {
 			t.print("Enter the name of the next participant, or enter 'no' if done. ");
-			t.print("You can enter 'help' at any time for some instructions.)");
+			t.print("You can enter 'help' at any time for some instructions, or 'drop' to remove a player you registered before we begin.");
 			t.print("Current Participants: " + t.players.size() + "  Rounds required: " + t.logBase2(t.players.size()));
 			t.print("");
 			t.waitForUserInput();
-			switch (t.userSelection.toLowerCase()) {
+			String input = t.readInput();
+			switch (input.toLowerCase()) {
 			case "help":
-				t.userSelection = null;
 				Utils.showHelp();
 				break;
 			case "drop":
+				t.print("Enter the player number (shown below) of the player you'd like to remove.");
+				t.waitForUserInput();
+				int dropMe = Integer.parseInt(t.readInput());
+				dropMe--;
+				if (dropMe >= 0 && dropMe < t.players.size()) {
+					Player p = t.players.remove(dropMe);
+					t.print("Removed " + p.getName() + ".");
+				} else {
+					t.print("Player at index " + dropMe + 1 + " does not exist.");
+				}
+				t.postListOfConfirmedSignups();
 				break;
 			case "no":
 				t.allParticipantsIn = true;
-				t.userSelection = null;
 				break;
 			default:
-				if (t.userSelection.contains(",")) {
-					t.addBatch(t.userSelection);
+				if (input.contains(",")) {
+					t.addBatch(input);
 				} else {
-					t.addPlayer(t.userSelection);
+					t.addPlayer(input);
 				}
-				t.userSelection = null;
 			}
 		}
 		t.addBye();
