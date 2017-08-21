@@ -67,13 +67,17 @@ public class Tournament {
 			numberOfRounds++;
 		}
 		if (!allParticipantsIn) {
-			Collections.sort(players);
-			String post = "-=-=-Registered: " + players.size() + " players. -=-=-" + "\n";
-			for (int i = 1; i <= players.size(); i++) {
-				post += "" + i + ") " + players.get(i - 1).getName() + "\n";
-			}
-			GUI.postResultsString(post);
+			postListOfConfirmedSignups();
 		}
+	}
+
+	public void postListOfConfirmedSignups() {
+		Collections.sort(players);
+		String post = "-=-=-Registered: " + players.size() + " players. -=-=-" + "\n";
+		for (int i = 1; i <= players.size(); i++) {
+			post += "" + i + ") " + players.get(i - 1).getName() + "\n";
+		}
+		GUI.postResultsString(post);
 	}
 
 	public void sortRankings(ArrayList<Player> ps) {
