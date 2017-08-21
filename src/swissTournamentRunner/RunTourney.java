@@ -34,7 +34,8 @@ public class RunTourney {
 		GUI.postString("FINAL STANDINGS");
 		tourney.updateParticipantStats();
 		GUI.postString(GUI.generateInDepthRankings(tourney.players));
-		GUI.postString(tourney.postTournamentProcessing());
+		GUI.postString(tourney.postTournamentAwards());
+		tourney.postTourneyProcessing();
 	}
 
 	private static void showCredits() {
