@@ -10,7 +10,7 @@ public class Player implements Comparable<Player> {
 	int oppWr = 0;
 	int oppOppWr = 0;
 	int oppositionTBSum = 0;
-	int lastDocumentedPosition = 0;
+	public int lastDocumentedPosition = 0;
 	public ArrayList<Player> previousRounds = new ArrayList<>();
 	ArrayList<Player> victories = new ArrayList<>();
 
@@ -71,7 +71,13 @@ public class Player implements Comparable<Player> {
 
 	@Override
 	public int compareTo(Player p) {
-		if (this.name.equals("BYE")) {
+
+		if (this.lastDocumentedPosition == 0 && p.lastDocumentedPosition == 0) {
+			if (this.name.compareTo(p.name) < 0) {
+				return -1;
+			}
+			return 1;
+		} else if (this.name.equals("BYE")) {
 			return 1;
 		} else if (p.getName().equals("BYE")) {
 			return -1;
@@ -105,7 +111,7 @@ public class Player implements Comparable<Player> {
 			oppositionTBSum += p.getTB();
 		}
 	}
-	
+
 	public int getTB() {
 		return tb;
 	}
