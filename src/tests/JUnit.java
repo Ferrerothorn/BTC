@@ -124,6 +124,8 @@ public class JUnit {
 	public void testCompareIdenticalPlayersIsTie() {
 		Player p1 = new Player("P1", 0, 0, 0, 0);
 		Player p2 = new Player("P2", 0, 0, 0, 0);
+		p1.lastDocumentedPosition = 1;
+		p2.lastDocumentedPosition = 1;
 		t.addPlayer(p1);
 		t.addPlayer(p2);
 		assertEquals(0, p1.compareTo(p2));
@@ -134,6 +136,7 @@ public class JUnit {
 		Player p1 = new Player("P1");
 		t.addPlayer(p1);
 		t.addBye();
+		p1.lastDocumentedPosition = 1;
 		assertEquals(-1, p1.compareTo(t.players.get(1)));
 	}
 
@@ -150,6 +153,8 @@ public class JUnit {
 	public void testCompareP2Better() {
 		Player p1 = new Player("P1", 0, 0, 0, 0);
 		Player p2 = new Player("P2", 1, 0, 0, 0);
+		p1.lastDocumentedPosition = 1;
+		p2.lastDocumentedPosition = 1;
 		t.addPlayer("P1");
 		t.addPlayer("P2");
 		assertEquals(1, p1.compareTo(p2));
@@ -219,6 +224,10 @@ public class JUnit {
 		t.addPlayer(p2);
 		t.addPlayer(p3);
 		t.addPlayer(p4);
+		p1.lastDocumentedPosition = 1;
+		p2.lastDocumentedPosition = 1;
+		p3.lastDocumentedPosition = 1;
+		p4.lastDocumentedPosition = 1;
 		t.sortRankings();
 		assertEquals(
 				"-=-=-=-Rankings-=-=-=-\n"
@@ -233,6 +242,8 @@ public class JUnit {
 	public void testTiedSoGoToTB_p2() {
 		Player p1 = new Player("P1", 3, 0, 0, 0);
 		Player p2 = new Player("P2", 3, 1, 0, 0);
+		p1.lastDocumentedPosition = 1;
+		p2.lastDocumentedPosition = 1;
 		t.addPlayer("P1");
 		t.addPlayer("P2");
 		assertEquals(1, p1.compareTo(p2));
@@ -251,6 +262,8 @@ public class JUnit {
 	public void testTiedSoGoToOppWrp2() {
 		Player p1 = new Player("P1", 3, 1, 0, 0);
 		Player p2 = new Player("P2", 3, 1, 3, 0);
+		p1.lastDocumentedPosition = 1;
+		p2.lastDocumentedPosition = 1;
 		t.addPlayer("P1");
 		t.addPlayer("P2");
 		assertEquals(1, p1.compareTo(p2));
@@ -297,6 +310,8 @@ public class JUnit {
 	public void testTiedSoGoToOppOppWr_P2Wins() {
 		Player p1 = new Player("P1", 3, 1, 0, 0);
 		Player p2 = new Player("P2", 3, 1, 0, 1);
+		p1.lastDocumentedPosition = 1;
+		p2.lastDocumentedPosition = 1;
 		assertEquals(1, p1.compareTo(p2));
 	}
 
@@ -304,6 +319,8 @@ public class JUnit {
 	public void testTiedEveryTieBreaker() {
 		Player p1 = new Player("P1", 3, 1, 3, 0);
 		Player p2 = new Player("P2", 3, 1, 3, 0);
+		p1.lastDocumentedPosition = 1;
+		p2.lastDocumentedPosition = 1;
 		t.addPlayer("P1");
 		t.addPlayer("P2");
 		assertEquals(0, p1.compareTo(p2));
@@ -315,6 +332,10 @@ public class JUnit {
 		Player p2 = new Player("P2", 6, 1, 3, 0);
 		Player p3 = new Player("P3", 3, 1, 3, 0);
 		Player p4 = new Player("P4", 0, 0, 6, 0);
+		p1.lastDocumentedPosition = 1;
+		p2.lastDocumentedPosition = 1;
+		p3.lastDocumentedPosition = 1;
+		p4.lastDocumentedPosition = 1;
 		t.addPlayer(p1);
 		t.addPlayer(p2);
 		t.addPlayer(p3);
@@ -399,6 +420,11 @@ public class JUnit {
 		Player p4 = new Player("P4");
 		Player p5 = new Player("P5");
 
+		p1.lastDocumentedPosition = 1;
+		p2.lastDocumentedPosition = 1;
+		p3.lastDocumentedPosition = 1;
+		p4.lastDocumentedPosition = 1;
+		p5.lastDocumentedPosition = 1;
 		t.addPlayer(p1);
 		t.addPlayer(p2);
 		t.addPlayer(p3);
