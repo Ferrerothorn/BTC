@@ -115,6 +115,10 @@ public class Player implements Comparable<Player> {
 	public int getTB() {
 		return tb;
 	}
+	
+	public int getSTB() {
+		return oppositionTBSum;
+	}
 
 	public int getScore() {
 		return score;
