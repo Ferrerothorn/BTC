@@ -830,33 +830,6 @@ public class Tournament {
 		allParticipantsIn = b;
 	}
 
-	public boolean confirmPhase() {
-		print("Round " + roundNumber + " completed.");
-		print("Enter 'next' to progress to the next round, after making sure all scores are correct.");
-
-		waitForUserInput();
-
-		switch (userSelection.toLowerCase()) {
-
-		case "help":
-			userSelection = null; // TODO - deprecate manual assignment
-			Utils.showHelp();
-			break;
-		case "admintools":
-			userSelection = null; // TODO - deprecate manual assignment
-			adminTools();
-			break;
-		case "next":
-			userSelection = null; // TODO - deprecate manual assignment
-			break;
-		default:
-			userSelection = null; // TODO - deprecate manual assignment
-			confirmPhase();
-			break;
-		}
-		return allParticipantsIn;
-	}
-
 	public void reportBattleWinner(String text) {
 		Player winner = findPlayerByName(text);
 		for (Battle b : currentBattles) {
