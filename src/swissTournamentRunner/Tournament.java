@@ -10,7 +10,7 @@ public class Tournament {
 	public ArrayList<Player> players = new ArrayList<>();
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
-	public String userSelection = null;
+	private String userSelection = null;
 	boolean allParticipantsIn = false;
 	public int topCutThreshold = 0;
 	public int numberOfRounds;
@@ -58,7 +58,6 @@ public class Tournament {
 		if (containsPlayer("BYE")) {
 			renamePlayer("BYE", p1);
 		}
-
 		if (!containsPlayer(p1)) {
 			if (p1.length() > 0) {
 				players.add(new Player(p1));
@@ -881,21 +880,21 @@ public class Tournament {
 
 		output += "Congratulations to " + players.get(0).getName() + " on winning this tournament!\n";
 		output += "Props to " + p1.getName() + " for enduring the toughest range of opponents.\n";
-		output += "Shoutout to " + p2.getName() + " for having a notable advantage over tied opponents.";
+		output += "Shoutout to " + p2.getName() + " for generally playing against opponents on top of their peer group.";
 
 		return output;
 	}
 
 	private Player fetchHighestTBPlayer() {
-		int highestTB = 0;
-		Player topTB = null;
+		int highestSTB = 0;
+		Player topSTB = null;
 		for (Player p : players) {
-			if (p.getTB() > highestTB) {
-				topTB = p;
-				highestTB = p.getTB();
+			if (p.getSTB() > highestSTB) {
+				topSTB = p;
+				highestSTB = p.getSTB();
 			}
 		}
-		return topTB;
+		return topSTB;
 	}
 
 	private Player fetchHardestFoughtPlayer() {
@@ -908,5 +907,11 @@ public class Tournament {
 			}
 		}
 		return hardest;
+	}
+
+	public String readInput() {
+		String uS = userSelection;
+		userSelection = null;
+		return uS;
 	}
 }

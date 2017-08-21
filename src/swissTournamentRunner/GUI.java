@@ -67,9 +67,8 @@ public class GUI implements ActionListener {
 		frame.setVisible(show);
 	}
 
-	public static void postString(String s) {
+	public static void postString(String s) { 
 		pairingsBox.append(s + newline);
-		// TODO
 		pairingsBox.setCaretPosition(pairingsBox.getDocument().getLength());
 	}
 
