@@ -33,11 +33,10 @@ public class Tournament {
 		if (activeMetadataFile.equals("TournamentInProgress.tnt")) {
 			print("Enter the name of this tournament.");
 			waitForUserInput();
-			activeMetadataFile = userSelection;
+			activeMetadataFile = readInput();
 			if (!activeMetadataFile.contains(".tnt")) {
 				activeMetadataFile += ".tnt";
 			}
-			userSelection = null;
 		}
 
 		File file = new File(activeMetadataFile);
@@ -202,7 +201,7 @@ public class Tournament {
 			Player p2 = b.getP2();
 			players.add(p1);
 			players.add(p2);
-			b = null;
+			b = null; // TODO - deprecate manual assignment
 		}
 		battles.clear();
 	}
@@ -219,20 +218,18 @@ public class Tournament {
 				GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getDocument().getLength());
 
 				waitForUserInput();
+				String input = readInput();
 
-				switch (userSelection.toLowerCase()) {
+				switch (input) {
 
 				case "help":
-					userSelection = null;
 					Utils.showHelp();
 					break;
 				case "admintools":
-					userSelection = null;
 					adminTools();
 					break;
 				default:
-					int reportUpon = Integer.parseInt(userSelection);
-					userSelection = null;
+					int reportUpon = Integer.parseInt(input);
 					Battle b = fetchBattle(reportUpon, currentBattles);
 					currentBattles.remove(b);
 
@@ -242,10 +239,10 @@ public class Tournament {
 					print("0) Tied.");
 
 					if (!((b.getP1().getName().equals("BYE") || (b.getP2().getName().equals("BYE"))))) {
-
 						waitForUserInput();
-						if (userSelection.equals("1") || userSelection.equals("2") || userSelection.equals("0")) {
-							Utils.handleBattleWinner(b, userSelection);
+						String winner = readInput();
+						if (winner.equals("1") || winner.equals("2") || winner.equals("0")) {
+							Utils.handleBattleWinner(b, winner);
 						} else {
 							currentBattles.add(b);
 						}
@@ -258,14 +255,11 @@ public class Tournament {
 							b = null;
 						}
 					}
-
-					userSelection = null;
 					refreshScreen();
 					break;
 				}
 			} catch (Exception e) {
 				print("Illegal input.");
-				userSelection = null;
 				pollForResults();
 			}
 		}
@@ -296,7 +290,7 @@ public class Tournament {
 			System.out.println();
 		}
 		if (userSelection.length() <= 0) {
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 		}
 	}
@@ -343,16 +337,17 @@ public class Tournament {
 	}
 
 	public void adminTools() {
-		userSelection = null;
 		print("Admin functions enabled.");
 		waitForUserInput();
-		switch (userSelection.toLowerCase()) {
+		String adminCommand = readInput();
+		
+		switch (adminCommand.toLowerCase()) {
 
 		case "topcut":
 			print("Enter the number of players that constitutes a Top Cut for this tournament.\n");
 			print("(Must be less than the number of players.)\n");
 			print("Alternatively, enter '0' to remove the Top Cut.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			int tC = Integer.parseInt(userSelection);
 			if (tC < players.size()) {
@@ -360,25 +355,25 @@ public class Tournament {
 			} else {
 				print("Invalid - Top Cut size is too large.");
 			}
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "matchesof":
 			print("Enter player whose game history you'd like to see.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			String showHistory = userSelection;
 			printHistory(showHistory);
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "roundrobin":
 			generateRRpairings();
 			break;
 		case "load":
 			print("Enter the file name to load.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			String fileName = userSelection;
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			if (!fileName.contains(".tnt")) {
 				fileName += ".tnt";
 			}
@@ -399,7 +394,7 @@ public class Tournament {
 			break;
 		case "setrounds":
 			print("Enter the new number of desired rounds for the tournament.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			int newNoOfRounds = Integer.parseInt(userSelection);
 			if (newNoOfRounds < players.size() && newNoOfRounds >= logBase2(players.size())) {
@@ -409,11 +404,11 @@ public class Tournament {
 				print("Invalid number of rounds for a Swiss tournament.");
 				print("We need to have less rounds than the number of players, and at least logBase2(number of players).");
 			}
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "addround":
 			print("Enter the new number of desired rounds for the tournament.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			int newNumOfRounds = Integer.parseInt(userSelection);
 			if (newNumOfRounds < players.size() && newNumOfRounds >= logBase2(players.size())) {
@@ -423,69 +418,69 @@ public class Tournament {
 				print("Invalid number of rounds for a Swiss tournament.");
 				print("We need to have less rounds than the number of players, and at least logBase2(number of players).");
 			}
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "drop":
 			print("Enter player name to drop.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			dropPlayer(userSelection);
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "dropplayer":
 			print("Enter player name to drop.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			dropPlayer(userSelection);
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "dropuser":
 			print("Enter player name to drop.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			dropPlayer(userSelection);
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "editname":
 			print("Enter player whose name should be changed.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			String renameMe = userSelection;
 			print("Enter player's new name.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			String newName = userSelection;
 			renamePlayer(renameMe, newName);
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "addbatch":
 			print("Enter a list of players, separated by commas.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			String playersList = userSelection;
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			addBatch(playersList);
 			break;
 		case "addplayer":
 			print("Enter a list of players, separated by commas.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			String playerList = userSelection;
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			addBatch(playerList);
 			break;
 		case "reopengame":
 			print("To reopen a game, first enter the name of one of the players in the game.\n");
 			print("(Case sensitive)\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			Player p1 = findPlayerByName(userSelection);
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			print("Enter the name of the other player in that game.\n");
 			print("(Case sensitive)\n");
 			waitForUserInput();
 			Player p2 = findPlayerByName(userSelection);
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			if (p1 != null && p2 != null) {
 				reopenBattle(p1, p2);
 			}
@@ -496,18 +491,18 @@ public class Tournament {
 			break;
 		case "elimination":
 			print("To convert to X-Elimination, please first enter the number of losses after which a player is eliminated.\n");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
 			setX_elimination(Integer.parseInt(userSelection));
 			print("Players will be eliminated after " + getX_elimination() + " losses.");
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			currentBattles.clear();
 			break;
 		default:
 			print("Invalid admin command. Returning to tournament...\n");
 			break;
 		}
-		userSelection = null;
+		userSelection = null; // TODO - deprecate manual assignment
 	}
 
 	private void printHistory(String showHistory) {
@@ -707,7 +702,7 @@ public class Tournament {
 			}
 		}
 		if (!foundPlayerToDrop) {
-			Player toDrop = null;
+			Player toDrop = null; // TODO - deprecate manual assignment
 			for (Player p : players) {
 				if (p.getName().equals(nameToDrop)) {
 					foundPlayerToDrop = true;
@@ -844,18 +839,18 @@ public class Tournament {
 		switch (userSelection.toLowerCase()) {
 
 		case "help":
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			Utils.showHelp();
 			break;
 		case "admintools":
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			adminTools();
 			break;
 		case "next":
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		default:
-			userSelection = null;
+			userSelection = null; // TODO - deprecate manual assignment
 			confirmPhase();
 			break;
 		}
@@ -877,15 +872,13 @@ public class Tournament {
 		}
 	}
 
-	public String postTournamentProcessing() {
+	public String postTournamentAwards() {
 		String output = "";
 		Player p1 = fetchHardestFoughtPlayer();
 		Player p2 = fetchHighestTBPlayer();
-
 		output += "Congratulations to " + players.get(0).getName() + " on winning this tournament!\n";
 		output += "Props to " + p1.getName() + " for enduring the toughest range of opponents.\n";
 		output += "Shoutout to " + p2.getName() + " for generally playing against opponents on top of their peer group.";
-
 		return output;
 	}
 
@@ -917,5 +910,9 @@ public class Tournament {
 		String uS = userSelection;
 		userSelection = null;
 		return uS;
+	}
+
+	public void postTourneyProcessing() {
+		// TODO
 	}
 }
