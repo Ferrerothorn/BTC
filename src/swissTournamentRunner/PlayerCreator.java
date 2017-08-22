@@ -45,6 +45,46 @@ public class PlayerCreator {
 		case "no":
 			t.allParticipantsIn = true;
 			break;
+		case "seed":
+			t.print("Pick Player 1 for an initial pairing. (Numbers shown below)");
+			t.waitForUserInput();
+			int pairP1 = Integer.parseInt(t.readInput());
+			pairP1--;
+
+			if (pairP1 < 0 || pairP1 > t.players.size()) {
+				t.print("Invalid input - initial seeding aborted.");
+				break;
+			}
+
+			t.print("Pick Player 2 for an initial pairing. (Numbers shown below)");
+			t.waitForUserInput();
+			int pairP2 = Integer.parseInt(t.readInput());
+			pairP2--;
+
+			if (pairP2 < 0 || pairP2 > t.players.size()) {
+				t.print("Invalid input - initial seeding aborted.");
+				break;
+			}
+
+			if (pairP1 != pairP2) {
+				t.updateParticipantStats();
+				Player p1 = t.players.remove(pairP1);
+				pairP2--;
+				Player p2 = t.players.remove(pairP2);
+				t.initialSeed(p1, p2);
+				t.postListOfConfirmedSignups();
+				t.print("Seed another pair? (y/n)");
+				t.waitForUserInput();
+				String confirmInitialSeedingDone = t.readInput();
+				if (confirmInitialSeedingDone.toLowerCase().charAt(0) == 'y') {
+					processPlayerName("seed");
+				} else {
+					processPlayerName("no");
+				}
+			} else {
+				t.print("You can't pair someone with themself - initial seeding aborted.");
+			}
+			break;
 		default:
 			if (input.contains(",")) {
 				t.addBatch(input);
