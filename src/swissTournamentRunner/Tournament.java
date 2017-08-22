@@ -448,16 +448,19 @@ public class Tournament {
 		case "reopengame":
 			print("To reopen a game, first enter the name of one of the players in the game.\n");
 			print("(Case sensitive)\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			Player p1 = findPlayerByName(userSelection);
-			userSelection = null; // TODO - deprecate manual assignment
-			print("Enter the name of the other player in that game.\n");
-			print("(Case sensitive)\n");
-			waitForUserInput();
-			Player p2 = findPlayerByName(userSelection);
-			userSelection = null; // TODO - deprecate manual assignment
-			if (p1 != null && p2 != null) {
+			Player p1 = findPlayerByName(readInput());
+			if (p1.getOpponentsList().size() == 0) {
+				print("That player hasn't played any games yet.\n");
+				break;
+			} else {
+				print("Reopen game with which opponent? \n");
+				for (int i = 1; i <= p1.getOpponentsList().size(); i++) {
+					print("" + i + ") " + p1.getOpponentsList().get(i - 1).getName());
+				}
+				waitForUserInput();
+				int reopenIndex = Integer.parseInt(readInput());
+				Player p2 = p1.getOpponentsList().get(reopenIndex - 1);
 				reopenBattle(p1, p2);
 			}
 			break;
