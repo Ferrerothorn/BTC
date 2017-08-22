@@ -171,13 +171,6 @@ public class JUnit {
 	}
 
 	@Test
-	public void testAddingNoNamePlayerFails() {
-		t.addPlayer("");
-		assertEquals(0, t.players.size());
-		assertEquals(99, t.getX_elimination());
-	}
-
-	@Test
 	public void reopenBattle_P2sBattle() {
 		Player p1 = new Player("P1", 0, 0, 0, 0);
 		Player p2 = new Player("P2", 3, 0, 0, 0);
