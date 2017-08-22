@@ -1120,4 +1120,37 @@ public class JUnit {
 		pc.processPlayerName("drop");
 		assertEquals(3, t.players.size());
 	}
+
+	@Test
+	public void testTopCutBecomesNewTourney() {
+		t.addBatch("1,2,3,4,5,6,7,8");
+		t.numberOfRounds = 3;
+		t.topCutThreshold = 4;
+		t.generatePairings(0);
+		while (t.currentBattles.size() > 0) {
+			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
+		}
+		t.generatePairings(0);
+		while (t.currentBattles.size() > 0) {
+			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
+		}
+		t.generatePairings(0);
+		while (t.currentBattles.size() > 0) {
+			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
+		}
+		t.setUserSelection("n");
+		t.postTourneyProcessing();
+		assertEquals(8, t.players.size());
+	}
+
+	@Test
+	public void testPlayerListReturnsPlayerNames() {
+		Player p1 = new Player("P1");
+		Player p2 = new Player("P2");
+		Player p3 = new Player("P3");
+		t.addPlayer(p1);
+		t.addPlayer(p2);
+		t.addPlayer(p3);
+		assertEquals("P1,P2,P3", t.playerList());
+	}
 }
