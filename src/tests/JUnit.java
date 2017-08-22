@@ -10,6 +10,7 @@ import org.junit.Test;
 import swissTournamentRunner.Battle;
 import swissTournamentRunner.GUI;
 import swissTournamentRunner.Player;
+import swissTournamentRunner.PlayerCreator;
 import swissTournamentRunner.TntFileManager;
 import swissTournamentRunner.Tournament;
 import swissTournamentRunner.Utils;
@@ -167,13 +168,6 @@ public class JUnit {
 		t.addPlayer("P1");
 		t.addPlayer("P2");
 		assertEquals(-1, p1.compareTo(p2));
-	}
-
-	@Test
-	public void testAddingNoNamePlayerFails() {
-		t.addPlayer("");
-		assertEquals(0, t.players.size());
-		assertEquals(99, t.getX_elimination());
 	}
 
 	@Test
@@ -1038,5 +1032,92 @@ public class JUnit {
 		}
 
 		assertEquals(5, t.numberOfRounds);
+	}
+
+	@Test
+	public void testABattleContainsTargetPlayer() {
+		Player p1 = new Player("P1");
+		Player p2 = new Player("P2");
+		Player p3 = new Player("P3");
+		t.addPlayer(p1);
+		t.addPlayer(p2);
+		t.generatePairings(0);
+		Battle b = t.currentBattles.get(0);
+		assertEquals(true, b.contains(p1));
+		assertEquals(true, b.contains(p2));
+		assertEquals(false, b.contains(p3));
+	}
+
+	@Test
+	public void testABattleDoesntContainTargetPlayer() {
+		Player p1 = new Player("P1");
+		Player p2 = new Player("P2");
+		Player p3 = new Player("P3");
+		t.addPlayer(p1);
+		t.addPlayer(p2);
+		t.generatePairings(0);
+		Battle b = t.currentBattles.get(0);
+		assertEquals(false, b.contains(p3));
+	}
+
+	@Test
+	public void testRecalculateScoreInvolvingTiebreaker() {
+		Player p1 = new Player("P1");
+		Player p2 = new Player("P2");
+		Player p3 = new Player("P3");
+		p1.beats(p2);
+		p1.tied(p3);
+		p1.recalculateScore();
+		p2.recalculateScore();
+		p3.recalculateScore();
+		assertEquals(4, p1.getScore());
+		assertEquals(0, p2.getScore());
+		assertEquals(1, p3.getScore());
+	}
+
+	@Test
+	public void testProcessPlayerNameInPlayerCapture() {
+		PlayerCreator pc = new PlayerCreator(t);
+		assertEquals(0, t.players.size());
+		pc.processPlayerName("A");
+		assertEquals(1, t.players.size());
+	}
+
+	@Test
+	public void testProcessPlayerName_no_DoesntAddPlayer() {
+		PlayerCreator pc = new PlayerCreator(t);
+		pc.processPlayerName("no");
+		assertEquals(0, t.players.size());
+	}
+
+	@Test
+	public void testProcessPlayerName_help_DoesntAddPlayer() {
+		PlayerCreator pc = new PlayerCreator(t);
+		GUI gui = new GUI(t);
+		pc.processPlayerName("help");
+		assertEquals(0, t.players.size());
+	}
+
+	@Test
+	public void testProcessPlayerName_addBatch() {
+		PlayerCreator pc = new PlayerCreator(t);
+		pc.processPlayerName("A,B,C,D");
+		assertEquals(4, t.players.size());
+	}
+
+	@Test
+	public void testDropPlayerBeforeTourneyBegins() {
+		PlayerCreator pc = new PlayerCreator(t);
+		GUI gui = new GUI(t);
+		pc.processPlayerName("A,B,C,D");
+		t.setUserSelection("1");
+		pc.processPlayerName("drop");
+		assertEquals(3, t.players.size());
+		t.setUserSelection("111111");
+		pc.processPlayerName("drop");
+		assertEquals(3, t.players.size());
+		t.setUserSelection("-111111");
+		pc.processPlayerName("drop");
+		assertEquals(3, t.players.size());
 	}
 }
