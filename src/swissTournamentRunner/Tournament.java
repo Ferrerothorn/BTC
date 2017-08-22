@@ -134,7 +134,7 @@ public class Tournament {
 
 	public void generatePairings(int attempts) {
 
-		if (currentBattles.size() == 0) {
+		if (currentBattles.size() == 0 || roundNumber == 1) {
 
 			while (players.size() > 0 && attempts <= 100) {
 				Player p1 = players.remove(0);
@@ -605,7 +605,7 @@ public class Tournament {
 		return new Player(s);
 	}
 
-	public void addBatch(String playerList) {
+	public void addBatch(String playerList) {  
 		String[] names = playerList.split(",");
 		ArrayList<String> newPlayerNames = new ArrayList<>();
 		for (String s : names) {
@@ -618,6 +618,7 @@ public class Tournament {
 
 		for (String s : newPlayerNames) {
 			addPlayer(trimWhitespace(s));
+			postListOfConfirmedSignups();
 		}
 		if (allParticipantsIn) {
 			addBye();
@@ -821,14 +822,19 @@ public class Tournament {
 		}
 	}
 
-	public String postTournamentAwards() {
+	public String postTournamentAwards() throws IndexOutOfBoundsException {
+
 		String output = "";
-		Player p1 = fetchHardestFoughtPlayer();
-		Player p2 = fetchHighestSTBPlayer();
-		output += "Congratulations to " + players.get(0).getName() + " on winning this tournament!\n";
-		output += "Props to " + p1.getName() + " for enduring the toughest range of opponents.\n";
-		output += "Shoutout to " + p2.getName()
-				+ " for generally playing against opponents on top of their peer group.";
+		try {
+			Player p1 = fetchHardestFoughtPlayer();
+			Player p2 = fetchHighestSTBPlayer();
+			output += "Congratulations to " + players.get(0).getName() + " on winning this tournament!\n";
+			output += "Props to " + p1.getName() + " for enduring the toughest range of opponents.\n";
+			output += "Shoutout to " + p2.getName()
+					+ " for generally playing against opponents on top of their peer group.";
+		} catch (IndexOutOfBoundsException e) {
+			System.out.println("Exception thrown: Tried to access unavailable player.");
+		}
 		return output;
 	}
 
@@ -924,5 +930,10 @@ public class Tournament {
 		TntFileManager.saveTournament(this);
 		GUI.wipePane();
 		postTourneyProcessing();
+	}
+
+	public void initialSeed(Player p1, Player p2) {
+		Battle b = new Battle(p1, p2);
+		currentBattles.add(b);
 	}
 }
