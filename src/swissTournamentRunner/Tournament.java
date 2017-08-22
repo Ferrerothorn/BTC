@@ -874,5 +874,55 @@ public class Tournament {
 	}
 
 	public void postTourneyProcessing() {
+		GUI.postString("FINAL STANDINGS");
+		updateParticipantStats();
+		GUI.postString(GUI.generateInDepthRankings(players));
+		GUI.postString(postTournamentAwards());
+
+		if (topCutThreshold > 1) {
+			GUI.postString("Should we progress to the top cut of " + topCutThreshold + "? (y/n)");
+			waitForUserInput();
+			String input = readInput();
+			if (input.toLowerCase().charAt(0) == 'y') {
+				activeMetadataFile = activeMetadataFile.replace(".", "-topCut.");
+				ArrayList<String> topCut = new ArrayList<String>();
+				for (int i = 0; i < topCutThreshold; i++) {
+					topCut.add(players.get(i).getName());
+				}
+				players.clear();
+				for (String player : topCut) {
+					addPlayer(player);
+				}
+				roundNumber = 1;
+				numberOfRounds = logBase2(players.size());
+				topCutThreshold = 0;
+				run();
+			} else {
+				GUI.postString("Thanks to everyone for taking part!");
+			}
+		}
+	}
+
+	public void run() {
+		while (roundNumber <= getNumberOfRounds() && players.size() > 1) {
+			GUI.wipePane();
+			updateParticipantStats();
+
+			if (roundNumber == 1) {
+				shufflePlayers();
+			}
+			GUI.postResultsString(GUI.generateInDepthRankings(players));
+			generatePairings(0);
+			pollForResults();
+			if (isElimination) {
+				elimination();
+			} else {
+				roundNumber++;
+			}
+		}
+
+		TntFileManager.saveTournament(this);
+		GUI.wipePane();
+		postTourneyProcessing();
 	}
 }
