@@ -862,7 +862,17 @@ public class Tournament {
 		return uS;
 	}
 
+	public String playerList() {
+		String names = "";
+		for (Player p : players) {
+			names += p.getName();
+			names += ",";
+		}
+		names = names.substring(0, names.length() - 1);
+		return names;
+
+	}
+
 	public void postTourneyProcessing() {
-		// TODO
 	}
 }
