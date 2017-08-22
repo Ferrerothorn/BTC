@@ -23,7 +23,8 @@ public class PlayerCreator {
 		t.addBye();
 	}
 
-	public void processPlayerName(String input) {
+	public void processPlayerName(String input) throws NumberFormatException{
+		try {
 		switch (input.toLowerCase()) {
 		case "help":
 			Utils.showHelp();
@@ -50,6 +51,11 @@ public class PlayerCreator {
 			} else {
 				t.addPlayer(input);
 			}
+		}
+		}
+		catch (NumberFormatException nfe){
+			t.print("Illegal input - too long to constitute an integer.");
+			processPlayerName(input);
 		}
 	}
 }
