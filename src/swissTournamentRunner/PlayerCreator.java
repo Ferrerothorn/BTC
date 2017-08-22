@@ -13,7 +13,8 @@ public class PlayerCreator {
 		while (!t.allParticipantsIn) {
 			t.print("Enter the name of the next participant, or enter 'no' if done. ");
 			t.print("You can enter 'help' at any time for some instructions, or 'drop' to remove a player you registered before we begin.");
-			t.print("Current Participants: " + t.players.size() + "  Rounds required: " + t.logBase2(t.players.size()));
+			t.print("Current Participants: " + (t.players.size() + (t.currentBattles.size() * 2))
+					+ "  Rounds required: " + t.logBase2(t.players.size()));
 			t.print("");
 			t.waitForUserInput();
 			String input = t.readInput();
