@@ -62,7 +62,7 @@ public class Tournament {
 				players.add(new Player(p1));
 			}
 		}
-		while (numberOfRounds < logBase2(players.size())) {
+		while (numberOfRounds < (logBase2(players.size() + currentBattles.size() * 2))) {
 			numberOfRounds++;
 		}
 		if (!allParticipantsIn) {
