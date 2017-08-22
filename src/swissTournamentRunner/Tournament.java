@@ -97,6 +97,14 @@ public class Tournament {
 				return true;
 			}
 		}
+		for (Battle b : currentBattles) {
+			if (b.getP1().getName().equals(string)) {
+				return true;
+			}
+			if (b.getP2().getName().equals(string)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
