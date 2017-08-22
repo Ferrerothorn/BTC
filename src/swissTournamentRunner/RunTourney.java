@@ -14,10 +14,6 @@ public class RunTourney {
 		tourney.allParticipantsIn = true;
 
 		tourney.run();
-
-		TntFileManager.saveTournament(tourney);
-		GUI.wipePane();
-		tourney.postTourneyProcessing();
 	}
 
 	private static void showCredits() {
