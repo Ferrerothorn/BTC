@@ -824,7 +824,7 @@ public class Tournament {
 	public String postTournamentAwards() {
 		String output = "";
 		Player p1 = fetchHardestFoughtPlayer();
-		Player p2 = fetchHighestTBPlayer();
+		Player p2 = fetchHighestSTBPlayer();
 		output += "Congratulations to " + players.get(0).getName() + " on winning this tournament!\n";
 		output += "Props to " + p1.getName() + " for enduring the toughest range of opponents.\n";
 		output += "Shoutout to " + p2.getName()
@@ -832,11 +832,11 @@ public class Tournament {
 		return output;
 	}
 
-	private Player fetchHighestTBPlayer() {
+	private Player fetchHighestSTBPlayer() {
 		int highestSTB = 0;
 		Player topSTB = null;
 		for (Player p : players) {
-			if (p.getSTB() > highestSTB) {
+			if (p.getSTB() >= highestSTB) {
 				topSTB = p;
 				highestSTB = p.getSTB();
 			}
