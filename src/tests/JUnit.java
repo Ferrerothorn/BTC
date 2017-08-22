@@ -41,15 +41,6 @@ public class JUnit {
 	}
 
 	@Test
-	public void testGeneratingPairingsTwiceDoesntWork() {
-		t.addBatch("P1,P2,P3,P4");
-		t.generatePairings(0);
-		assertEquals(2, t.currentBattles.size());
-		t.generatePairings(0);
-		assertEquals(2, t.currentBattles.size());
-	}
-
-	@Test
 	public void testOverwritingRoundNumberPersists() {
 		t.addBatch("p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16");
 		t.setNumberOfRounds(7);
@@ -1152,21 +1143,5 @@ public class JUnit {
 		t.addPlayer(p2);
 		t.addPlayer(p3);
 		assertEquals("P1,P2,P3", t.playerList());
-	}
-
-	@Test
-	public void testInitialSeeding() {
-		PlayerCreator pc = new PlayerCreator(t);
-		pc.processPlayerName("Belinda");
-		pc.processPlayerName("Andy");
-		pc.processPlayerName("Daz");
-		pc.processPlayerName("Cat");
-		pc.processPlayerName("iNiTiAlsEed");
-		t.initialSeed(t.findPlayerByName("Daz"), t.findPlayerByName("Andy"));
-		assertEquals(1, t.currentBattles.size());
-		t.generatePairings(0);
-		assertEquals(2, t.currentBattles.size());
-		assertEquals("Daz", t.currentBattles.get(0).getP1().getName());
-		assertEquals("Andy", t.currentBattles.get(0).getP2().getName());
 	}
 }
