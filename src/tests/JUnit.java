@@ -1153,4 +1153,20 @@ public class JUnit {
 		t.addPlayer(p3);
 		assertEquals("P1,P2,P3", t.playerList());
 	}
+
+	@Test
+	public void testInitialSeeding() {
+		PlayerCreator pc = new PlayerCreator(t);
+		pc.processPlayerName("Belinda");
+		pc.processPlayerName("Andy");
+		pc.processPlayerName("Daz");
+		pc.processPlayerName("Cat");
+		pc.processPlayerName("iNiTiAlsEed");
+		t.initialSeed(t.findPlayerByName("Daz"), t.findPlayerByName("Andy"));
+		assertEquals(1, t.currentBattles.size());
+		t.generatePairings(0);
+		assertEquals(2, t.currentBattles.size());
+		assertEquals("Daz", t.currentBattles.get(0).getP1().getName());
+		assertEquals("Andy", t.currentBattles.get(0).getP2().getName());
+	}
 }
