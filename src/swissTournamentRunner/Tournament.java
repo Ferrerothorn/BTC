@@ -45,7 +45,7 @@ public class Tournament {
 				TntFileManager.loadTournament(this, activeMetadataFile);
 				refreshScreen();
 			} catch (IOException e) {
-				GUI.postString("Error reading supplied file, starting at line: \"" + "\"");
+				GUI.postString("Error reading supplied file.");
 			}
 		} else {
 			PlayerCreator playerCreator = new PlayerCreator(this);
