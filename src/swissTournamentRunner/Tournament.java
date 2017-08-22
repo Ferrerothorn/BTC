@@ -16,7 +16,7 @@ public class Tournament {
 	public int numberOfRounds;
 	public int roundNumber = 1;
 	public GUI gui;
-	int x_elimination = 99;
+	int x_elimination = 99999;
 	Boolean isElimination = false;
 	public String activeMetadataFile = "TournamentInProgress.tnt";
 
@@ -201,7 +201,7 @@ public class Tournament {
 			Player p2 = b.getP2();
 			players.add(p1);
 			players.add(p2);
-			b = null; // TODO - deprecate manual assignment
+			b = null;
 		}
 		battles.clear();
 	}
@@ -290,7 +290,7 @@ public class Tournament {
 			System.out.println();
 		}
 		if (userSelection.length() <= 0) {
-			userSelection = null; // TODO - deprecate manual assignment
+			userSelection = null;
 			waitForUserInput();
 		}
 	}
@@ -397,15 +397,10 @@ public class Tournament {
 				print("We need to have less rounds than the number of players, and at least logBase2(number of players).");
 			}
 			break;
-			
-			
-		//	TODO - here on down
-			
 		case "addround":
 			print("Enter the new number of desired rounds for the tournament.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			int newNumOfRounds = Integer.parseInt(userSelection);
+			int newNumOfRounds = Integer.parseInt(readInput());
 			if (newNumOfRounds < players.size() && newNumOfRounds >= logBase2(players.size())) {
 				setNumberOfRounds(newNumOfRounds);
 				print("Number of rounds updated to " + getNumberOfRounds() + ".");
@@ -413,55 +408,41 @@ public class Tournament {
 				print("Invalid number of rounds for a Swiss tournament.");
 				print("We need to have less rounds than the number of players, and at least logBase2(number of players).");
 			}
-			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "drop":
 			print("Enter player name to drop.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			dropPlayer(userSelection);
-			userSelection = null; // TODO - deprecate manual assignment
+			dropPlayer(readInput());
 			break;
 		case "dropplayer":
 			print("Enter player name to drop.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			dropPlayer(userSelection);
-			userSelection = null; // TODO - deprecate manual assignment
+			dropPlayer(readInput());
 			break;
 		case "dropuser":
 			print("Enter player name to drop.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			dropPlayer(userSelection);
-			userSelection = null; // TODO - deprecate manual assignment
+			dropPlayer(readInput());
 			break;
 		case "editname":
 			print("Enter player whose name should be changed.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			String renameMe = userSelection;
+			String renameMe = readInput();
 			print("Enter player's new name.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			String newName = userSelection;
+			String newName = readInput();
 			renamePlayer(renameMe, newName);
-			userSelection = null; // TODO - deprecate manual assignment
 			break;
 		case "addbatch":
 			print("Enter a list of players, separated by commas.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			String playersList = userSelection;
-			userSelection = null; // TODO - deprecate manual assignment
+			String playersList = readInput();
 			addBatch(playersList);
 			break;
 		case "addplayer":
 			print("Enter a list of players, separated by commas.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			String playerList = userSelection;
-			userSelection = null; // TODO - deprecate manual assignment
+			String playerList = readInput();
 			addBatch(playerList);
 			break;
 		case "reopengame":
@@ -486,18 +467,15 @@ public class Tournament {
 			break;
 		case "elimination":
 			print("To convert to X-Elimination, please first enter the number of losses after which a player is eliminated.\n");
-			userSelection = null; // TODO - deprecate manual assignment
 			waitForUserInput();
-			setX_elimination(Integer.parseInt(userSelection));
+			setX_elimination(Integer.parseInt(readInput()));
 			print("Players will be eliminated after " + getX_elimination() + " losses.");
-			userSelection = null; // TODO - deprecate manual assignment
 			currentBattles.clear();
 			break;
 		default:
 			print("Invalid admin command. Returning to tournament...\n");
 			break;
 		}
-		userSelection = null; // TODO - deprecate manual assignment
 	}
 
 	private void printHistory(String showHistory) {
@@ -697,7 +675,7 @@ public class Tournament {
 			}
 		}
 		if (!foundPlayerToDrop) {
-			Player toDrop = null; // TODO - deprecate manual assignment
+			Player toDrop = null;
 			for (Player p : players) {
 				if (p.getName().equals(nameToDrop)) {
 					foundPlayerToDrop = true;
