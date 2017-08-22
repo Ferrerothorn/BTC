@@ -17,34 +17,38 @@ public class PlayerCreator {
 			t.print("");
 			t.waitForUserInput();
 			String input = t.readInput();
-			switch (input.toLowerCase()) {
-			case "help":
-				Utils.showHelp();
-				break;
-			case "drop":
-				t.print("Enter the player number (shown below) of the player you'd like to remove.");
-				t.waitForUserInput();
-				int dropMe = Integer.parseInt(t.readInput());
-				dropMe--;
-				if (dropMe >= 0 && dropMe < t.players.size()) {
-					Player p = t.players.remove(dropMe);
-					t.print("Removed " + p.getName() + ".");
-				} else {
-					t.print("Player at index " + dropMe + 1 + " does not exist.");
-				}
-				t.postListOfConfirmedSignups();
-				break;
-			case "no":
-				t.allParticipantsIn = true;
-				break;
-			default:
-				if (input.contains(",")) {
-					t.addBatch(input);
-				} else {
-					t.addPlayer(input);
-				}
-			}
+			processPlayerName(input);
 		}
 		t.addBye();
+	}
+
+	public void processPlayerName(String input) {
+		switch (input.toLowerCase()) {
+		case "help":
+			Utils.showHelp();
+			break;
+		case "drop":
+			t.print("Enter the player number (shown below) of the player you'd like to remove.");
+			t.waitForUserInput();
+			int dropMe = Integer.parseInt(t.readInput());
+			dropMe--;
+			if (dropMe >= 0 && dropMe < t.players.size()) {
+				Player p = t.players.remove(dropMe);
+				t.print("Removed " + p.getName() + ".");
+			} else {
+				t.print("Player at index " + dropMe + 1 + " does not exist.");
+			}
+			t.postListOfConfirmedSignups();
+			break;
+		case "no":
+			t.allParticipantsIn = true;
+			break;
+		default:
+			if (input.contains(",")) {
+				t.addBatch(input);
+			} else {
+				t.addPlayer(input);
+			}
+		}
 	}
 }
