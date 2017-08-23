@@ -749,9 +749,14 @@ public class JUnit {
 	public void testDroppingPlayer_AddsBye_DroppingAnother_RemovesBye_SameRound() {
 		t.addBatch("p1,p2,p3,p4,p5,p6,p7,p8,p9,p0");
 		assertEquals(10, t.players.size());
+		Player p0 = t.findPlayerByName("p0");
+		t.players.remove(p0);		
+		Player p1 = t.findPlayerByName("p1");
+		t.players.remove(p1);
+		t.initialSeed(p0, p1);
 		t.generatePairings(0);
-		Utils.handleBattleWinner(t.currentBattles.remove(4), "2");
-		t.dropPlayer("p9");
+		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
+		t.dropPlayer("p1");
 		assertEquals(10, t.players.size());
 		t.dropPlayer("p0");
 		t.updateParticipantStats();
@@ -760,15 +765,22 @@ public class JUnit {
 
 	@Test
 	public void testDroppingPlayer_AddsBye_DroppingAnother_RemovesBye_NextRound() {
-		t.addBatch("p1,p2,p3,p4,p5,p6,p7,p8,p9,p0");
+		t.addBatch("p0,p1,p2,p3,p4,p5,p6,p7,p8,p9");
 		assertEquals(10, t.players.size());
+		
+		Player p0 = t.findPlayerByName("p0");
+		t.players.remove(p0);		
+		Player p1 = t.findPlayerByName("p1");
+		t.players.remove(p1);
+		t.initialSeed(p0, p1);
 		t.generatePairings(0);
 		while (t.currentBattles.size() > 1) {
 			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		}
-		t.dropPlayer("p8");
+		t.dropPlayer("p1");
 		assertEquals(10, t.players.size());
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
+		
 		t.updateParticipantStats();
 		t.sortRankings();
 
