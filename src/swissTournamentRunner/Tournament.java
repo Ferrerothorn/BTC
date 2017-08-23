@@ -11,6 +11,7 @@ public class Tournament {
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	private String userSelection = null;
+	private boolean elo = false;
 	boolean allParticipantsIn = false;
 	public int topCutThreshold = 0;
 	public int numberOfRounds;
@@ -350,6 +351,9 @@ public class Tournament {
 		String adminCommand = readInput();
 
 		switch (adminCommand.toLowerCase()) {
+		case "elo":
+			elo = !elo;
+			break;
 		case "topcut":
 			print("Enter the number of players that constitutes a Top Cut for this tournament.\n");
 			print("(Must be less than the number of players.)\n");
@@ -936,5 +940,9 @@ public class Tournament {
 	public void initialSeed(Player p1, Player p2) {
 		Battle b = new Battle(p1, p2);
 		currentBattles.add(b);
+	}
+
+	public boolean getElo() {
+		return elo;
 	}
 }
