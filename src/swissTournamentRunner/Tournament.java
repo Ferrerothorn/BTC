@@ -72,7 +72,7 @@ public class Tournament {
 
 	public void postListOfConfirmedSignups() {
 		Collections.sort(players);
-		String post = "-=-=-Registered: " + players.size() + " players. -=-=-" + "\n";
+		String post = "-=-=-Registered: " + (players.size() + 2 * currentBattles.size()) + " players. -=-=-" + "\n";
 		for (int i = 1; i <= players.size(); i++) {
 			post += "" + i + ") " + players.get(i - 1).getName() + "\n";
 		}
