@@ -24,6 +24,7 @@ public class JUnit {
 		t.players.clear();
 		t.currentBattles.clear();
 		t.setAllParticipantsIn(true);
+		GUI gui = new GUI(t);
 	}
 
 	@Test
