@@ -34,4 +34,27 @@ public class Battle {
 		return false;
 	}
 
+	public String getElo(Player p) {
+
+		Player opponent = otherPlayer(p);
+		int ourEloScore = p.getOppWr() * p.getScore();
+		int theirEloScore = opponent.getOppWr() * opponent.getScore();
+
+		float ourElo = 1;
+		double power = (theirEloScore - ourEloScore) / 400;
+		power = Math.pow(10, power);
+		ourElo += power;
+		ourElo = 1 / ourElo;
+		ourElo *= 100;
+
+		return "" + ourElo;
+	}
+
+	public Player otherPlayer(Player p) {
+		if (p.equals(getP1())) {
+			return getP2();
+		}
+		return getP1();
+	}
+
 }
