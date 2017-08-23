@@ -1155,4 +1155,14 @@ public class JUnit {
 		t.addPlayer(p3);
 		assertEquals("P1,P2,P3", t.playerList());
 	}
+	
+	@Test
+	public void testCapturePlayers () {
+		t.setAllParticipantsIn(false);
+		t.addPlayer("p1");
+		PlayerCreator pc = new PlayerCreator(t);   
+		t.setUserSelection("no");
+		pc.capturePlayers();
+		assertEquals(2, t.players.size());
+	}
 }
