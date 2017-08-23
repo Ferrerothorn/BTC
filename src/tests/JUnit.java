@@ -1162,11 +1162,27 @@ public class JUnit {
 		t.addBatch("P1,P2,P3,P4,P5,P6,P7,P8");
 		t.generatePairings(0);
 		assertEquals(4, t.currentBattles.size());
-
-//		save to file
-//		clear tourney
-//		load from file
-//		assert 4 pairings
+		assertEquals(8, t.players.size());
+		TntFileManager.saveTournament(t);
+		t = new Tournament();
+		try {
+			TntFileManager.loadTournament(t, "test.tnt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		assertEquals(4, t.currentBattles.size());
+		assertEquals(8, t.players.size());
+	}
+	
+	public void testLoadingTournamentDoesntAlterTournamentSize() {
+		t = new Tournament();
+		try {
+			TntFileManager.loadTournament(t, "test.tnt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		assertEquals(4, t.currentBattles.size());
+		assertEquals(8, t.players.size());
 	}
 	
 	
