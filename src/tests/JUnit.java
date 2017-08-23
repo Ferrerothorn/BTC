@@ -1157,6 +1157,20 @@ public class JUnit {
 	}
 	
 	@Test
+	public void testReloadingTournamentDoesntAlterTournamentSize() {
+		t.activeMetadataFile = "test.tnt";
+		t.addBatch("P1,P2,P3,P4,P5,P6,P7,P8");
+		t.generatePairings(0);
+		assertEquals(4, t.currentBattles.size());
+
+//		save to file
+//		clear tourney
+//		load from file
+//		assert 4 pairings
+	}
+	
+	
+	@Test
 	public void testCapturePlayers () {
 		t.setAllParticipantsIn(false);
 		t.addPlayer("p1");
