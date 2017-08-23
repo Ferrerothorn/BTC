@@ -788,7 +788,7 @@ public class JUnit {
 		while (t.currentBattles.size() > 1) {
 			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		}
-		t.dropPlayer("p6");
+		t.dropPlayer("p0");
 		assertEquals(8, t.players.size());
 	}
 
