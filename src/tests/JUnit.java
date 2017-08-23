@@ -1085,7 +1085,6 @@ public class JUnit {
 	@Test
 	public void testProcessPlayerName_help_DoesntAddPlayer() {
 		PlayerCreator pc = new PlayerCreator(t);
-		GUI gui = new GUI(t);
 		pc.processPlayerName("help");
 		assertEquals(0, t.players.size());
 	}
@@ -1100,7 +1099,6 @@ public class JUnit {
 	@Test
 	public void testDropPlayerBeforeTourneyBegins() {
 		PlayerCreator pc = new PlayerCreator(t);
-		GUI gui = new GUI(t);
 		pc.processPlayerName("A,B,C,D");
 		t.setUserSelection("1");
 		pc.processPlayerName("drop");
