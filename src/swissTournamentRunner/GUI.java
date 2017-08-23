@@ -151,14 +151,20 @@ public class GUI implements ActionListener {
 
 		postString(roundString);
 		for (Battle b : battles) {
+			String battleString = "";
 			String playerOneString = b.getP1().getName() + " (" + b.getP1().getPositionInRankings()
 					+ ")                          ";
 			String playerTwoString = b.getP2().getName() + " (" + b.getP2().getPositionInRankings()
 					+ ")                          ";
 
-			postString(Utils.rpad("Table " + b.getTableNumber() + ") ", 11)
-					+ Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    "
-					+ Utils.rpad(playerTwoString, longestPlayerNameLength + 8));
+			battleString += Utils.rpad("Table " + b.getTableNumber() + ") ", 11);
+			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    ";
+			battleString += Utils.rpad(playerTwoString+"       ", longestPlayerNameLength + 8);
+			if (tourney.getElo()) {
+				battleString += "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
+			}
+			
+			postString(battleString);
 		}
 		TntFileManager.saveTournament(tourney);
 	}
