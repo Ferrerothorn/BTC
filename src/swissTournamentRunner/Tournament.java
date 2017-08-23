@@ -687,14 +687,7 @@ public class Tournament {
 			}
 		}
 		if (!foundPlayerToDrop) {
-			Player toDrop = null;
-			for (Player p : players) {
-				if (p.getName().equals(nameToDrop)) {
-					foundPlayerToDrop = true;
-					toDrop = p;
-					break;
-				}
-			}
+			Player toDrop = findPlayerByName(nameToDrop);
 			if (toDrop != null) {
 				players.remove(toDrop);
 			}
