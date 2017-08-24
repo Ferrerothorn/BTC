@@ -1,6 +1,6 @@
 package swissTournamentRunner;
 
-public class Battle {
+public class Battle implements Comparable<Battle> {
 
 	Player p1;
 	Player p2;
@@ -55,6 +55,16 @@ public class Battle {
 			return getP2();
 		}
 		return getP1();
+	
+	@Override
+	public int compareTo(Battle compareTo) {
+		if (this.shoeInFactor() > compareTo.shoeInFactor()) {
+			return -1;
+		}
+		return 1;
 	}
 
+	private int shoeInFactor() {
+		return Math.abs(getElo(p1) - getElo(p2));
+	}
 }
