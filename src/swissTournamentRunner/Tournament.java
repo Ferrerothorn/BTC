@@ -82,8 +82,8 @@ public class Tournament {
 		GUI.postResultsString(post);
 	}
 
-	public void sortRankings(ArrayList<Player> ps) {
-		Collections.sort(ps);
+	public void sortRankings() {
+		Collections.sort(players);
 	}
 
 	public String rankingsToOneBigString() {
