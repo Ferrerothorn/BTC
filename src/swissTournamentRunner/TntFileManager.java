@@ -101,4 +101,43 @@ public class TntFileManager {
 		}
 		t.updateParticipantStats();
 	}
+
+	private static void parseProperties(String line2) {
+		try {
+			String[] propertyPair = line.split(":");
+			switch (propertyPair[0]) {
+
+			case "on round":
+				t.roundNumber = Integer.parseInt(propertyPair[1]);
+				break;
+			case "numberofrounds":
+				t.numberOfRounds = Integer.parseInt(propertyPair[1]);
+				break;
+			case "elimination":
+				t.setX_elimination(Integer.parseInt(propertyPair[1]));
+				t.elimination();
+				break;
+			case "topcut":
+				int tC = Integer.parseInt(propertyPair[1]);
+				if (tC < t.players.size()) {
+					t.setTopCut(tC);
+				}
+				break;
+			case "ELO":
+				if (propertyPair[1].equals("true")) {
+					t.elo = true;
+				}
+				break;
+			case "ELOgap":
+				if (propertyPair[1].equals("true")) {
+					t.sortElo = true;
+				}
+				break;
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
+		}
+	}
 }
