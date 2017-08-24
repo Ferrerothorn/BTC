@@ -143,7 +143,11 @@ public class Tournament {
 
 	public void generatePairings(int attempts) {
 
-		if (currentBattles.size() == 0 && noGamesPlayed(players)) {
+		// If there are no active battles, that means we're between rounds, and
+		// need pairings.
+		// Otherwise, if there are active battles, check that nobody has a
+		// score. If not, it's because they were just initially seeded.
+		if (currentBattles.size() == 0 || noGamesPlayed(players)) {
 
 			while (players.size() > 0 && attempts <= 100) {
 				Player p1 = players.remove(0);
@@ -164,8 +168,6 @@ public class Tournament {
 		}
 	}
 
-	//TODO - when seeding, only seeded pairs get made into battles...
-	
 	private boolean noGamesPlayed(ArrayList<Player> ps) {
 		for (Player p : ps) {
 			if (p.previousRounds.size() > 0) {
