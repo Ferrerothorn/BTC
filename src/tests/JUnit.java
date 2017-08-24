@@ -18,6 +18,7 @@ import swissTournamentRunner.Utils;
 public class JUnit {
 
 	public Tournament t = new Tournament();
+	public TntFileManager tntfm = new TntFileManager(t);
 
 	@Before
 	public void setup() {
@@ -263,10 +264,10 @@ public class JUnit {
 		t.generatePairings(0);
 
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
-		TntFileManager.saveTournament(t);
+		tntfm.saveTournament();
 
 		Utils.handleBattleWinner(t.currentBattles.remove(2), "1");
-		TntFileManager.saveTournament(t);
+		tntfm.saveTournament();
 
 		t.currentBattles.clear();
 		t.players.clear();
@@ -954,7 +955,7 @@ public class JUnit {
 		t.generatePairings(0);
 		t.activeMetadataFile = "test.tnt";
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
-		TntFileManager.saveTournament(t);
+		tntfm.saveTournament();
 		t.currentBattles.clear();
 		t.players.clear();
 		try {
@@ -1163,7 +1164,7 @@ public class JUnit {
 		t.generatePairings(0);
 		assertEquals(4, t.currentBattles.size());
 		assertEquals(8, t.players.size());
-		TntFileManager.saveTournament(t);
+		tntfm.saveTournament();
 		t = new Tournament();
 		try {
 			TntFileManager.loadTournament(t, "test.tnt");
