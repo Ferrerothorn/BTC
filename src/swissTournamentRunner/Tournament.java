@@ -11,7 +11,8 @@ public class Tournament {
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	private String userSelection = null;
-	private boolean elo = false;
+	boolean elo = false;
+	boolean sortElo = false;
 	boolean allParticipantsIn = false;
 	public int topCutThreshold = 0;
 	public int numberOfRounds;
@@ -198,13 +199,13 @@ public class Tournament {
 			} else {
 				disseminateBattles(currentBattles);
 				players.add(p1);
-				sortRankings(players);
+				sortRankings();
 				players.remove(p1);
 				if (p1.getPositionInRankings() > players.size() / 2) {
 					Collections.reverse(players);
 				}
 				pairThisGuyUp(p1, totallyKosherPairings, attempts + 1);
-				sortRankings(players);
+				sortRankings();
 			}
 		}
 	}
@@ -931,10 +932,13 @@ public class Tournament {
 			GUI.wipePane();
 			updateParticipantStats();
 
+			sortRankings();
 			if (roundNumber == 1) {
 				shufflePlayers();
 			}
+
 			generatePairings(0);
+			sortRankings();
 			GUI.postResultsString(GUI.generateInDepthRankings(players));
 			pollForResults();
 			if (isElimination) {
