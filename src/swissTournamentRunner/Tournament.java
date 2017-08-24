@@ -159,11 +159,6 @@ public class Tournament {
 			if (attempts > 100) {
 				abort();
 				Utils.print(GUI.generateInDepthRankings(players));
-			} else {
-				for (Battle b : currentBattles) {
-					players.add(b.getP1());
-					players.add(b.getP2());
-				}
 			}
 		}
 	}
@@ -935,8 +930,12 @@ public class Tournament {
 			if (roundNumber == 1) {
 				shufflePlayers();
 			}
-			GUI.postResultsString(GUI.generateInDepthRankings(players));
 			generatePairings(0);
+			for (Battle b : currentBattles) {
+				players.add(b.getP1());
+				players.add(b.getP2());
+			}
+			GUI.postResultsString(GUI.generateInDepthRankings(players));
 			pollForResults();
 			if (isElimination) {
 				elimination();
