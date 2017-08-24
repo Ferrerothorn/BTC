@@ -160,6 +160,10 @@ public class Tournament {
 				abort();
 				Utils.print(GUI.generateInDepthRankings(players));
 			}
+			for (Battle b : currentBattles) {
+				players.add(b.getP1());
+				players.add(b.getP2());
+			}
 		}
 	}
 
@@ -931,10 +935,6 @@ public class Tournament {
 				shufflePlayers();
 			}
 			generatePairings(0);
-			for (Battle b : currentBattles) {
-				players.add(b.getP1());
-				players.add(b.getP2());
-			}
 			GUI.postResultsString(GUI.generateInDepthRankings(players));
 			pollForResults();
 			if (isElimination) {
