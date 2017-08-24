@@ -10,6 +10,7 @@ public class Tournament {
 	public ArrayList<Player> players = new ArrayList<>();
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
+	static String roundString;
 	private String userSelection = null;
 	boolean elo = false;
 	boolean sortElo = false;
@@ -232,7 +233,7 @@ public class Tournament {
 		assignTableNumbers(currentBattles);
 
 		while (currentBattles.size() > 0 && allParticipantsIn) {
-			String roundString = ("-=-=-=-ROUND " + roundNumber + "/" + numberOfRounds + "-=-=-=-");
+			roundString = ("-=-=-=-ROUND " + roundNumber + "/" + numberOfRounds + "-=-=-=-");
 			print("Enter a table number to report a score for the game.");
 
 			try {
