@@ -10,9 +10,14 @@ import java.io.UnsupportedEncodingException;
 
 public class TntFileManager {
 
+	static Tournament t;
 	static String line;
 
-	public static void saveTournament(Tournament t) {
+	public TntFileManager(Tournament tourney) {
+		t = tourney;
+	}
+
+	public void saveTournament() {
 
 		if (!t.activeMetadataFile.equals("TournamentInProgress.tnt")) {
 			String output = "";
@@ -39,6 +44,8 @@ public class TntFileManager {
 				output += "elimination:" + t.x_elimination + "\n";
 			}
 			output += "topCut:" + t.topCutThreshold + "\n";
+			output += "ELO:" + t.getElo() + "\n";
+			output += "ELOgap:" + t.getElo() + "\n";
 
 			try {
 				PrintWriter writer = new PrintWriter(file, "UTF-8");
@@ -80,7 +87,7 @@ public class TntFileManager {
 				t.assignTableNumbers(t.currentBattles);
 				line = br.readLine();
 				while (line != null) {
-					t.parseProperties(line);
+					parseProperties(line);  
 					line = br.readLine();
 				}
 
@@ -93,5 +100,44 @@ public class TntFileManager {
 			br.close();
 		}
 		t.updateParticipantStats();
+	}
+
+	private static void parseProperties(String line2) {
+		try {
+			String[] propertyPair = line.split(":");
+			switch (propertyPair[0]) {
+
+			case "on round":
+				t.roundNumber = Integer.parseInt(propertyPair[1]);
+				break;
+			case "numberofrounds":
+				t.numberOfRounds = Integer.parseInt(propertyPair[1]);
+				break;
+			case "elimination":
+				t.setX_elimination(Integer.parseInt(propertyPair[1]));
+				t.elimination();
+				break;
+			case "topcut":
+				int tC = Integer.parseInt(propertyPair[1]);
+				if (tC < t.players.size()) {
+					t.setTopCut(tC);
+				}
+				break;
+			case "ELO":
+				if (propertyPair[1].equals("true")) {
+					t.elo = true;
+				}
+				break;
+			case "ELOgap":
+				if (propertyPair[1].equals("true")) {
+					t.sortElo = true;
+				}
+				break;
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
+		}
 	}
 }

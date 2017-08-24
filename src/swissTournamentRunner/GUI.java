@@ -3,6 +3,7 @@ package swissTournamentRunner;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.*;
 
@@ -138,7 +139,7 @@ public class GUI implements ActionListener {
 		return participantString;
 	}
 
-	public static void printCurrentBattles(ArrayList<Battle> battles, String roundString) {
+	public static void printCurrentBattles(ArrayList<Battle> battles, String roundString) {   
 		int longestPlayerNameLength = 0;
 		for (Battle b : battles) {
 			if (b.getP1().getName().length() > longestPlayerNameLength) {
@@ -150,17 +151,28 @@ public class GUI implements ActionListener {
 		}
 
 		postString(roundString);
+		
+		if (tourney.sortElo) {
+			Collections.sort(tourney.currentBattles);
+		}
+		
+		
 		for (Battle b : battles) {
+			String battleString = "";
 			String playerOneString = b.getP1().getName() + " (" + b.getP1().getPositionInRankings()
 					+ ")                          ";
 			String playerTwoString = b.getP2().getName() + " (" + b.getP2().getPositionInRankings()
 					+ ")                          ";
 
-			postString(Utils.rpad("Table " + b.getTableNumber() + ") ", 11)
-					+ Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    "
-					+ Utils.rpad(playerTwoString, longestPlayerNameLength + 8));
+			battleString += Utils.rpad("Table " + b.getTableNumber() + ") ", 11);
+			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    ";
+			battleString += Utils.rpad(playerTwoString + "       ", longestPlayerNameLength + 8);
+			if (tourney.getElo()) {
+				battleString += "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
+			}
+
+			postString(battleString);
 		}
-		TntFileManager.saveTournament(tourney);
 	}
 
 	public static void printRankings(String generateInDepthRankings) {

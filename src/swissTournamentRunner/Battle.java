@@ -1,6 +1,6 @@
 package swissTournamentRunner;
 
-public class Battle {
+public class Battle implements Comparable<Battle> {
 
 	Player p1;
 	Player p2;
@@ -34,4 +34,38 @@ public class Battle {
 		return false;
 	}
 
+	public int getElo(Player p) {
+		Player opponent = otherPlayer(p);
+		float ourEloScore = p.getOppWr() * p.getScore();
+		ourEloScore++;
+		float theirEloScore = opponent.getOppWr() * opponent.getScore();
+		theirEloScore++;
+		float ourElo = 1;
+		double power = (theirEloScore - ourEloScore) / 400;
+		power = Math.pow(10, power);
+		ourElo += power;
+		ourElo = 1 / ourElo;
+		ourElo *= 100;
+		ourElo = Math.round(ourElo);
+		return (int) ourElo;
+	}
+
+	public Player otherPlayer(Player p) {
+		if (p.equals(p1)) {
+			return p2;
+		}
+		return p1;
+	}
+
+	@Override
+	public int compareTo(Battle compareTo) {
+		if (this.shoeInFactor() > compareTo.shoeInFactor()) {
+			return -1;
+		}
+		return 1;
+	}
+
+	private int shoeInFactor() {
+		return Math.abs(getElo(p1) - getElo(p2));
+	}
 }

@@ -6,10 +6,10 @@ public class Eliminator {
 
 	ArrayList<Player> players = new ArrayList<>();
 	Tournament t = new Tournament();
-	
+
 	public Eliminator(ArrayList<Player> players, Tournament t) {
 		this.players = players;
-		this.t= t;
+		this.t = t;
 	}
 
 	public void eliminate() {
