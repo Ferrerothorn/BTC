@@ -50,6 +50,7 @@ public class PlayerCreator {
 			t.waitForUserInput();
 			int pairP1 = Integer.parseInt(t.readInput());
 			pairP1--;
+			t.print("\nSeed #" + (pairP1+1) + " chosen as " + t.players.get(pairP1).getName() + ".");
 
 			if (pairP1 < 0 || pairP1 > t.players.size()) {
 				t.print("Invalid input - initial seeding aborted.");
@@ -72,6 +73,7 @@ public class PlayerCreator {
 				pairP2--;
 				Player p2 = t.players.remove(pairP2);
 				t.initialSeed(p1, p2);
+				t.print("\nSeeded " + p1.getName() + " with " + p2.getName() + " for Round 1.");
 				t.postListOfConfirmedSignups();
 				t.print("Seed another pair? (y/n)");
 				t.waitForUserInput();
