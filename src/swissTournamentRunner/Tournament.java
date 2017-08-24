@@ -368,7 +368,12 @@ public class Tournament {
 
 		switch (adminCommand.toLowerCase()) {
 		case "elo":
-			elo = !elo;
+			toggle(elo);
+			if (elo) {
+				print("ELO switched on");
+			} else {
+				print("ELO switched off");
+			}
 			break;
 		case "topcut":
 			print("Enter the number of players that constitutes a Top Cut for this tournament.\n");
@@ -390,6 +395,16 @@ public class Tournament {
 			break;
 		case "roundrobin":
 			generateRRpairings();
+			break;
+		case "sortelo":
+			toggle(sortElo);
+			GUI.wipePane();
+			if (sortElo) {
+				print("Active battles ordered by ELO difference.");
+				GUI.printCurrentBattles(currentBattles, roundString);
+			} else {
+				print("Stopping sorting ongoing battles by ELO difference.");
+			}
 			break;
 		case "load":
 			print("Enter the file name to load.\n");
@@ -507,6 +522,10 @@ public class Tournament {
 			print("Invalid admin command. Returning to tournament...\n");
 			break;
 		}
+	}
+
+	public void toggle(Boolean b) {
+		b = !b;
 	}
 
 	private void printHistory(String showHistory) {
