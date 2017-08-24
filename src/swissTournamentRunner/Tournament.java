@@ -601,8 +601,7 @@ public class Tournament {
 			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
 		}
 	}
-
-	private void setTopCut(int parseInt) {
+	void setTopCut(int parseInt) {
 		topCutThreshold = parseInt;
 	}
 
