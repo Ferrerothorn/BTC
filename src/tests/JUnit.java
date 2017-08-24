@@ -36,7 +36,7 @@ public class JUnit {
 	}
 
 	@Test
-	public void testAddingListThenAddingSinglesDoesntGiveTwoByes() {
+	public void testAddingOddNumberedListThenAddingSingleDoesntGiveTwoByes() {
 		t.addBatch("P1,P2,P3");
 		t.addPlayer("P4");
 		assertEquals(4, t.players.size());
@@ -1185,13 +1185,12 @@ public class JUnit {
 		assertEquals(4, t.currentBattles.size());
 		assertEquals(8, t.players.size());
 	}
-	
-	
+
 	@Test
-	public void testCapturePlayers () {
+	public void testCapturePlayers() {
 		t.setAllParticipantsIn(false);
 		t.addPlayer("p1");
-		PlayerCreator pc = new PlayerCreator(t);   
+		PlayerCreator pc = new PlayerCreator(t);
 		t.setUserSelection("no");
 		pc.capturePlayers();
 		assertEquals(2, t.players.size());
