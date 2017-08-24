@@ -10,9 +10,14 @@ import java.io.UnsupportedEncodingException;
 
 public class TntFileManager {
 
+	static Tournament t;
 	static String line;
 
-	public static void saveTournament(Tournament t) {
+	public TntFileManager(Tournament tourney) {
+		t = tourney;
+	}
+
+	public void saveTournament() {
 
 		if (!t.activeMetadataFile.equals("TournamentInProgress.tnt")) {
 			String output = "";
@@ -39,6 +44,8 @@ public class TntFileManager {
 				output += "elimination:" + t.x_elimination + "\n";
 			}
 			output += "topCut:" + t.topCutThreshold + "\n";
+			output += "ELO:" + t.getElo() + "\n";
+			output += "ELOgap:" + t.getElo() + "\n";
 
 			try {
 				PrintWriter writer = new PrintWriter(file, "UTF-8");
@@ -80,7 +87,7 @@ public class TntFileManager {
 				t.assignTableNumbers(t.currentBattles);
 				line = br.readLine();
 				while (line != null) {
-					t.parseProperties(line);
+					parseProperties(line);  
 					line = br.readLine();
 				}
 
