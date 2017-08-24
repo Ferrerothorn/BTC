@@ -573,34 +573,6 @@ public class Tournament {
 		return doesntExist;
 	}
 
-	public void parseProperties(String line) {
-		try {
-			String[] propertyPair = line.split(":");
-			switch (propertyPair[0]) {
-
-			case "On Round":
-				roundNumber = Integer.parseInt(propertyPair[1]);
-				break;
-			case "numberOfRounds":
-				numberOfRounds = Integer.parseInt(propertyPair[1]);
-				break;
-			case "elimination":
-				setX_elimination(Integer.parseInt(propertyPair[1]));
-				elimination();
-				break;
-			case "topCut":
-				int tC = Integer.parseInt(propertyPair[1]);
-				if (tC < players.size()) {
-					setTopCut(tC);
-				}
-				break;
-			default:
-				break;
-			}
-		} catch (Exception e) {
-			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
-		}
-	}
 	void setTopCut(int parseInt) {
 		topCutThreshold = parseInt;
 	}
