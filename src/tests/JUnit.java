@@ -1125,22 +1125,16 @@ public class JUnit {
 	}
 
 	@Test
-	public void testTopCutBecomesNewTourney() {
+	public void testTopCutOffersNewTourney() {
 		t.addBatch("1,2,3,4,5,6,7,8");
 		t.numberOfRounds = 3;
 		t.topCutThreshold = 4;
 		t.generatePairings(0);
-		while (t.currentBattles.size() > 0) {
-			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
-		}
+		Utils.autocompleteRound(t.currentBattles);
 		t.generatePairings(0);
-		while (t.currentBattles.size() > 0) {
-			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
-		}
+		Utils.autocompleteRound(t.currentBattles);
 		t.generatePairings(0);
-		while (t.currentBattles.size() > 0) {
-			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
-		}
+		Utils.autocompleteRound(t.currentBattles);
 		t.setUserSelection("n");
 		t.postTourneyProcessing();
 		assertEquals(8, t.players.size());
