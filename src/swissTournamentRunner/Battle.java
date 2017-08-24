@@ -34,27 +34,28 @@ public class Battle implements Comparable<Battle> {
 		return false;
 	}
 
-	public String getElo(Player p) {
-
+	public int getElo(Player p) {
 		Player opponent = otherPlayer(p);
-		int ourEloScore = p.getOppWr() * p.getScore();
-		int theirEloScore = opponent.getOppWr() * opponent.getScore();
-
+		float ourEloScore = p.getOppWr() * p.getScore();
+		ourEloScore++;
+		float theirEloScore = opponent.getOppWr() * opponent.getScore();
+		theirEloScore++;
 		float ourElo = 1;
 		double power = (theirEloScore - ourEloScore) / 400;
 		power = Math.pow(10, power);
 		ourElo += power;
 		ourElo = 1 / ourElo;
 		ourElo *= 100;
-
-		return "" + ourElo;
+		ourElo = Math.round(ourElo);
+		return (int) ourElo;
 	}
 
 	public Player otherPlayer(Player p) {
-		if (p.equals(getP1())) {
-			return getP2();
+		if (p.equals(p1)) {
+			return p2;
 		}
-		return getP1();
+		return p1;
+	}
 	
 	@Override
 	public int compareTo(Battle compareTo) {
