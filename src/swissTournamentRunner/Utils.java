@@ -91,11 +91,14 @@ public class Utils {
 		print("elimination:");
 		print("Experimental: Turns a tournament into X-elimination, instead of Swiss.");
 		print("The command will request a value for X. In between rounds, users with X or more losses will be dropped.");
-		print("WARNING: For the time being, use is discouraged, as testing is minimal and there are known fatal bugs.");
 		print();
 
 		print("roundrobin:");
 		print("Aborts all games, pairings and results from the current tournament, replacing them with a Round Robin pairing list.");
+		print();
+
+		print("elo:");
+		print("Toggles on and off the optional ELO rating match outcome prediction for each battle.");
 		print();
 
 	}
