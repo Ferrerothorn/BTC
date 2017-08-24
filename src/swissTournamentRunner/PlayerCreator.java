@@ -12,7 +12,8 @@ public class PlayerCreator {
 		GUI.wipePane();
 		while (!t.allParticipantsIn) {
 			t.print("Enter the name of the next participant, or enter 'no' if done. ");
-			t.print("You can enter 'help' at any time for some instructions, or 'drop' to remove a player you registered before we begin.");
+			t.print("You can enter 'help' mid-tournament to access the user manual.");
+			t.print("While registering players, enter 'drop' to remove a player before we begin, or enter 'seed' to begin the tournament while choosing [some] Round 1 pairings.");
 			t.print("Current Participants: " + (t.players.size() + (t.currentBattles.size() * 2))
 					+ "  Rounds required: " + t.logBase2(t.players.size()));
 			t.print("");
@@ -23,7 +24,7 @@ public class PlayerCreator {
 		t.addBye();
 	}
 
-	public void processPlayerName(String input) throws NumberFormatException{
+	public void processPlayerName(String input) throws NumberFormatException {
 		try {
 		switch (input.toLowerCase()) {
 		case "help":
