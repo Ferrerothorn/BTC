@@ -139,7 +139,7 @@ public class GUI implements ActionListener {
 		return participantString;
 	}
 
-	public static void printCurrentBattles(ArrayList<Battle> battles, String roundString) {
+	public static void printCurrentBattles(ArrayList<Battle> battles, String roundString) {   
 		int longestPlayerNameLength = 0;
 		for (Battle b : battles) {
 			if (b.getP1().getName().length() > longestPlayerNameLength) {
@@ -166,14 +166,13 @@ public class GUI implements ActionListener {
 
 			battleString += Utils.rpad("Table " + b.getTableNumber() + ") ", 11);
 			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    ";
-			battleString += Utils.rpad(playerTwoString+"       ", longestPlayerNameLength + 8);
+			battleString += Utils.rpad(playerTwoString + "       ", longestPlayerNameLength + 8);
 			if (tourney.getElo()) {
 				battleString += "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
 			}
-			
+
 			postString(battleString);
 		}
-		TntFileManager.saveTournament(tourney);
 	}
 
 	public static void printRankings(String generateInDepthRankings) {
