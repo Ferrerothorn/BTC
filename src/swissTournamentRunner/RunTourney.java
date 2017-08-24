@@ -6,7 +6,7 @@ public class RunTourney {
 
 	public static void main(String[] args) {
 		GUI gui = new GUI(tourney);
-		tourney.setGUI(gui); 
+		tourney.setGUI(gui);
 		GUI.createAndShowGUI(true);
 
 		showCredits();
@@ -18,7 +18,7 @@ public class RunTourney {
 
 	private static void showCredits() {
 		GUI.postString("Welcome to B-T-C, the Swiss Tournament Bracket Organiser!");
-		GUI.postString("(Version 11.0 - Made by Steve Dolman)");
+		GUI.postString("(Version 12.0 - Made by Steve Dolman)");
 		GUI.postString("Shoutout to Rachel Dolman, and Darren Macey for help in testing and debug - #NAK4LYF!");
 	}
 }
