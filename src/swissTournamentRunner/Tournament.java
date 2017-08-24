@@ -10,6 +10,7 @@ public class Tournament {
 	public ArrayList<Player> players = new ArrayList<>();
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
+	TntFileManager tntfm = new TntFileManager(this);
 	static String roundString;
 	private String userSelection = null;
 	boolean elo = false;
@@ -238,6 +239,7 @@ public class Tournament {
 
 			try {
 				GUI.printCurrentBattles(currentBattles, roundString);
+				tntfm.saveTournament();
 				GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getDocument().getLength());
 
 				waitForUserInput();
@@ -949,7 +951,7 @@ public class Tournament {
 			}
 		}
 
-		TntFileManager.saveTournament(this);
+		tntfm.saveTournament();
 		GUI.wipePane();
 		postTourneyProcessing();
 	}
