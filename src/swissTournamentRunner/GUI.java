@@ -3,6 +3,7 @@ package swissTournamentRunner;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.*;
 
@@ -150,6 +151,12 @@ public class GUI implements ActionListener {
 		}
 
 		postString(roundString);
+		
+		if (tourney.sortElo) {
+			Collections.sort(tourney.currentBattles);
+		}
+		
+		
 		for (Battle b : battles) {
 			String battleString = "";
 			String playerOneString = b.getP1().getName() + " (" + b.getP1().getPositionInRankings()
