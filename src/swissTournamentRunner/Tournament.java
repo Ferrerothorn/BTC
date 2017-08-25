@@ -150,7 +150,7 @@ public class Tournament {
 		// need pairings.
 		// Otherwise, if there are active battles, check that nobody has a
 		// score. If not, it's because they were just initially seeded.
-		if (currentBattles.size() == 0 || noGamesPlayed(players)) {
+		if (currentBattles.size() == 0 || activeGamesWereSeeded(currentBattles)) {
 
 			while (players.size() > 0 && attempts <= 100) {
 				Player p1 = players.remove(0);
@@ -170,9 +170,9 @@ public class Tournament {
 		}
 	}
 
-	private boolean noGamesPlayed(ArrayList<Player> ps) {
-		for (Player p : ps) {
-			if (p.previousRounds.size() > 0) {
+	private boolean activeGamesWereSeeded(ArrayList<Battle> battles) {
+		for (Battle b : battles) {
+			if (!b.wasSeeded) {
 				return false;
 			}
 		}

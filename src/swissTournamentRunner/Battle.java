@@ -5,6 +5,7 @@ public class Battle implements Comparable<Battle> {
 	Player p1;
 	Player p2;
 	int tableNumber;
+	public boolean wasSeeded = false;
 
 	public Battle(Player myP1, Player myP2) {
 		p1 = myP1;
