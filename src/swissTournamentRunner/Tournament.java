@@ -13,8 +13,8 @@ public class Tournament {
 	TntFileManager tntfm = new TntFileManager(this);
 	static String roundString;
 	private String userSelection = null;
-	boolean elo = false;
-	boolean sortElo = false;
+	private String elo = "off";
+	private String sortElo = "off";
 	boolean allParticipantsIn = false;
 	public int topCutThreshold = 0;
 	public int numberOfRounds;
@@ -150,7 +150,7 @@ public class Tournament {
 		// need pairings.
 		// Otherwise, if there are active battles, check that nobody has a
 		// score. If not, it's because they were just initially seeded.
-		if (currentBattles.size() == 0 || noGamesPlayed(players)) {
+		if (currentBattles.size() == 0 || activeGamesWereSeeded(currentBattles)) {
 
 			while (players.size() > 0 && attempts <= 100) {
 				Player p1 = players.remove(0);
@@ -170,9 +170,9 @@ public class Tournament {
 		}
 	}
 
-	private boolean noGamesPlayed(ArrayList<Player> ps) {
-		for (Player p : ps) {
-			if (p.previousRounds.size() > 0) {
+	private boolean activeGamesWereSeeded(ArrayList<Battle> battles) {
+		for (Battle b : battles) {
+			if (!b.wasSeeded) {
 				return false;
 			}
 		}
@@ -345,10 +345,6 @@ public class Tournament {
 		return 0;
 	}
 
-	public void sortRankings() {
-		sortRankings(players);
-	}
-
 	public void setGUI(GUI gui) {
 		this.gui = gui;
 	}
@@ -368,8 +364,8 @@ public class Tournament {
 
 		switch (adminCommand.toLowerCase()) {
 		case "elo":
-			toggle(elo);
-			if (elo) {
+			setElo(toggle(getElo()));
+			if (getElo().equals("on")) {
 				print("ELO switched on");
 			} else {
 				print("ELO switched off");
@@ -397,9 +393,9 @@ public class Tournament {
 			generateRRpairings();
 			break;
 		case "sortelo":
-			toggle(sortElo);
+			setSortElo(toggle(getSortElo()));
 			GUI.wipePane();
-			if (sortElo) {
+			if (getSortElo().equals("on")) {
 				print("Active battles ordered by ELO difference.");
 				GUI.printCurrentBattles(currentBattles, roundString);
 			} else {
@@ -524,8 +520,11 @@ public class Tournament {
 		}
 	}
 
-	public void toggle(Boolean b) {
-		b = !b;
+	public String toggle(String onOrOff) {
+		if (onOrOff.equals("on")) {
+			return "off";
+		}
+		return "on";
 	}
 
 	private void printHistory(String showHistory) {
@@ -948,10 +947,22 @@ public class Tournament {
 
 	public void initialSeed(Player p1, Player p2) {
 		Battle b = new Battle(p1, p2);
+		b.wasSeeded = true;
 		currentBattles.add(b);
 	}
 
-	public boolean getElo() {
+	public String getElo() {
 		return elo;
+	}
+	public String getSortElo() {
+		return sortElo;
+	}
+
+	public void setElo(String elo) {
+		this.elo = elo;
+	}
+
+	public void setSortElo(String sortElo) {
+		this.sortElo = sortElo;
 	}
 }

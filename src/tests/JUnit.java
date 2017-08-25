@@ -19,13 +19,35 @@ public class JUnit {
 
 	public Tournament t = new Tournament();
 	public TntFileManager tntfm = new TntFileManager(t);
-
+	
 	@Before
 	public void setup() {
 		t.players.clear();
 		t.currentBattles.clear();
 		t.setAllParticipantsIn(true);
 		GUI gui = new GUI(t);
+	}
+	
+	@Test
+	public void testReloadingFreshTourneyDoesntAlterSize() throws IOException {
+		t.activeMetadataFile = "xD.tnt";
+		t.addBatch("P1,P2,P3,P4,P5,P6");
+		t.generatePairings(0);
+		t.setElo("on");
+		t.setSortElo("on");
+		assertEquals(6, t.players.size());
+		assertEquals(3, t.currentBattles.size());
+		assertEquals("on", t.getElo());
+		assertEquals("on", t.getSortElo());
+		tntfm.saveTournament();
+		t = new Tournament();
+		tntfm = new TntFileManager(t);
+		TntFileManager.loadTournament(t, "xD.tnt");
+		assertEquals(6, t.players.size());
+		assertEquals(3, t.currentBattles.size());
+		assertEquals("on", t.getElo());
+		assertEquals("on", t.getSortElo());
+		
 	}
 
 	@Test

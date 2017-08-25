@@ -152,7 +152,7 @@ public class GUI implements ActionListener {
 
 		postString(roundString);
 		
-		if (tourney.sortElo) {
+		if (tourney.getSortElo().equals("on")) {
 			Collections.sort(tourney.currentBattles);
 		}
 		
@@ -167,7 +167,7 @@ public class GUI implements ActionListener {
 			battleString += Utils.rpad("Table " + b.getTableNumber() + ") ", 11);
 			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    ";
 			battleString += Utils.rpad(playerTwoString + "       ", longestPlayerNameLength + 8);
-			if (tourney.getElo()) {
+			if (tourney.getElo().equals("on")) {
 				battleString += "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
 			}
 
