@@ -234,13 +234,14 @@ public class Tournament {
 		assignTableNumbers(currentBattles);
 
 		while (currentBattles.size() > 0 && allParticipantsIn) {
+			GUI.wipePane();
 			roundString = ("-=-=-=-ROUND " + roundNumber + "/" + numberOfRounds + "-=-=-=-");
 			print("Enter a table number to report a score for the game.");
 
 			try {
 				GUI.printCurrentBattles(currentBattles, roundString);
 				tntfm.saveTournament();
-				GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getDocument().getLength());
+				GUI.pairingsBox.setCaretPosition(0);
 
 				waitForUserInput();
 				String input = readInput();
