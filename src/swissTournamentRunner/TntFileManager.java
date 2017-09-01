@@ -114,7 +114,7 @@ public class TntFileManager {
 				t.numberOfRounds = Integer.parseInt(propertyPair[1]);
 				break;
 			case "elimination":
-				t.setX_elimination(Integer.parseInt(propertyPair[1]));
+				t.x_elimination = Integer.parseInt(propertyPair[1]);
 				t.elimination();
 				break;
 			case "topcut":
@@ -140,4 +140,42 @@ public class TntFileManager {
 			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
 		}
 	}
+
+	static Battle parseLineToBattle(String line) {
+		String[] currentCombatants = line.split(",");
+		Player p1 = Utils.findPlayerByName(currentCombatants[0], t.players);
+		Player p2 = Utils.findPlayerByName(currentCombatants[1], t.players);
+		Battle b = new Battle(p1, p2);
+		return b;
+	}
+
+	public static void addGamesToPlayerHistory(String line) {
+		try {
+			String[] information = line.split("_");
+			Player p = Utils.findPlayerByName(information[0], t.players);
+
+			String hasBeaten = information[1];
+			hasBeaten = hasBeaten.replaceAll("\\[", "");
+			hasBeaten = hasBeaten.replaceAll("\\]", "");
+			String[] playersBeaten = hasBeaten.split(",");
+			for (String s : playersBeaten) {
+				if (s.length() > 0) {
+					p.addToListOfVictories(Utils.findPlayerByName(Utils.trimWhitespace(s), t.players));
+				}
+			}
+
+			String hasPlayed = information[2];
+			hasPlayed = hasPlayed.replaceAll("\\[", "");
+			hasPlayed = hasPlayed.replaceAll("\\]", "");
+			String[] playersPlayed = hasPlayed.split(",");
+			for (String s : playersPlayed) {
+				if (s.length() > 0) {
+					p.addToListOfPlayed(Utils.findPlayerByName(Utils.trimWhitespace(s), t.players));
+				}
+			}
+		} catch (Exception e) {
+			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
+		}
+	}
+
 }
