@@ -130,10 +130,10 @@ public class JUnit {
 		b = t.currentBattles.remove(0);
 		Utils.handleBattleWinner(b, "0");
 		t.updateParticipantStats();
-		assertEquals(0, t.findPlayerByName("P1").getScore());
-		assertEquals(3, t.findPlayerByName("P2").getScore());
-		assertEquals(1, t.findPlayerByName("P3").getScore());
-		assertEquals(1, t.findPlayerByName("P4").getScore());
+		assertEquals(0, Utils.findPlayerByName("P1", t.players).getScore());
+		assertEquals(3, Utils.findPlayerByName("P2", t.players).getScore());
+		assertEquals(1, Utils.findPlayerByName("P3", t.players).getScore());
+		assertEquals(1, Utils.findPlayerByName("P4", t.players).getScore());
 	}
 
 	@Test
@@ -300,8 +300,8 @@ public class JUnit {
 		assertEquals(3, t.getNumberOfRounds());
 		assertEquals(8, t.players.size());
 		assertEquals(2, t.currentBattles.size());
-		assertEquals(1, t.findPlayerByName("1").getListOfNamesPlayed().size());
-		assertEquals(1, t.findPlayerByName("BYE").getListOfNamesPlayed().size());
+		assertEquals(1, Utils.findPlayerByName("1", t.players).getListOfNamesPlayed().size());
+		assertEquals(1, Utils.findPlayerByName("BYE", t.players).getListOfNamesPlayed().size());
 		File file = new File("test.tnt");
 		if (file.exists()) {
 			file.delete();
@@ -762,7 +762,7 @@ public class JUnit {
 		p5.beats(p6);
 		p7.beats(p8);
 
-		t.setX_elimination(1);
+		t.x_elimination = 1;
 		t.elimination();
 
 		assertEquals(4, t.players.size());
@@ -772,9 +772,9 @@ public class JUnit {
 	public void testDroppingPlayer_AddsBye_DroppingAnother_RemovesBye_SameRound() {
 		t.addBatch("p1,p2,p3,p4,p5,p6,p7,p8,p9,p0");
 		assertEquals(10, t.players.size());
-		Player p0 = t.findPlayerByName("p0");
+		Player p0 = Utils.findPlayerByName("p0", t.players);
 		t.players.remove(p0);		
-		Player p1 = t.findPlayerByName("p1");
+		Player p1 = Utils.findPlayerByName("p1", t.players);
 		t.players.remove(p1);
 		t.initialSeed(p0, p1);
 		t.generatePairings(0);
@@ -791,9 +791,9 @@ public class JUnit {
 		t.addBatch("p0,p1,p2,p3,p4,p5,p6,p7,p8,p9");
 		assertEquals(10, t.players.size());
 		
-		Player p0 = t.findPlayerByName("p0");
+		Player p0 = Utils.findPlayerByName("p0", t.players);
 		t.players.remove(p0);		
-		Player p1 = t.findPlayerByName("p1");
+		Player p1 = Utils.findPlayerByName("p1", t.players);
 		t.players.remove(p1);
 		t.initialSeed(p0, p1);
 		t.generatePairings(0);
@@ -844,7 +844,7 @@ public class JUnit {
 		p2.beats(p4);
 		p6.beats(p8);
 
-		t.setX_elimination(2);
+		t.x_elimination = 2;
 		t.elimination();
 
 		assertEquals(6, t.players.size());
@@ -853,7 +853,8 @@ public class JUnit {
 	@Test
 	public void testTripleEliminationReachesSingleWinner() {
 		t.addBatch("p1,p2,p3,p4,p5,p6,p7,p8");
-		t.setX_elimination(3);
+		t.x_elimination = 3;
+		t.isElimination = true;
 		while (t.players.size() > 1) {
 			t.generatePairings(0);
 			Utils.autocompleteRound(t.currentBattles);
@@ -868,7 +869,7 @@ public class JUnit {
 		Player p2 = new Player("P2");
 		t.addPlayer(p1);
 		t.addPlayer(p2);
-		t.setX_elimination(1);
+		t.x_elimination = 1;
 		p1.beats(p2);
 		t.elimination();
 		assertEquals(1, t.players.size());
@@ -885,7 +886,7 @@ public class JUnit {
 		t.addPlayer(p2);
 		t.addPlayer(p3);
 		t.addPlayer(p4);
-		t.setX_elimination(1);
+		t.x_elimination = 1;
 		t.generatePairings(0);
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
@@ -925,7 +926,7 @@ public class JUnit {
 		t.addPlayer(p10);
 		t.addPlayer(p11);
 		t.addPlayer(p12);
-		t.setX_elimination(2);
+		t.x_elimination = 2;
 
 		t.generatePairings(0);
 		while (t.currentBattles.size() > 0) {
@@ -1003,8 +1004,8 @@ public class JUnit {
 		t.addPlayer(p1);
 		t.addPlayer(p2);
 
-		t.addGamesToPlayerHistory("P1_[P2]_[P2]");
-		t.addGamesToPlayerHistory("P2_[]_[P1]");
+		TntFileManager.addGamesToPlayerHistory("P1_[P2]_[P2]");
+		TntFileManager.addGamesToPlayerHistory("P2_[]_[P1]");
 
 		assertEquals(1, p1.getOpponentsList().size());
 		assertEquals(1, p1.getListOfVictories().size());
