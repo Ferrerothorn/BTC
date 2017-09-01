@@ -417,18 +417,6 @@ public class Tournament {
 		case "matches":
 			print(getResultsOfAllMatchesSoFar());
 			break;
-		case "setrounds":
-			print("Enter the new number of desired rounds for the tournament.\n");
-			waitForUserInput();
-			int newNoOfRounds = Integer.parseInt(readInput());
-			if (newNoOfRounds < players.size() && newNoOfRounds >= logBase2(players.size())) {
-				setNumberOfRounds(newNoOfRounds);
-				print("Number of rounds updated to " + getNumberOfRounds() + ".");
-			} else {
-				print("Invalid number of rounds for a Swiss tournament.");
-				print("We need to have less rounds than the number of players, and at least logBase2(number of players).");
-			}
-			break;
 		case "addround":
 			print("Enter the new number of desired rounds for the tournament.\n");
 			waitForUserInput();
