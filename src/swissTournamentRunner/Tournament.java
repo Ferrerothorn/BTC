@@ -20,18 +20,9 @@ public class Tournament {
 	public int numberOfRounds;
 	public int roundNumber = 1;
 	public GUI gui;
-	int x_elimination = 99999;
-	Boolean isElimination = false;
+	public int x_elimination = 99999;
+	public Boolean isElimination = false;
 	public String activeMetadataFile = "TournamentInProgress.tnt";
-
-	public int getX_elimination() {
-		return x_elimination;
-	}
-
-	public void setX_elimination(int x_elimination) {
-		this.x_elimination = x_elimination;
-		isElimination = true;
-	}
 
 	public void signUpPlayers() {
 		if (activeMetadataFile.equals("TournamentInProgress.tnt")) {
