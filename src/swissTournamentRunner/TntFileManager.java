@@ -76,18 +76,18 @@ public class TntFileManager {
 				}
 				line = br.readLine();
 				while (!line.contains("GAMES")) {
-					t.addGamesToPlayerHistory(line);
+					addGamesToPlayerHistory(line);
 					line = br.readLine();
 				}
 				line = br.readLine();
 				while (!line.contains("PROPERTIES")) {
-					t.currentBattles.add(t.parseLineToBattle(line));
+					t.currentBattles.add(parseLineToBattle(line));
 					line = br.readLine();
 				}
 				t.assignTableNumbers(t.currentBattles);
 				line = br.readLine();
 				while (line != null) {
-					parseProperties(line);  
+					parseProperties(line);
 					line = br.readLine();
 				}
 
