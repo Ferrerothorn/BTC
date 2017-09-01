@@ -52,7 +52,9 @@ public class GUI implements ActionListener {
 		String text = textField.getText();
 		tourney.setUserSelection(text);
 		if (text.length() > 0) {
-			pairingsBox.append(" " + text + newline);
+			if (text.length() <= 30) {
+				pairingsBox.append(" " + text + newline);
+			}
 			textField.setText(null);
 			pairingsBox.setCaretPosition(pairingsBox.getDocument().getLength());
 		}
