@@ -103,6 +103,28 @@ public class Utils {
 
 	}
 
+	public static String trimWhitespace(String s) {
+		if (s.length() == 0) {
+			return s;
+		}
+		if (s.charAt(0) == ' ' || s.charAt(0) == '\t') {
+			return trimWhitespace(s.substring(1));
+		}
+		if (s.charAt(s.length() - 1) == ' ' || s.charAt(s.length() - 1) == '\t') {
+			return trimWhitespace(s.substring(0, s.length() - 1));
+		}
+		return s;
+	}
+
+	public static Player findPlayerByName(String s, ArrayList<Player> players) {
+		for (Player p : players) {
+			if (p.getName().equals(s)) {
+				return p;
+			}
+		}
+		return new Player(s);
+	}
+
 	public static void print() {
 		GUI.postString("");
 	}
