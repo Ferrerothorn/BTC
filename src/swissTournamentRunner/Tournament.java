@@ -224,14 +224,13 @@ public class Tournament {
 		assignTableNumbers(currentBattles);
 
 		while (currentBattles.size() > 0 && allParticipantsIn) {
-			GUI.wipePane();
 			roundString = ("-=-=-=-ROUND " + roundNumber + "/" + numberOfRounds + "-=-=-=-");
 			print("Enter a table number to report a score for the game.");
+			tntfm.saveTournament();
 
 			try {
 				GUI.printCurrentBattles(currentBattles, roundString);
-				tntfm.saveTournament();
-				GUI.pairingsBox.setCaretPosition(0);
+				GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 
 				waitForUserInput();
 				String input = readInput();
@@ -278,6 +277,7 @@ public class Tournament {
 				print("Illegal input.");
 				pollForResults();
 			}
+			GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 		}
 	}
 
@@ -355,7 +355,7 @@ public class Tournament {
 
 		switch (adminCommand.toLowerCase()) {
 		case "elo":
-			setElo(toggle(getElo()));
+			setElo(toggle(elo));
 			if (getElo().equals("on")) {
 				print("ELO switched on");
 			} else {
@@ -371,14 +371,16 @@ public class Tournament {
 			if (tC < players.size()) {
 				setTopCut(tC);
 			} else {
-				print("Invalid - Top Cut size is too large.");
+				print("Invalid - suggested top cut size is too large.");
 			}
 			break;
 		case "matchesof":
 			print("Enter player whose game history you'd like to see.\n");
 			waitForUserInput();
 			String showHistory = readInput();
-			printHistory(showHistory);
+			Player p = Utils.findPlayerByName(showHistory, players);
+			printHistory(p);
+			GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 			break;
 		case "roundrobin":
 			generateRRpairings();
