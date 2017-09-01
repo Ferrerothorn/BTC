@@ -40,7 +40,7 @@ public class Utils {
 		print("Here's the manual for all current Administrator commands:");
 		print();
 
-		print("drop/dropUser/dropPlayer:");
+		print("drop/dropPlayer:");
 		print("Prompts for a (case sensitive) player name, then removes the specified player from the tournament.");
 		print("This doesn't affect the scores of anyone who beat this player in a previous round.");
 		print("This command can only be performed on players who have no active battle.");
