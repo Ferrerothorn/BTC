@@ -68,7 +68,7 @@ public class GUI implements ActionListener {
 		frame.setVisible(show);
 	}
 
-	public static void postString(String s) { 
+	public static void postString(String s) {
 		pairingsBox.append(s + newline);
 		pairingsBox.setCaretPosition(pairingsBox.getDocument().getLength());
 	}
@@ -139,7 +139,7 @@ public class GUI implements ActionListener {
 		return participantString;
 	}
 
-	public static void printCurrentBattles(ArrayList<Battle> battles, String roundString) {   
+	public static void printCurrentBattles(ArrayList<Battle> battles, String roundString) {
 		int longestPlayerNameLength = 0;
 		for (Battle b : battles) {
 			if (b.getP1().getName().length() > longestPlayerNameLength) {
@@ -151,12 +151,11 @@ public class GUI implements ActionListener {
 		}
 
 		postString(roundString);
-		
+
 		if (tourney.getSortElo().equals("on")) {
 			Collections.sort(tourney.currentBattles);
 		}
-		
-		
+
 		for (Battle b : battles) {
 			String battleString = "";
 			String playerOneString = b.getP1().getName() + " (" + b.getP1().getPositionInRankings()
