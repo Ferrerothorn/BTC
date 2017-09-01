@@ -33,7 +33,6 @@ public class Tournament {
 				activeMetadataFile += ".tnt";
 			}
 		}
-
 		File file = new File(activeMetadataFile);
 		if (file.exists()) {
 			try {
@@ -251,8 +250,8 @@ public class Tournament {
 					currentBattles.remove(b);
 
 					print("And who won in " + b.getP1().getName() + " vs. " + b.getP2().getName() + "?");
-					print("1) " + b.getP1().getName());
-					print("2) " + b.getP2().getName());
+					print("1) " + b.getP1().getName() + " (" + b.getElo(b.getP1()) + "% predicted win rate)");
+					print("2) " + b.getP2().getName() + " (" + b.getElo(b.getP2()) + "% predicted win rate)");
 					print("0) Tied.");
 
 					if (!((b.getP1().getName().equals("BYE") || (b.getP2().getName().equals("BYE"))))) {
