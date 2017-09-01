@@ -469,7 +469,7 @@ public class Tournament {
 			print("To reopen a game, first enter the name of one of the players in the game.\n");
 			print("(Case sensitive)\n");
 			waitForUserInput();
-			Player p1 = findPlayerByName(readInput());
+			Player p1 = Utils.findPlayerByName(readInput(), players);
 			if (p1.getOpponentsList().size() == 0) {
 				print("That player hasn't played any games yet.\n");
 				break;
@@ -491,14 +491,16 @@ public class Tournament {
 		case "elimination":
 			print("To convert to X-Elimination, please first enter the number of losses after which a player is eliminated.\n");
 			waitForUserInput();
-			setX_elimination(Integer.parseInt(readInput()));
-			print("Players will be eliminated after " + getX_elimination() + " losses.");
+			x_elimination = Integer.parseInt(readInput());
+			print("Players will be eliminated after " + x_elimination + " losses.");
 			currentBattles.clear();
 			break;
 		default:
 			print("Invalid admin command. Returning to tournament...\n");
 			break;
 		}
+
+		GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 	}
 
 	public String toggle(String onOrOff) {
@@ -508,11 +510,10 @@ public class Tournament {
 		return "on";
 	}
 
-	private void printHistory(String showHistory) {
-		Player p = findPlayerByName(showHistory);
+	private void printHistory(Player p) {
 		if (p.getOpponentsList().size() > 0) {
 			for (String s : p.getListOfNamesPlayed()) {
-				String output = showHistory + " vs. " + s + " (";
+				String output = p.getName() + " vs. " + s + " (";
 				if (p.getListOfNamesBeaten().contains(s)) {
 					output += p.getName();
 				} else {
@@ -521,6 +522,8 @@ public class Tournament {
 				output += " won)";
 				print(output);
 			}
+		} else {
+			print("No games involving " + p.getName() + " have been reported yet.");
 		}
 	}
 
@@ -557,52 +560,6 @@ public class Tournament {
 		topCutThreshold = parseInt;
 	}
 
-	Battle parseLineToBattle(String line) {
-		String[] currentCombatants = line.split(",");
-		Player p1 = findPlayerByName(currentCombatants[0]);
-		Player p2 = findPlayerByName(currentCombatants[1]);
-		Battle b = new Battle(p1, p2);
-		return b;
-	}
-
-	public void addGamesToPlayerHistory(String line) {
-		try {
-			String[] information = line.split("_");
-			Player p = findPlayerByName(information[0]);
-
-			String hasBeaten = information[1];
-			hasBeaten = hasBeaten.replaceAll("\\[", "");
-			hasBeaten = hasBeaten.replaceAll("\\]", "");
-			String[] playersBeaten = hasBeaten.split(",");
-			for (String s : playersBeaten) {
-				if (s.length() > 0) {
-					p.addToListOfVictories(findPlayerByName(trimWhitespace(s)));
-				}
-			}
-
-			String hasPlayed = information[2];
-			hasPlayed = hasPlayed.replaceAll("\\[", "");
-			hasPlayed = hasPlayed.replaceAll("\\]", "");
-			String[] playersPlayed = hasPlayed.split(",");
-			for (String s : playersPlayed) {
-				if (s.length() > 0) {
-					p.addToListOfPlayed(findPlayerByName(trimWhitespace(s)));
-				}
-			}
-		} catch (Exception e) {
-			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
-		}
-	}
-
-	public Player findPlayerByName(String s) {
-		for (Player p : players) {
-			if (p.getName().equals(s)) {
-				return p;
-			}
-		}
-		return new Player(s);
-	}
-
 	public void addBatch(String playerList) {
 		String[] names = playerList.split(",");
 		ArrayList<String> newPlayerNames = new ArrayList<>();
@@ -615,25 +572,12 @@ public class Tournament {
 		}
 
 		for (String s : newPlayerNames) {
-			addPlayer(trimWhitespace(s));
+			addPlayer(Utils.trimWhitespace(s));
 			postListOfConfirmedSignups();
 		}
 		if (allParticipantsIn) {
 			addBye();
 		}
-	}
-
-	private String trimWhitespace(String s) {
-		if (s.length() == 0) {
-			return s;
-		}
-		if (s.charAt(0) == ' ' || s.charAt(0) == '\t') {
-			return trimWhitespace(s.substring(1));
-		}
-		if (s.charAt(s.length() - 1) == ' ' || s.charAt(s.length() - 1) == '\t') {
-			return trimWhitespace(s.substring(0, s.length() - 1));
-		}
-		return s;
 	}
 
 	public void renamePlayer(String renameMe, String newName) {
@@ -677,7 +621,7 @@ public class Tournament {
 			}
 		}
 		if (!foundPlayerToDrop) {
-			Player toDrop = findPlayerByName(nameToDrop);
+			Player toDrop = Utils.findPlayerByName(nameToDrop, players);
 			if (toDrop != null) {
 				players.remove(toDrop);
 			}
@@ -799,7 +743,7 @@ public class Tournament {
 	}
 
 	public void reportBattleWinner(String text) {
-		Player winner = findPlayerByName(text);
+		Player winner = Utils.findPlayerByName(text, players);
 		for (Battle b : currentBattles) {
 			if (b.contains(winner)) {
 				if (b.getP1() == winner) {
@@ -902,6 +846,7 @@ public class Tournament {
 
 	public void run() {
 		while (roundNumber <= getNumberOfRounds() && players.size() > 1) {
+			Collections.shuffle(players);
 			GUI.wipePane();
 			updateParticipantStats();
 
@@ -921,7 +866,6 @@ public class Tournament {
 			}
 		}
 
-		tntfm.saveTournament();
 		GUI.wipePane();
 		postTourneyProcessing();
 	}
@@ -935,6 +879,7 @@ public class Tournament {
 	public String getElo() {
 		return elo;
 	}
+
 	public String getSortElo() {
 		return sortElo;
 	}
