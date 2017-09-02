@@ -12,6 +12,7 @@ public class RunTourney {
 		showCredits();
 		tourney.signUpPlayers();
 		tourney.allParticipantsIn = true;
+		tourney.tntfm.saveTournament();
 
 		tourney.run();
 	}

@@ -278,6 +278,7 @@ public class Tournament {
 				pollForResults();
 			}
 			GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
+			tntfm.saveTournament();
 		}
 	}
 
@@ -866,6 +867,7 @@ public class Tournament {
 			}
 		}
 
+		tntfm.saveTournament();
 		GUI.wipePane();
 		postTourneyProcessing();
 	}
