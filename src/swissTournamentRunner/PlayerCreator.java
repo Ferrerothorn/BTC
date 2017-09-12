@@ -31,18 +31,22 @@ public class PlayerCreator {
 				Utils.showHelp();
 				break;
 			case "drop":
-				t.print("Enter the player number (shown below) of the player you'd like to remove.");
+				t.print("Enter the player number (shown below) or comma-separated list of numbers of the player(s) you'd like to remove.");
 				t.waitForUserInput();
-				int dropMe = Integer.parseInt(t.readInput());
-				dropMe--;
-				if (dropMe >= 0 && dropMe < t.players.size()) {
-					Player p = t.players.remove(dropMe);
-					t.print("Removed " + p.getName() + ".");
+				String dropMe = t.readInput();
+				if (!dropMe.contains(",")) {
+					dropPlayerByIndex(dropMe);
+					break;
 				} else {
-					t.print("Player at index " + dropMe + 1 + " does not exist.");
+					String[] indexes = dropMe.split(",");
+					for (String s : indexes) {
+						s = Utils.trimWhitespace(s);
+					}
+					for (String s : indexes) {
+						dropPlayerByIndex(s);
+					}
+					break;
 				}
-				t.postListOfConfirmedSignups();
-				break;
 			case "no":
 				t.allParticipantsIn = true;
 				break;
@@ -99,5 +103,18 @@ public class PlayerCreator {
 			t.print("Illegal input - too long to constitute an integer.");
 			processPlayerName(input);
 		}
+	}
+
+	private void dropPlayerByIndex(String dropMe) {
+		int index = Integer.parseInt(dropMe);
+
+		index--;
+		if (index >= 0 && index < t.players.size()) {
+			Player p = t.players.remove(index);
+			t.print("Removed " + p.getName() + ".");
+		} else {
+			t.print("Player at index " + dropMe + 1 + " does not exist.");
+		}
+		t.postListOfConfirmedSignups();
 	}
 }

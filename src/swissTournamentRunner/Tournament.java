@@ -304,7 +304,7 @@ public class Tournament {
 
 	public void waitForUserInput() {
 		while (userSelection == null) {
-			System.out.println();
+			String s = new String("");
 		}
 		if (userSelection.length() <= 0) {
 			userSelection = null;
