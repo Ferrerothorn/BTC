@@ -90,7 +90,6 @@ public class TntFileManager {
 					parseProperties(line);
 					line = br.readLine();
 				}
-
 			}
 		} catch (IOException e) {
 			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\"");
