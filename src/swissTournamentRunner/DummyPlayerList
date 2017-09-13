@@ -4,74 +4,8 @@ Andrew Campbell,Andrew McCartney,Andy Thomson,Callum Brown,Cameron Thom,Ciaran B
 Alakazam,Buzzwole,Celesteela,Chansey,Charizard,Dugtrio,Excadrill,Ferrothorn,Garchomp,Greninja,Gyarados,Heatran,Hoopa-U,Jirachi,Kartana,Landorus-T,Latios,Magearna,Mamoswine,Manaphy,A-Marowak,Mawile,Mimikyu,A-Muk,Nihilego,Pelipper,Pheromosa,Pinsir,Rotom-W,Sableye,Salamence,Scizor,Scolipede,Skarmory,Tangrowth,Tapu Bulu,Tapu Koko,Tapu Lele,Tapu Fini,Toxapex,Tyranitar,Venusaur,Volcarona,Xurkitree,Zapdos,Zygarde
 Surrey,Warwickshire,Derbyshire,Lancashire,Sussex,Somerset,Kent,Leicestershire,Nottinghamshire,Durham,Middlesex,Essex,Northamptonshire,Yorkshire,Worcestershire,Hampshire,Gloucestershire,Glamorgan
 
-4 Fauna Shaman
-3 Green Sun's Zenith
-3 Aether Vial
-3 Abrupt Decay
-3 Mother of Runes
-2 Scryb Ranger
-2 Qasali Pridemage
-2 Deathrite Shaman
-2 Birds of Paradise
-2 Sanctum Prelate
-1 True-Name Nemesis
-1 Atraxa, Praetors' Voice
-1 Sylvan Library
-1 Scavenging Ooze
-1 Vendilion Clique
-1 Noble Hierarch
-1 Orzhov Pontiff
-1 Merieke Ri Berit
-1 Shriekmaw
-1 Reclamation Sage
-1 Glen Elendra Archmage
-1 Meren of Clan Nel Toth
-1 Umezawa's Jitte
-1 Izzet Staticaster
-1 Shaman of the Great Hunt
-1 Leovold, Emissary of Trest
-1 Stoneforge Mystic
-???
-Gaddock Teeg
-Edric, Spymaster of Trest
-Rafiq of the Many
-Rhox War Monk
-Keranos, God of Storms
-Magus of the Moat
-Athreos, God of Passage
-Thalia, Guardian of Thraben
-Magus of the Moon
-Aven Mindcensor
-Spirit of the Labyrinth
-Trygon Predator
-Derevi, Empyrial Tactician
-Phantasmal Image
-Phyrexian Revoker
-Voice of Resurgence
-Murkfiend Liege
-Squee, Goblin Nabob
-Mikaeus, the Lunarch
-Vengeful Pharaoh
-Tradewind Rider
-Meddling Mage
-Peacekeeper
-Sower of Temptation
-Yisan, the Wanderer Bard
-Spellskite
-Mystic Snake
-Sublime Archangel
-Quirion Ranger
-Wilt-Leaf Liege
-???
 
-4 Verdant Catacombs
-4 Misty Rainforest
-2 Savannah
-2 Bayou
-2 Tropical Island
-1 Dryad Arbor
-1 Forest
-1 Taiga
+
 
 /////////////////////////////
 
@@ -93,3 +27,31 @@ Stax
 Walkers
 4 chandra, torch of defiance / Ral Zarek
 4 jace, the mind sculptor
+/////////////////////////////////////
+4	Sin Prodder	2r	1.80
+3	Thunderbreak Regent
+////////////////////////////////
+Sanctum Prelate	1	3	Combo		Aether Vial	3	Verdant Catacombs	4
+Glen Elendra Archmage	1	4	Combo		Green Sun's Zenith	3	Misty Rainforest	4
+Vendilion Clique	1	3	Combo		Abrupt Decay	3	Savannah	2
+Izzet Staticaster	1	3	Combo		Umezawa's Jitte	1	Bayou	2
+Meddling Mage	1	2	Combo		Sylvan Library	1	Tropical Island	2
+Qasali Pridemage	2	2	Combo/Fair				Dryad Arbor	1
+Leovold, Emissary of Trest	1	3	Combo/Fair				Forest	1
+Phyrexian Revoker	1	2	Combo/Fair				Taiga	1
+Mother of Runes	3	1	Fair					
+Scryb Ranger	2	2	Fair					
+Keranos, God of Storms	1	5	Fair					
+Meren of Clan Nel Toth	1	4	Fair					
+Shaman of the Great Hunt	1	4	Fair					
+Rafiq of the Many	1	4	Fair					
+True-Name Nemesis	1	3	Fair					
+Merieke Ri Berit	1	3	Fair					
+Shriekmaw	1	2	Fair					
+Stoneforge Mystic	1	2	Fair					
+Scavenging Ooze	1	2	Grave					
+Fauna Shaman	4	2						
+Birds of Paradise	2	1	Ramp					
+Noble Hierarch	1	1	Ramp					
+Deathrite Shaman	2	1	Ramp/Grave					
+								
