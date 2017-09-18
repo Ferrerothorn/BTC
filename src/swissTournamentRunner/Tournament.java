@@ -12,7 +12,7 @@ public class Tournament {
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	TntFileManager tntfm = new TntFileManager(this);
 	static String roundString;
-	private String userSelection = null;
+	String userSelection = null;
 	private String elo = "off";
 	private String sortElo = "off";
 	boolean allParticipantsIn = false;

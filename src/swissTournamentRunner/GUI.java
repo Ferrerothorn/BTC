@@ -23,6 +23,41 @@ public class GUI implements ActionListener {
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setLayout(new MigLayout("wrap ", "[grow,fill]"));
 
+		JToolBar toolbar = new JToolBar("Admin Tools");
+
+		JButton addRoundButton = new JButton("Add Round");
+		addRoundButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				t.userSelection = "addRound";
+				t.adminTools();
+			}
+		});
+		toolbar.add(addRoundButton);
+
+		JButton eloButton = new JButton("ELO");
+		eloButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// JOptionPane.showMessageDialog(frame, "Calendar clicked");
+			}
+		});
+		toolbar.add(eloButton);
+
+		JButton addPlayerButton = new JButton("Add Player(s)");
+		addPlayerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// JOptionPane.showMessageDialog(frame, "Calendar clicked");
+			}
+		});
+		toolbar.add(addPlayerButton);
+
+		JButton removePlayerButton = new JButton("Remove Player(s)");
+		removePlayerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// JOptionPane.showMessageDialog(frame, "Calendar clicked");
+			}
+		});
+		toolbar.add(removePlayerButton);
+
 		pairingsBox = new JTextArea(20, 60);
 		pairingsBox.setEditable(false);
 		pairingsBox.setLineWrap(true);
@@ -37,14 +72,21 @@ public class GUI implements ActionListener {
 		textField = new JTextField(500);
 		textField.addActionListener(this);
 
-		JPanel inputPanel = new JPanel();
-		inputPanel.add(inputLabel);
-		inputPanel.add(textField);
+		// JPanel inputPanel = new JPanel();
+		// inputPanel.add(inputLabel, "shrink");
+		// inputPanel.add(textField, "grow");
 
+		JPanel inputArea = new JPanel();
+		inputArea.setLayout(new MigLayout());
+		inputArea.add(inputLabel);
+		inputArea.add(textField, "span 5");
+
+		frame.add(toolbar, "grow, wrap");
 		frame.add(new JScrollPane(pairingsBox), "grow, wrap");
-		frame.add(new JScrollPane(resultsBox), "grow, wrap");
-		frame.add(inputLabel, "cell 0 2 1 1, shrink");
-		frame.add(textField, "cell 0 2 6 1");
+		frame.add(new JScrollPane(resultsBox), "grow");
+		// frame.add(inputLabel, "shrink, wrap");
+		// frame.add(textField, "grow");
+		frame.add(inputArea, "grow");
 	}
 
 	@Override
