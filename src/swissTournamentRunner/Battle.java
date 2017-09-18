@@ -37,8 +37,14 @@ public class Battle implements Comparable<Battle> {
 
 	public int getElo(Player p) {
 		Player opponent = otherPlayer(p);
-		float ourEloScore = (p.getOppWr() * p.getScore())+1;
-		float theirEloScore = (opponent.getOppWr() * opponent.getScore())+1;
+		if (p.getName().equals("BYE")) {
+			return 0;
+		}
+		if (opponent.getName().equals("BYE")) {
+			return 100;
+		}
+		float ourEloScore = (p.getOppWr() * p.getScore()) + 1;
+		float theirEloScore = (opponent.getOppWr() * opponent.getScore()) + 1;
 		float ourElo = 1;
 		double power = (theirEloScore - ourEloScore) / 400;
 		power = Math.pow(10, power);
@@ -46,6 +52,7 @@ public class Battle implements Comparable<Battle> {
 		ourElo = 1 / ourElo;
 		ourElo *= 100;
 		ourElo = Math.round(ourElo);
+
 		return (int) ourElo;
 	}
 
