@@ -244,7 +244,7 @@ public class JUnit {
 						+ "2) P3       Score: 6          TB: 0      Opp WR: 0%      Opp Opp WR: 0%    STB: 0   \n"
 						+ "3) P2       Score: 3          TB: 0      Opp WR: 0%      Opp Opp WR: 0%    STB: 0   \n"
 						+ "4) P4       Score: 0          TB: 0      Opp WR: 0%      Opp Opp WR: 0%    STB: 0   \n",
-				GUI.generateInDepthRankings(t.players));
+				Tournament.generateInDepthRankings(t.players));
 	}
 
 	@Test
@@ -1151,7 +1151,7 @@ public class JUnit {
 	public void testTopCutOffersNewTourney() {
 		t.addBatch("1,2,3,4,5,6,7,8");
 		t.numberOfRounds = 3;
-		t.topCutThreshold = 4;
+		Tournament.topCutThreshold = 4;
 		t.generatePairings(0);
 		Utils.autocompleteRound(t.currentBattles);
 		t.generatePairings(0);

@@ -86,61 +86,6 @@ public class GUI implements ActionListener {
 		pairingsBox.setCaretPosition(pairingsBox.getDocument().getLength());
 	}
 
-	public static String generateInDepthRankings(ArrayList<Player> ps) {
-		String participantString = "";
-		int longestPlayerNameLength = 0;
-
-		for (Player p : ps) {
-			if (p.getName().length() > longestPlayerNameLength) {
-				longestPlayerNameLength = p.getName().length();
-			}
-		}
-
-		if (tourney.topCutThreshold != 0) {
-			participantString += "===Rankings - Top Cut===" + "\n";
-			for (int i = 1; i <= tourney.topCutThreshold; i++) {
-				if (!ps.get(i - 1).getName().equals("BYE")) {
-
-					String pScore = Integer.toString(ps.get(i - 1).getScore());
-					String pTB = Integer.toString(ps.get(i - 1).getTB());
-					String pOWR = Integer.toString(ps.get(i - 1).getOppWr()) + "%";
-					String pOOWR = Integer.toString(ps.get(i - 1).getOppOppWr()) + "%";
-
-					participantString += Utils.rpad(
-							"" + i + ") " + ps.get(i - 1).getName() + "                         ",
-							longestPlayerNameLength + 7)
-							+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
-							+ Utils.rpad("TB: " + pTB + "                         ", 8) + "   "
-							+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  "
-							+ Utils.rpad("Opp Opp WR: " + pOOWR + "  ", 18) + "  "
-							+ Utils.rpad("STB: " + ps.get(i - 1).oppositionTBSum, 9) + '\n';
-				}
-			}
-			participantString += "==Rankings - Qualifiers==" + "\n";
-		} else {
-			participantString += "-=-=-=-Rankings-=-=-=-" + '\n';
-		}
-
-		for (int j = tourney.topCutThreshold + 1; j <= ps.size(); j++) {
-			if (!ps.get(j - 1).getName().equals("BYE")) {
-
-				String pScore = Integer.toString(ps.get(j - 1).getScore());
-				String pTB = Integer.toString(ps.get(j - 1).getTB());
-				String pOWR = Integer.toString(ps.get(j - 1).getOppWr()) + "%";
-				String pOOWR = Integer.toString(ps.get(j - 1).getOppOppWr()) + "%";
-
-				participantString += Utils.rpad("" + j + ") " + ps.get(j - 1).getName() + "                         ",
-						longestPlayerNameLength + 7) + "   "
-						+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
-						+ Utils.rpad("TB: " + pTB + "                         ", 8) + "   "
-						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "    "
-						+ Utils.rpad("Opp Opp WR: " + pOOWR + "                         ", 16) + "  "
-						+ Utils.rpad("STB: " + ps.get(j - 1).oppositionTBSum, 9) + '\n';
-			}
-		}
-		return participantString;
-	}
-
 	public static void printCurrentBattles(ArrayList<Battle> battles, String roundString) {
 		int longestPlayerNameLength = 0;
 		for (Battle b : battles) {

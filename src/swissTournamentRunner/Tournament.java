@@ -16,7 +16,7 @@ public class Tournament {
 	private String elo = "off";
 	private String sortElo = "off";
 	boolean allParticipantsIn = false;
-	public int topCutThreshold = 0;
+	public static int topCutThreshold = 0;
 	public int numberOfRounds;
 	public int roundNumber = 1;
 	public GUI gui;
@@ -151,13 +151,68 @@ public class Tournament {
 
 			if (attempts > 100) {
 				abort();
-				Utils.print(GUI.generateInDepthRankings(players));
+				Utils.print(generateInDepthRankings(players));
 			}
 			for (Battle b : currentBattles) {
 				players.add(b.getP1());
 				players.add(b.getP2());
 			}
 		}
+	}
+	
+	public static String generateInDepthRankings(ArrayList<Player> ps) {
+		String participantString = "";
+		int longestPlayerNameLength = 0;
+
+		for (Player p : ps) {
+			if (p.getName().length() > longestPlayerNameLength) {
+				longestPlayerNameLength = p.getName().length();
+			}
+		}
+
+		if (topCutThreshold != 0) {
+			participantString += "===Rankings - Top Cut===" + "\n";
+			for (int i = 1; i <= topCutThreshold; i++) {
+				if (!ps.get(i - 1).getName().equals("BYE")) {
+
+					String pScore = Integer.toString(ps.get(i - 1).getScore());
+					String pTB = Integer.toString(ps.get(i - 1).getTB());
+					String pOWR = Integer.toString(ps.get(i - 1).getOppWr()) + "%";
+					String pOOWR = Integer.toString(ps.get(i - 1).getOppOppWr()) + "%";
+
+					participantString += Utils.rpad(
+							"" + i + ") " + ps.get(i - 1).getName() + "                         ",
+							longestPlayerNameLength + 7)
+							+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
+							+ Utils.rpad("TB: " + pTB + "                         ", 8) + "   "
+							+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  "
+							+ Utils.rpad("Opp Opp WR: " + pOOWR + "  ", 18) + "  "
+							+ Utils.rpad("STB: " + ps.get(i - 1).oppositionTBSum, 9) + '\n';
+				}
+			}
+			participantString += "==Rankings - Qualifiers==" + "\n";
+		} else {
+			participantString += "-=-=-=-Rankings-=-=-=-" + '\n';
+		}
+
+		for (int j = topCutThreshold + 1; j <= ps.size(); j++) {
+			if (!ps.get(j - 1).getName().equals("BYE")) {
+
+				String pScore = Integer.toString(ps.get(j - 1).getScore());
+				String pTB = Integer.toString(ps.get(j - 1).getTB());
+				String pOWR = Integer.toString(ps.get(j - 1).getOppWr()) + "%";
+				String pOOWR = Integer.toString(ps.get(j - 1).getOppOppWr()) + "%";
+
+				participantString += Utils.rpad("" + j + ") " + ps.get(j - 1).getName() + "                         ",
+						longestPlayerNameLength + 7) + "   "
+						+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
+						+ Utils.rpad("TB: " + pTB + "                         ", 8) + "   "
+						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "    "
+						+ Utils.rpad("Opp Opp WR: " + pOOWR + "                         ", 16) + "  "
+						+ Utils.rpad("STB: " + ps.get(j - 1).oppositionTBSum, 9) + '\n';
+			}
+		}
+		return participantString;
 	}
 
 	private boolean activeGamesWereSeeded(ArrayList<Battle> battles) {
@@ -285,7 +340,7 @@ public class Tournament {
 	public void refreshScreen() {
 		GUI.wipePane();
 		updateParticipantStats();
-		printRankings(GUI.generateInDepthRankings(players));
+		printRankings(generateInDepthRankings(players));
 		print();
 		print();
 	}
@@ -818,7 +873,7 @@ public class Tournament {
 	public void postTourneyProcessing() {
 		GUI.postString("FINAL STANDINGS");
 		updateParticipantStats();
-		GUI.postString(GUI.generateInDepthRankings(players));
+		GUI.postString(generateInDepthRankings(players));
 		GUI.postString(postTournamentAwards());
 
 		if (topCutThreshold > 1) {
@@ -858,7 +913,7 @@ public class Tournament {
 
 			generatePairings(0);
 			sortRankings();
-			GUI.postResultsString(GUI.generateInDepthRankings(players));
+			GUI.postResultsString(generateInDepthRankings(players));
 			pollForResults();
 			if (isElimination) {
 				elimination();
