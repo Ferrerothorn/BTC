@@ -55,7 +55,8 @@ public class PlayerCreator {
 				t.waitForUserInput();
 				int pairP1 = Integer.parseInt(t.readInput());
 				pairP1--;
-				t.print("\nSeed #" + (pairP1 + 1) + " chosen as " + t.players.get(pairP1).getName() + ".");
+				Player p1 = t.players.get(pairP1);
+				t.print("\nSeed chosen as " + p1.getName() + ".");
 
 				if (pairP1 < 0 || pairP1 > t.players.size()) {
 					t.print("Invalid input - initial seeding aborted.");
@@ -66,6 +67,7 @@ public class PlayerCreator {
 				t.waitForUserInput();
 				int pairP2 = Integer.parseInt(t.readInput());
 				pairP2--;
+				Player p2 = t.players.get(pairP2);
 
 				if (pairP2 < 0 || pairP2 > t.players.size()) {
 					t.print("Invalid input - initial seeding aborted.");
@@ -74,20 +76,13 @@ public class PlayerCreator {
 
 				if (pairP1 != pairP2) {
 					t.updateParticipantStats();
-					Player p1 = t.players.remove(pairP1);
-					pairP2--;
-					Player p2 = t.players.remove(pairP2);
+					t.players.remove(p1);
+					t.players.remove(p2);
 					t.initialSeed(p1, p2);
 					t.print("\nSeeded " + p1.getName() + " with " + p2.getName() + " for Round 1.");
 					t.postListOfConfirmedSignups();
-					t.print("Seed another pair? (y/n)");
-					t.waitForUserInput();
-					String confirmInitialSeedingDone = t.readInput();
-					if (confirmInitialSeedingDone.toLowerCase().charAt(0) == 'y') {
-						processPlayerName("seed");
-					} else {
-						processPlayerName("no");
-					}
+					t.print("Seed another pair, or enter 'no' to begin the tournament.");
+					processPlayerName("seed");
 				} else {
 					t.print("You can't pair someone with themself - initial seeding aborted.");
 				}
@@ -98,10 +93,18 @@ public class PlayerCreator {
 				} else {
 					t.addPlayer(input);
 				}
+				break;
 			}
 		} catch (NumberFormatException nfe) {
-			t.print("Illegal input - too long to constitute an integer.");
-			processPlayerName(input);
+			t.print("Illegal input - that's not a usable player index.");
+			t.print("Do you want to seed another pair?");
+			t.waitForUserInput();
+			String confirmInitialSeedingDone = t.readInput();
+			if (confirmInitialSeedingDone.toLowerCase().charAt(0) == 'y') {
+				processPlayerName("seed");
+			} else {
+				processPlayerName("no");
+			}
 		}
 	}
 
