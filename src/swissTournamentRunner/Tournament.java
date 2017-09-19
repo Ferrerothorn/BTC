@@ -12,7 +12,8 @@ public class Tournament {
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	TntFileManager tntfm = new TntFileManager(this);
 	static String roundString;
-	String userSelection = null;
+	private String userSelection = null;
+	private boolean noClicks = true;
 	private String elo = "off";
 	private String sortElo = "off";
 	boolean allParticipantsIn = false;
@@ -358,7 +359,7 @@ public class Tournament {
 	}
 
 	public void waitForUserInput() {
-		while (userSelection == null) {
+		while (userSelection == null && noClicks == true) {
 			String s = new String("");
 		}
 		if (userSelection.length() <= 0) {
@@ -856,6 +857,7 @@ public class Tournament {
 	public String readInput() {
 		String uS = userSelection;
 		userSelection = null;
+		noClicks = true;
 		return uS;
 	}
 
