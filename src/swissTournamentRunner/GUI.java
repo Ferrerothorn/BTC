@@ -145,6 +145,11 @@ public class GUI implements ActionListener {
 					JComboBox players = new JComboBox(ps);
 					JTextField editedName = new JTextField("Enter new name here.");
 					JButton submitEditName = new JButton("Submit");
+					players.addActionListener(new ActionListener () {
+					    public void actionPerformed(ActionEvent e) {
+					    	editedName.setText(players.getSelectedItem().toString());
+					    }
+					});
 					nameEditor.add(players, "span 3,wrap");
 					nameEditor.add(editedName, "span 2");
 					nameEditor.add(submitEditName);
