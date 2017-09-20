@@ -13,9 +13,9 @@ public class Tournament {
 	TntFileManager tntfm = new TntFileManager(this);
 	static String roundString;
 	private String userSelection = null;
-	private boolean noClicks = true;
-	private String elo = "off";
-	private String sortElo = "off";
+	public boolean noClicks = true;
+	public String elo = "off";
+	public String sortElo = "off";
 	boolean allParticipantsIn = false;
 	public static int topCutThreshold = 0;
 	public int numberOfRounds;
@@ -57,7 +57,7 @@ public class Tournament {
 				players.add(new Player(p1));
 			}
 		}
-		while (numberOfRounds < (logBase2(players.size() + currentBattles.size() * 2))) {
+		while (numberOfRounds < (logBase2(players.size()))) {
 			numberOfRounds++;
 		}
 		if (!allParticipantsIn) {
@@ -67,7 +67,11 @@ public class Tournament {
 
 	public void postListOfConfirmedSignups() {
 		Collections.sort(players);
-		String post = "-=-=-Registered: " + (players.size() + 2 * currentBattles.size()) + " players. -=-=-" + "\n";
+		int totalNumberOfPlayers = players.size();
+		if (allParticipantsIn) {
+			totalNumberOfPlayers += currentBattles.size() * 2;
+		}
+		String post = "-=-=-Registered: " + totalNumberOfPlayers + " players. -=-=-" + "\n";
 		for (int i = 1; i <= players.size(); i++) {
 			post += "" + i + ") " + players.get(i - 1).getName() + "\n";
 		}
@@ -81,9 +85,43 @@ public class Tournament {
 	public String rankingsToOneBigString() {
 		String output = "-=-=-=-Rankings-=-=-=-" + '\n';
 		for (Player p : players) {
-			output += p.getName();
+			output += p.getName() + "\n";
 		}
 		return output;
+	}
+
+	public String getCurrentBattles(ArrayList<Battle> battles, String roundString) {
+		int longestPlayerNameLength = 0;
+		String battlesString = roundString + "\n";
+
+		for (Battle b : battles) {
+			if (b.getP1().getName().length() > longestPlayerNameLength) {
+				longestPlayerNameLength = b.getP1().getName().length();
+			}
+			if (b.getP2().getName().length() > longestPlayerNameLength) {
+				longestPlayerNameLength = b.getP2().getName().length();
+			}
+		}
+
+		if (getSortElo().equals("on")) {
+			Collections.sort(currentBattles);
+		}
+
+		for (Battle b : battles) {
+			String playerOneString = b.getP1().getName() + " (" + b.getP1().getPositionInRankings()
+					+ ")                          ";
+			String playerTwoString = b.getP2().getName() + " (" + b.getP2().getPositionInRankings()
+					+ ")                          ";
+
+			String battleString = Utils.rpad("Table " + b.getTableNumber() + ") ", 11);
+			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    ";
+			battleString += Utils.rpad(playerTwoString + "       ", longestPlayerNameLength + 8);
+			if (getElo().equals("on")) {
+				battleString += "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
+			}
+			battlesString += battleString + "\n";
+		}
+		return battlesString;
 	}
 
 	public boolean containsPlayer(String string) {
@@ -160,7 +198,7 @@ public class Tournament {
 			}
 		}
 	}
-	
+
 	public static String generateInDepthRankings(ArrayList<Player> ps) {
 		String participantString = "";
 		int longestPlayerNameLength = 0;
@@ -280,12 +318,12 @@ public class Tournament {
 		assignTableNumbers(currentBattles);
 
 		while (currentBattles.size() > 0 && allParticipantsIn) {
-			roundString = ("-=-=-=-ROUND " + roundNumber + "/" + numberOfRounds + "-=-=-=-");
+			updateRoundString();
 			print("Enter a table number to report a score for the game.");
-			tntfm.saveTournament();
+			save();
 
 			try {
-				GUI.printCurrentBattles(currentBattles, roundString);
+				print(getCurrentBattles(currentBattles, roundString));
 				GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 
 				waitForUserInput();
@@ -297,7 +335,10 @@ public class Tournament {
 					Utils.showHelp();
 					break;
 				case "admintools":
-					adminTools();
+					print("Admin functions enabled.");
+					waitForUserInput();
+					String adminCommand = readInput();
+					adminTools(adminCommand);
 					break;
 				default:
 					int reportUpon = Integer.parseInt(input);
@@ -334,14 +375,19 @@ public class Tournament {
 				pollForResults();
 			}
 			GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
-			tntfm.saveTournament();
+			save();
 		}
+	}
+
+	private void updateRoundString() {
+		roundString = ("-=-=-=-ROUND " + roundNumber + "/" + numberOfRounds + "-=-=-=-");
 	}
 
 	public void refreshScreen() {
 		GUI.wipePane();
 		updateParticipantStats();
 		printRankings(generateInDepthRankings(players));
+		getCurrentBattles(currentBattles, roundString);
 		print();
 		print();
 	}
@@ -405,32 +451,9 @@ public class Tournament {
 		this.userSelection = userSelection;
 	}
 
-	public void adminTools() {
-		print("Admin functions enabled.");
-		waitForUserInput();
-		String adminCommand = readInput();
+	public void adminTools(String string) {
 
-		switch (adminCommand.toLowerCase()) {
-		case "elo":
-			setElo(toggle(elo));
-			if (getElo().equals("on")) {
-				print("ELO switched on");
-			} else {
-				print("ELO switched off");
-			}
-			break;
-		case "topcut":
-			print("Enter the number of players that constitutes a Top Cut for this tournament.\n");
-			print("(Must be less than the number of players.)\n");
-			print("Alternatively, enter '0' to remove the Top Cut.\n");
-			waitForUserInput();
-			int tC = Integer.parseInt(readInput());
-			if (tC < players.size()) {
-				setTopCut(tC);
-			} else {
-				print("Invalid - suggested top cut size is too large.");
-			}
-			break;
+		switch (string.toLowerCase()) {
 		case "matchesof":
 			print("Enter player whose game history you'd like to see.\n");
 			waitForUserInput();
@@ -441,16 +464,6 @@ public class Tournament {
 			break;
 		case "roundrobin":
 			generateRRpairings();
-			break;
-		case "sortelo":
-			setSortElo(toggle(getSortElo()));
-			GUI.wipePane();
-			if (getSortElo().equals("on")) {
-				print("Active battles ordered by ELO difference.");
-				GUI.printCurrentBattles(currentBattles, roundString);
-			} else {
-				print("Stopping sorting ongoing battles by ELO difference.");
-			}
 			break;
 		case "load":
 			print("Enter the file name to load.\n");
@@ -471,75 +484,10 @@ public class Tournament {
 				print("That file doesn't exist - check again.");
 			}
 			break;
-		case "matches":
-			print(getResultsOfAllMatchesSoFar());
-			break;
-		case "addround":
-			print("Enter the new number of desired rounds for the tournament.\n");
-			waitForUserInput();
-			int newNumOfRounds = Integer.parseInt(readInput());
-			if (newNumOfRounds < players.size() && newNumOfRounds >= logBase2(players.size())) {
-				setNumberOfRounds(newNumOfRounds);
-				print("Number of rounds updated to " + getNumberOfRounds() + ".");
-			} else {
-				print("Invalid number of rounds for a Swiss tournament.");
-				print("We need to have less rounds than the number of players, and at least logBase2(number of players).");
-			}
-			break;
-		case "drop":
-			print("Enter player name to drop.\n");
-			waitForUserInput();
-			dropPlayer(readInput());
-			break;
 		case "dropplayer":
 			print("Enter player name to drop.\n");
 			waitForUserInput();
 			dropPlayer(readInput());
-			break;
-		case "dropuser":
-			print("Enter player name to drop.\n");
-			waitForUserInput();
-			dropPlayer(readInput());
-			break;
-		case "editname":
-			print("Enter player whose name should be changed.\n");
-			waitForUserInput();
-			String renameMe = readInput();
-			print("Enter player's new name.\n");
-			waitForUserInput();
-			String newName = readInput();
-			renamePlayer(renameMe, newName);
-			break;
-		case "addbatch":
-			print("Enter a list of players, separated by commas.\n");
-			waitForUserInput();
-			String playersList = readInput();
-			addBatch(playersList);
-			break;
-		case "addplayer":
-			print("Enter a list of players, separated by commas.\n");
-			waitForUserInput();
-			String playerList = readInput();
-			addBatch(playerList);
-			break;
-		case "reopengame":
-			print("To reopen a game, first enter the name of one of the players in the game.\n");
-			print("(Case sensitive)\n");
-			waitForUserInput();
-			Player p1 = Utils.findPlayerByName(readInput(), players);
-			if (p1.getOpponentsList().size() == 0) {
-				print("That player hasn't played any games yet.\n");
-				break;
-			} else {
-				print("Reopen game with which opponent? \n");
-				for (int i = 1; i <= p1.getOpponentsList().size(); i++) {
-					print("" + i + ") " + p1.getOpponentsList().get(i - 1).getName());
-				}
-				waitForUserInput();
-				int reopenIndex = Integer.parseInt(readInput());
-				Player p2 = p1.getOpponentsList().get(reopenIndex - 1);
-				reopenBattle(p1, p2);
-			}
 			break;
 		case "killall -9":
 			currentBattles.clear();
@@ -720,6 +668,23 @@ public class Tournament {
 		}
 	}
 
+	public void alterTopCut(String newSize) throws NumberFormatException {
+		try {
+			int tC = Integer.parseInt(newSize);
+			if (tC < players.size()) {
+				setTopCut(tC);
+				Utils.print("Top Cut size set to " + tC + ".\n");
+			} else {
+				print("Invalid - suggested top cut size is too large.");
+				print("Size must be a less than the number of players.");
+			}
+		} catch (NumberFormatException e) {
+			print("Invalid input - top cut size must be a number.");
+			print("Size must be a less than the number of players.");
+			print("Alternatively, enter '0' to remove the Top Cut.\n");
+		}
+	}
+
 	public int size() {
 		return players.size();
 	}
@@ -736,7 +701,31 @@ public class Tournament {
 		return numberOfRounds;
 	}
 
-	public void reopenBattle(Player p1, Player p2) {
+	public static int getTopCutThreshold() {
+		return topCutThreshold;
+	}
+
+	public static void setTopCutThreshold(int topCutThreshold) {
+		Tournament.topCutThreshold = topCutThreshold;
+	}
+
+	public void alterRoundNumbers(String newMax) throws NumberFormatException {
+		try {
+			int newNumOfRounds = Integer.parseInt(newMax);
+			if (newNumOfRounds < players.size() && newNumOfRounds >= logBase2(players.size())) {
+				setNumberOfRounds(newNumOfRounds);
+				print("Number of rounds updated to " + getNumberOfRounds() + ".");
+				updateRoundString();
+			} else {
+				print("Invalid number of rounds for a Swiss tournament.");
+				print("We need to have less rounds than the number of players, and at least logBase2(number of players).");
+			}
+		} catch (NumberFormatException e) {
+			print("Illegal input - try submitting a number of rounds as a number.");
+		}
+	}
+
+	public Boolean reopenBattle(Player p1, Player p2) {
 		Boolean reopen = false;
 		for (Player p : p1.getOpponentsList()) {
 			if (p.equals(p2)) {
@@ -770,6 +759,7 @@ public class Tournament {
 			currentBattles.add(new Battle(p1, p2));
 		}
 		updateParticipantStats();
+		return reopen;
 	}
 
 	public String getResultsOfAllMatchesSoFar() {
@@ -924,9 +914,13 @@ public class Tournament {
 			}
 		}
 
-		tntfm.saveTournament();
+		save();
 		GUI.wipePane();
 		postTourneyProcessing();
+	}
+
+	void save() {
+		tntfm.saveTournament();
 	}
 
 	public void initialSeed(Player p1, Player p2) {

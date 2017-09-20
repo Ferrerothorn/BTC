@@ -19,7 +19,7 @@ public class JUnit {
 
 	public Tournament t = new Tournament();
 	public TntFileManager tntfm = new TntFileManager(t);
-	
+
 	@Before
 	public void setup() {
 		t.players.clear();
@@ -27,7 +27,7 @@ public class JUnit {
 		t.setAllParticipantsIn(true);
 		GUI gui = new GUI(t);
 	}
-	
+
 	@Test
 	public void testReloadingFreshTourneyDoesntAlterSize() throws IOException {
 		t.activeMetadataFile = "xD.tnt";
@@ -47,7 +47,7 @@ public class JUnit {
 		assertEquals(3, t.currentBattles.size());
 		assertEquals("on", t.getElo());
 		assertEquals("on", t.getSortElo());
-		
+
 	}
 
 	@Test
@@ -773,7 +773,7 @@ public class JUnit {
 		t.addBatch("p1,p2,p3,p4,p5,p6,p7,p8,p9,p0");
 		assertEquals(10, t.players.size());
 		Player p0 = Utils.findPlayerByName("p0", t.players);
-		t.players.remove(p0);		
+		t.players.remove(p0);
 		Player p1 = Utils.findPlayerByName("p1", t.players);
 		t.players.remove(p1);
 		t.initialSeed(p0, p1);
@@ -790,9 +790,9 @@ public class JUnit {
 	public void testDroppingPlayer_AddsBye_DroppingAnother_RemovesBye_NextRound() {
 		t.addBatch("p0,p1,p2,p3,p4,p5,p6,p7,p8,p9");
 		assertEquals(10, t.players.size());
-		
+
 		Player p0 = Utils.findPlayerByName("p0", t.players);
-		t.players.remove(p0);		
+		t.players.remove(p0);
 		Player p1 = Utils.findPlayerByName("p1", t.players);
 		t.players.remove(p1);
 		t.initialSeed(p0, p1);
@@ -803,7 +803,7 @@ public class JUnit {
 		t.dropPlayer("p1");
 		assertEquals(10, t.players.size());
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
-		
+
 		t.updateParticipantStats();
 		t.sortRankings();
 
@@ -1173,7 +1173,7 @@ public class JUnit {
 		t.addPlayer(p3);
 		assertEquals("P1,P2,P3", t.playerList());
 	}
-	
+
 	@Test
 	public void testReloadingTournamentDoesntAlterTournamentSize() {
 		t.activeMetadataFile = "test.tnt";
@@ -1191,7 +1191,7 @@ public class JUnit {
 		assertEquals(4, t.currentBattles.size());
 		assertEquals(8, t.players.size());
 	}
-	
+
 	public void testLoadingTournamentDoesntAlterTournamentSize() {
 		t = new Tournament();
 		try {
