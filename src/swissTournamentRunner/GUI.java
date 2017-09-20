@@ -227,10 +227,6 @@ public class GUI implements ActionListener {
 		textField = new JTextField(500);
 		textField.addActionListener(this);
 
-		// JPanel inputPanel = new JPanel();
-		// inputPanel.add(inputLabel, "shrink");
-		// inputPanel.add(textField, "grow");
-
 		JPanel inputArea = new JPanel();
 		inputArea.setLayout(new MigLayout());
 		inputArea.add(inputLabel);
@@ -239,8 +235,6 @@ public class GUI implements ActionListener {
 		frame.add(toolbar, "grow, wrap");
 		frame.add(new JScrollPane(pairingsBox), "grow, wrap");
 		frame.add(new JScrollPane(resultsBox), "grow");
-		// frame.add(inputLabel, "shrink, wrap");
-		// frame.add(textField, "grow");
 		frame.add(inputArea, "grow");
 	}
 
@@ -281,41 +275,6 @@ public class GUI implements ActionListener {
 	public static void wipePane() {
 		pairingsBox.setText("");
 		pairingsBox.setCaretPosition(pairingsBox.getDocument().getLength());
-	}
-
-	public static void printCurrentBattles(ArrayList<Battle> battles, String roundString) {
-		int longestPlayerNameLength = 0;
-		for (Battle b : battles) {
-			if (b.getP1().getName().length() > longestPlayerNameLength) {
-				longestPlayerNameLength = b.getP1().getName().length();
-			}
-			if (b.getP2().getName().length() > longestPlayerNameLength) {
-				longestPlayerNameLength = b.getP2().getName().length();
-			}
-		}
-
-		postString(roundString);
-
-		if (tourney.getSortElo().equals("on")) {
-			Collections.sort(tourney.currentBattles);
-		}
-
-		for (Battle b : battles) {
-			String battleString = "";
-			String playerOneString = b.getP1().getName() + " (" + b.getP1().getPositionInRankings()
-					+ ")                          ";
-			String playerTwoString = b.getP2().getName() + " (" + b.getP2().getPositionInRankings()
-					+ ")                          ";
-
-			battleString += Utils.rpad("Table " + b.getTableNumber() + ") ", 11);
-			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    ";
-			battleString += Utils.rpad(playerTwoString + "       ", longestPlayerNameLength + 8);
-			if (tourney.getElo().equals("on")) {
-				battleString += "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
-			}
-
-			postString(battleString);
-		}
 	}
 
 	public static void printRankings(String generateInDepthRankings) {
