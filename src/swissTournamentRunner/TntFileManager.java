@@ -43,7 +43,7 @@ public class TntFileManager {
 			if (t.isElimination) {
 				output += "elimination:" + t.x_elimination + "\n";
 			}
-			output += "topCut:" + t.topCutThreshold + "\n";
+			output += "topCut:" + t.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
 			output += "sortELO:" + t.getSortElo() + "\n";
 
