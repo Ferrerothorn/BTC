@@ -4,9 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collections;
-
 import javax.swing.*;
-
 import net.miginfocom.swing.MigLayout;
 
 public class GUI implements ActionListener {
@@ -25,11 +23,28 @@ public class GUI implements ActionListener {
 
 		JToolBar toolbar = new JToolBar("Admin Tools");
 
-		JButton addRoundButton = new JButton("Add Round");
+		JButton addRoundButton = new JButton("Edit # of Rounds");
 		addRoundButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				t.userSelection = "addRound";
-				t.adminTools();
+				if (t.currentBattles.size() > 0) {
+					JFrame addRoundBox = new JFrame("New Round Number");
+					addRoundBox.setSize(500, 100);
+					addRoundBox.setLayout(new GridLayout());
+					JTextField input = new JTextField("Enter new round number here.");
+					JButton addRoundButton = new JButton("Submit");
+					addRoundBox.add(input);
+					addRoundBox.add(addRoundButton);
+					addRoundBox.setVisible(true);
+					addRoundButton.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String newMax = input.getText();
+							t.alterRoundNumbers(newMax);
+							t.save();
+							addRoundBox.dispose();
+						}
+					});
+				}
 			}
 		});
 		toolbar.add(addRoundButton);
@@ -37,26 +52,166 @@ public class GUI implements ActionListener {
 		JButton eloButton = new JButton("ELO");
 		eloButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// JOptionPane.showMessageDialog(frame, "Calendar clicked");
+				if (t.currentBattles.size() > 0) {
+					t.elo = t.toggle(t.elo);
+					t.sortElo = t.toggle(t.sortElo);
+					pairingsBox.setCaretPosition(0);
+					pairingsBox.setText("ELO switched " + t.elo + ".\n");
+					postString(t.getCurrentBattles(t.currentBattles, Tournament.roundString));
+					t.save();
+				}
 			}
 		});
 		toolbar.add(eloButton);
 
-		JButton addPlayerButton = new JButton("Add Player(s)");
-		addPlayerButton.addActionListener(new ActionListener() {
+		JButton topCutButton = new JButton("Top Cut");
+		topCutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// JOptionPane.showMessageDialog(frame, "Calendar clicked");
+				if (t.currentBattles.size() > 0) {
+					JFrame topCutBox = new JFrame("New Top Cut Size");
+					topCutBox.setSize(500, 100);
+					topCutBox.setLayout(new GridLayout());
+					JTextField input = new JTextField("Enter desired Top Cut size here.");
+					JButton submitButton = new JButton("Submit");
+					topCutBox.add(input);
+					topCutBox.add(submitButton);
+					topCutBox.setVisible(true);
+					submitButton.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String newTCsize = input.getText();
+							t.alterTopCut(newTCsize);
+							t.save();
+							topCutBox.dispose();
+						}
+					});
+				}
 			}
 		});
-		toolbar.add(addPlayerButton);
+		toolbar.add(topCutButton);
 
-		JButton removePlayerButton = new JButton("Remove Player(s)");
-		removePlayerButton.addActionListener(new ActionListener() {
+		JButton matches = new JButton("All Matches");
+		matches.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// JOptionPane.showMessageDialog(frame, "Calendar clicked");
+				if (t.currentBattles.size() > 0) {
+					pairingsBox.setCaretPosition(0);
+					pairingsBox.setText(t.getResultsOfAllMatchesSoFar() + "\n");
+					postString(t.getCurrentBattles(t.currentBattles, Tournament.roundString));
+				}
 			}
 		});
-		toolbar.add(removePlayerButton);
+		toolbar.add(matches);
+
+		JButton addPlayersButton = new JButton("Add Players");
+		addPlayersButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+					JFrame addPlayersBox = new JFrame("Add Player(s)");
+					addPlayersBox.setSize(700, 400);
+					addPlayersBox.setLayout(new GridLayout());
+					JTextField input = new JTextField("Enter comma-separated player list here.");
+					JButton submitButton = new JButton("Submit");
+					addPlayersBox.add(input);
+					addPlayersBox.add(submitButton);
+					addPlayersBox.setVisible(true);
+					submitButton.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String newPlayers = input.getText();
+							t.addBatch(newPlayers);
+							t.save();
+							addPlayersBox.dispose();
+						}
+					});
+				}
+			}
+		});
+		toolbar.add(addPlayersButton);
+
+		JButton editNameButton = new JButton("Edit Name");
+		editNameButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+					JFrame nameEditor = new JFrame("Edit Name");
+					nameEditor.setSize(400, 100);
+					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
+					ArrayList<String> playerNames = new ArrayList<String>();
+					for (Player p : t.players) {
+						playerNames.add(p.getName());
+					}
+					Collections.sort(playerNames);
+					String[] ps = playerNames.toArray(new String[playerNames.size()]);
+					@SuppressWarnings({ "rawtypes", "unchecked" })
+					JComboBox players = new JComboBox(ps);
+					JTextField editedName = new JTextField("Enter new name here.");
+					JButton submitEditName = new JButton("Submit");
+					nameEditor.add(players, "span 3,wrap");
+					nameEditor.add(editedName, "span 2");
+					nameEditor.add(submitEditName);
+					nameEditor.setVisible(true);
+					submitEditName.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String oldName = players.getSelectedItem().toString();
+							String newName = editedName.getText();
+							t.renamePlayer(oldName, newName);
+							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+							resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
+							t.save();
+							nameEditor.dispose();
+						}
+					});
+				}
+			}
+		});
+		toolbar.add(editNameButton);
+
+		JButton reopenGameButton = new JButton("Reopen Game");
+		reopenGameButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+					JFrame nameEditor = new JFrame("Reopen Game");
+					nameEditor.setSize(400, 100);
+					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
+					ArrayList<String> playerNames = new ArrayList<String>();
+					for (Player p : t.players) {
+						playerNames.add(p.getName());
+					}
+					Collections.sort(playerNames);
+					String[] ps = playerNames.toArray(new String[playerNames.size()]);
+					JComboBox p1s = new JComboBox(ps);
+					JComboBox p2s = new JComboBox(ps);
+					JButton submitEditName = new JButton("Submit");
+					nameEditor.add(p1s, "span 2");
+					nameEditor.add(p2s, "span 2, wrap");
+					nameEditor.add(submitEditName);
+					nameEditor.setVisible(true);
+					submitEditName.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Player p1 = Utils.findPlayerByName(p1s.getSelectedItem().toString(), t.players);
+							Player p2 = Utils.findPlayerByName(p2s.getSelectedItem().toString(), t.players);
+							if (p1.getName().equals(p2.getName())) {
+								postString("A player can't possibly have played themself.\n");
+							} else {
+								Boolean reopened = t.reopenBattle(p1, p2);
+								if (reopened) {
+									pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+									resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
+									postString("Game between " + p1.getName() + " and  " + p2.getName() + " reopened.");
+								} else {
+									postString("Could not reopen game between " + p1.getName() + " and " + p2.getName()
+											+ ". Did it actually occur?");
+								}
+							}
+							t.save();
+							nameEditor.dispose();
+						}
+					});
+				}
+			}
+		});
+		toolbar.add(reopenGameButton);
 
 		pairingsBox = new JTextArea(20, 60);
 		pairingsBox.setEditable(false);
