@@ -406,7 +406,7 @@ public class Tournament {
 
 	public void waitForUserInput() {
 		while (userSelection == null && noClicks == true) {
-			String s = new String("");
+			System.out.println("");
 		}
 		if (userSelection.length() <= 0) {
 			userSelection = null;
@@ -464,25 +464,6 @@ public class Tournament {
 			break;
 		case "roundrobin":
 			generateRRpairings();
-			break;
-		case "load":
-			print("Enter the file name to load.\n");
-			waitForUserInput();
-			String fileName = readInput();
-			if (!fileName.contains(".tnt")) {
-				fileName += ".tnt";
-			}
-			File loadFrom = new File(fileName);
-			if (loadFrom.exists()) {
-				try {
-					TntFileManager.loadTournament(this, fileName);
-					refreshScreen();
-				} catch (IOException e) {
-					print("Error loading file.");
-				}
-			} else {
-				print("That file doesn't exist - check again.");
-			}
 			break;
 		case "dropplayer":
 			print("Enter player name to drop.\n");
