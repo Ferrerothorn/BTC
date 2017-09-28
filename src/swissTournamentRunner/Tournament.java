@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Tournament {
 
@@ -24,6 +27,8 @@ public class Tournament {
 	public int x_elimination = 99999;
 	public Boolean isElimination = false;
 	public String activeMetadataFile = "TournamentInProgress.tnt";
+	public static Logger logger = Logger.getLogger(Tournament.class.getName());
+	public static FileHandler fh;
 
 	public void signUpPlayers() {
 		if (activeMetadataFile.equals("TournamentInProgress.tnt")) {
@@ -49,10 +54,11 @@ public class Tournament {
 	}
 
 	public void addPlayer(String p1) {
-		if (containsPlayer("BYE")) {
+		logger.info("addPlayer: " + p1);
+		if (doesPlayerExist("BYE")) {
 			renamePlayer("BYE", p1);
 		}
-		if (!containsPlayer(p1)) {
+		if (!doesPlayerExist(p1)) {
 			if (p1.length() > 0) {
 				players.add(new Player(p1));
 			}
@@ -124,7 +130,8 @@ public class Tournament {
 		return battlesString;
 	}
 
-	public boolean containsPlayer(String string) {
+	public boolean doesPlayerExist(String string) {
+		logger.info("doesPlayerExist: " + string);
 		for (Player p : players) {
 			if (p.getName().equals(string)) {
 				return true;
@@ -174,11 +181,6 @@ public class Tournament {
 	}
 
 	public void generatePairings(int attempts) {
-
-		// If there are no active battles, that means we're between rounds, and
-		// need pairings.
-		// Otherwise, if there are active battles, check that nobody has a
-		// score. If not, it's because they were just initially seeded.
 		if (currentBattles.size() == 0 || activeGamesWereSeeded(currentBattles)) {
 
 			while (players.size() > 0 && attempts <= 100) {
@@ -264,6 +266,7 @@ public class Tournament {
 	}
 
 	public void pairThisGuyUp(Player p1, ArrayList<Battle> targetBattleList, int attempts) {
+		logger.info("pairThisGuyUp: " + p1.getName());
 		try {
 			boolean opponentFound = false;
 			int playerIndex = 0;
@@ -432,6 +435,7 @@ public class Tournament {
 	}
 
 	int logBase2(int x) {
+		logger.info("logBase2: " + x);
 		int base = (int) Math.ceil(Math.log(x) / Math.log(2));
 		if (base > 0) {
 			return (int) Math.ceil(Math.log(x) / Math.log(2));
@@ -452,7 +456,7 @@ public class Tournament {
 	}
 
 	public void adminTools(String string) {
-
+		logger.info("admintools: " + string);
 		switch (string.toLowerCase()) {
 		case "matchesof":
 			print("Enter player whose game history you'd like to see.\n");
@@ -497,6 +501,7 @@ public class Tournament {
 	}
 
 	private void printHistory(Player p) {
+		logger.info("printHistory: " + p.getName());
 		if (p.getOpponentsList().size() > 0) {
 			for (String s : p.getListOfNamesPlayed()) {
 				String output = p.getName() + " vs. " + s + " (";
@@ -514,6 +519,8 @@ public class Tournament {
 	}
 
 	private void generateRRpairings() {
+
+		logger.info("generateRRpairings");
 		currentBattles.clear();
 		for (Player p : players) {
 			p.getOpponentsList().clear();
@@ -533,6 +540,7 @@ public class Tournament {
 	}
 
 	private boolean noSuchPairing(ArrayList<Battle> battles, Player p, Player q) {
+		logger.info("noSuchPairing");
 		boolean doesntExist = true;
 		for (Battle b : battles) {
 			if ((b.getP1().equals(p) || b.getP2().equals(p)) && (b.getP1().equals(q) || b.getP2().equals(q))) {
@@ -547,13 +555,15 @@ public class Tournament {
 	}
 
 	public void addBatch(String playerList) {
+
+		logger.info("addBatch: " + playerList);
 		String[] names = playerList.split(",");
 		ArrayList<String> newPlayerNames = new ArrayList<>();
 		for (String s : names) {
 			newPlayerNames.add(s);
 		}
 
-		if (containsPlayer("BYE")) {
+		if (doesPlayerExist("BYE")) {
 			renamePlayer("BYE", newPlayerNames.remove(0));
 		}
 
@@ -567,6 +577,7 @@ public class Tournament {
 	}
 
 	public void renamePlayer(String renameMe, String newName) {
+		logger.info("renamePlayer: " + renameMe + " --> " + newName);
 		for (Player p : players) {
 			if (p.getName().equals(renameMe)) {
 				p.setName(newName);
@@ -585,7 +596,7 @@ public class Tournament {
 	}
 
 	public void dropPlayer(String nameToDrop) {
-
+		logger.info("dropPlayer: " + nameToDrop);
 		Boolean foundPlayerToDrop = false;
 		for (Battle b : currentBattles) {
 			if (b.getP1().getName().equals(nameToDrop) && b.getP2().getName().equals("BYE")) {
@@ -617,13 +628,13 @@ public class Tournament {
 			topCutThreshold = 0;
 		}
 
-		if (!nameToDrop.equals("BYE") && (players.size() % 2 == 1) && !containsPlayer("BYE")) {
+		if (!nameToDrop.equals("BYE") && (players.size() % 2 == 1) && !doesPlayerExist("BYE")) {
 			addPlayer("BYE");
 		} else if (!nameToDrop.equals("BYE")) {
 			dropPlayer("BYE");
 		}
 
-		if ((players.size() % 2 == 1) && containsPlayer("BYE")) {
+		if ((players.size() % 2 == 1) && doesPlayerExist("BYE")) {
 			Battle byeMatch = null;
 			for (Battle b : currentBattles) {
 				if (b.getP1().getName().equals("BYE")) {
@@ -650,6 +661,7 @@ public class Tournament {
 	}
 
 	public void alterTopCut(String newSize) throws NumberFormatException {
+		logger.info("alterTopCut: " + newSize);
 		try {
 			int tC = Integer.parseInt(newSize);
 			if (tC < players.size()) {
@@ -687,10 +699,12 @@ public class Tournament {
 	}
 
 	public static void setTopCutThreshold(int topCutThreshold) {
+		logger.info("setTopCutThreshold: " + topCutThreshold);
 		Tournament.topCutThreshold = topCutThreshold;
 	}
 
 	public void alterRoundNumbers(String newMax) throws NumberFormatException {
+		logger.info("alterRoundNubers: " + newMax);
 		try {
 			int newNumOfRounds = Integer.parseInt(newMax);
 			if (newNumOfRounds < players.size() && newNumOfRounds >= logBase2(players.size())) {
@@ -707,6 +721,7 @@ public class Tournament {
 	}
 
 	public Boolean reopenBattle(Player p1, Player p2) {
+		logger.info("reopenBattle: " + p1.getName() + "-" + p2.getName());
 		Boolean reopen = false;
 		for (Player p : p1.getOpponentsList()) {
 			if (p.equals(p2)) {
@@ -744,6 +759,8 @@ public class Tournament {
 	}
 
 	public String getResultsOfAllMatchesSoFar() {
+
+		logger.info("getResultsOfAllMatchesSoFar");
 		String results = "";
 		for (Player p : players) {
 			for (Player iBeat : p.getListOfVictories()) {
@@ -762,6 +779,7 @@ public class Tournament {
 	}
 
 	public void elimination() {
+		logger.info("elimination");
 		Eliminator elim = new Eliminator(players, this);
 		elim.eliminate();
 	}
@@ -771,6 +789,7 @@ public class Tournament {
 	}
 
 	public void reportBattleWinner(String text) {
+		logger.info("reportBattleWinner: " + text);
 		Player winner = Utils.findPlayerByName(text, players);
 		for (Battle b : currentBattles) {
 			if (b.contains(winner)) {
@@ -786,7 +805,7 @@ public class Tournament {
 	}
 
 	public String postTournamentAwards() throws IndexOutOfBoundsException {
-
+		logger.info("postTournamentAwards");
 		String output = "";
 		try {
 			Player p1 = fetchHardestFoughtPlayer();
@@ -802,6 +821,7 @@ public class Tournament {
 	}
 
 	private Player fetchHighestSTBPlayer() {
+		logger.info("fetchHighestSTBPlayer");
 		int highestSTB = 0;
 		Player topSTB = null;
 		for (Player p : players) {
@@ -814,6 +834,7 @@ public class Tournament {
 	}
 
 	private Player fetchHardestFoughtPlayer() {
+		logger.info("fetchHardestFoughtPlayer");
 		int highestOWR = 0;
 		Player hardest = null;
 		for (Player p : players) {
@@ -826,6 +847,7 @@ public class Tournament {
 	}
 
 	public String readInput() {
+		logger.info("readInput");
 		String uS = userSelection;
 		userSelection = null;
 		noClicks = true;
@@ -833,6 +855,7 @@ public class Tournament {
 	}
 
 	public String playerList() {
+		logger.info("playerList");
 		String names = "";
 		for (Player p : players) {
 			names += p.getName();
@@ -844,6 +867,7 @@ public class Tournament {
 	}
 
 	public void postTourneyProcessing() {
+		logger.info("postTourneyProcessing");
 		GUI.postString("FINAL STANDINGS");
 		updateParticipantStats();
 		GUI.postString(generateInDepthRankings(players));
@@ -874,6 +898,7 @@ public class Tournament {
 	}
 
 	public void run() {
+		logger.info("run");
 		while (roundNumber <= getNumberOfRounds() && players.size() > 1) {
 			Collections.shuffle(players);
 			GUI.wipePane();
@@ -901,10 +926,12 @@ public class Tournament {
 	}
 
 	void save() {
+		logger.info("save");
 		tntfm.saveTournament();
 	}
 
 	public void initialSeed(Player p1, Player p2) {
+		logger.info("initialSeed: " + p1.getName() + "-" + p2.getName());
 		Battle b = new Battle(p1, p2);
 		b.wasSeeded = true;
 		currentBattles.add(b);
@@ -924,5 +951,18 @@ public class Tournament {
 
 	public void setSortElo(String sortElo) {
 		this.sortElo = sortElo;
+	}
+
+	public void setUpLogger() {
+		try {
+			fh = new FileHandler("BTCLogFile.log");
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}  
+	    logger.addHandler(fh);
+	    SimpleFormatter formatter = new SimpleFormatter();  
+	    fh.setFormatter(formatter); 
 	}
 }
