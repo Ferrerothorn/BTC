@@ -18,7 +18,6 @@ public class Tournament {
 	private String userSelection = null;
 	public boolean noClicks = true;
 	public String elo = "off";
-	public String sortElo = "off";
 	boolean allParticipantsIn = false;
 	public static int topCutThreshold = 0;
 	public int numberOfRounds;
@@ -109,7 +108,7 @@ public class Tournament {
 			}
 		}
 
-		if (getSortElo().equals("on")) {
+		if (getElo().equals("on")) {
 			Collections.sort(currentBattles);
 		}
 
@@ -938,16 +937,8 @@ public class Tournament {
 		return elo;
 	}
 
-	public String getSortElo() {
-		return sortElo;
-	}
-
 	public void setElo(String elo) {
 		this.elo = elo;
-	}
-
-	public void setSortElo(String sortElo) {
-		this.sortElo = sortElo;
 	}
 
 	public void setUpLogger() {

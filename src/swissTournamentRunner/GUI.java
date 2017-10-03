@@ -54,7 +54,6 @@ public class GUI implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() > 0) {
 					t.elo = t.toggle(t.elo);
-					t.sortElo = t.toggle(t.sortElo);
 					pairingsBox.setCaretPosition(0);
 					pairingsBox.setText("ELO switched " + t.elo + ".\n");
 					postString(t.getCurrentBattles(t.currentBattles, Tournament.roundString));

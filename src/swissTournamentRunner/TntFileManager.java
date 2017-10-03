@@ -45,7 +45,6 @@ public class TntFileManager {
 			}
 			output += "topCut:" + t.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
-			output += "sortELO:" + t.getSortElo() + "\n";
 
 			try {
 				PrintWriter writer = new PrintWriter(file, "UTF-8");
@@ -125,11 +124,6 @@ public class TntFileManager {
 			case "elo":
 				if (propertyPair[1].equals("on")) {
 					t.setElo("on");
-				}
-				break;
-			case "sortelo":
-				if (propertyPair[1].equals("on")) {
-					t.setSortElo("on");
 				}
 				break;
 			default:
