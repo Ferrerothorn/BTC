@@ -102,12 +102,44 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(matches);
 
+		JButton matchesOfButton = new JButton("One Player's Matches");
+		matchesOfButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+					JFrame matchesOfButtonFrame = new JFrame("Return Player's Matches");
+					matchesOfButtonFrame.setSize(450, 150);
+					matchesOfButtonFrame.setLayout(new MigLayout("", "[grow,fill]"));
+					ArrayList<String> playerNames = new ArrayList<String>();
+					for (Player p : t.players) {
+						playerNames.add(p.getName());
+					}
+					Collections.sort(playerNames);
+					String[] ps = playerNames.toArray(new String[playerNames.size()]);
+					@SuppressWarnings({ "rawtypes", "unchecked" })
+					JComboBox players = new JComboBox(ps);
+					JButton submitGetMatches = new JButton("Submit");
+					matchesOfButtonFrame.add(players, "span 3,wrap");
+					matchesOfButtonFrame.add(submitGetMatches);
+					matchesOfButtonFrame.setVisible(true);
+					submitGetMatches.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String selected = players.getSelectedItem().toString();
+							t.printHistory(Utils.findPlayerByName(selected, t.players));
+							t.save();
+						}
+					});
+				}
+			}
+		});
+		toolbar.add(matchesOfButton);
+
 		JButton addPlayersButton = new JButton("Add Players");
 		addPlayersButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() > 0) {
 					JFrame addPlayersBox = new JFrame("Add Player(s)");
-					addPlayersBox.setSize(700, 400);
+					addPlayersBox.setSize(450, 150);
 					addPlayersBox.setLayout(new GridLayout());
 					JTextField input = new JTextField("Enter comma-separated player list here.");
 					JButton submitButton = new JButton("Submit");
@@ -128,12 +160,38 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(addPlayersButton);
 
+		JButton dropPlayersButton = new JButton("Drop Player(s)");
+		dropPlayersButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+					JFrame dropPlayersBox = new JFrame("Drop Player(s)");
+					dropPlayersBox.setSize(450, 150);
+					dropPlayersBox.setLayout(new GridLayout());
+					JTextField input = new JTextField("Enter comma-separated player list of players to drop.");
+					JButton dropSubmitButton = new JButton("Submit");
+					dropPlayersBox.add(input);
+					dropPlayersBox.add(dropSubmitButton);
+					dropPlayersBox.setVisible(true);
+					dropSubmitButton.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String newPlayers = input.getText();
+							t.dropPlayer(newPlayers);
+							t.save();
+							dropPlayersBox.dispose();
+						}
+					});
+				}
+			}
+		});
+		toolbar.add(dropPlayersButton);
+
 		JButton editNameButton = new JButton("Edit Name");
 		editNameButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() > 0) {
 					JFrame nameEditor = new JFrame("Edit Name");
-					nameEditor.setSize(400, 100);
+					nameEditor.setSize(450, 150);
 					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
 					for (Player p : t.players) {
@@ -145,10 +203,10 @@ public class GUI implements ActionListener {
 					JComboBox players = new JComboBox(ps);
 					JTextField editedName = new JTextField("Enter new name here.");
 					JButton submitEditName = new JButton("Submit");
-					players.addActionListener(new ActionListener () {
-					    public void actionPerformed(ActionEvent e) {
-					    	editedName.setText(players.getSelectedItem().toString());
-					    }
+					players.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							editedName.setText(players.getSelectedItem().toString());
+						}
 					});
 					nameEditor.add(players, "span 3,wrap");
 					nameEditor.add(editedName, "span 2");
@@ -176,7 +234,7 @@ public class GUI implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() > 0) {
 					JFrame nameEditor = new JFrame("Reopen Game");
-					nameEditor.setSize(400, 100);
+					nameEditor.setSize(450, 150);
 					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
 					for (Player p : t.players) {
