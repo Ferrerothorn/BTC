@@ -323,7 +323,6 @@ public class Tournament {
 		while (currentBattles.size() > 0 && allParticipantsIn) {
 			updateRoundString();
 			print("Enter a table number to report a score for the game.");
-			save();
 
 			try {
 				print(getCurrentBattles(currentBattles, roundString));
@@ -346,6 +345,8 @@ public class Tournament {
 				default:
 					int reportUpon = Integer.parseInt(input);
 					Battle b = fetchBattle(reportUpon, currentBattles);
+
+					logger.info("Reporting result of: " + b.getP1().getName() + " vs " + b.getP2().getName() + ".");
 					currentBattles.remove(b);
 
 					print("And who won in " + b.getP1().getName() + " vs. " + b.getP2().getName() + "?");
@@ -408,6 +409,7 @@ public class Tournament {
 	}
 
 	public void waitForUserInput() {
+		logger.info("Waiting for input.");
 		while (userSelection == null && noClicks == true) {
 			System.out.println("");
 		}
@@ -456,23 +458,9 @@ public class Tournament {
 	}
 
 	public void adminTools(String string) {
-		logger.info("admintools: " + string);
 		switch (string.toLowerCase()) {
-		case "matchesof":
-			print("Enter player whose game history you'd like to see.\n");
-			waitForUserInput();
-			String showHistory = readInput();
-			Player p = Utils.findPlayerByName(showHistory, players);
-			printHistory(p);
-			GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
-			break;
 		case "roundrobin":
 			generateRRpairings();
-			break;
-		case "dropplayer":
-			print("Enter player name to drop.\n");
-			waitForUserInput();
-			dropPlayer(readInput());
 			break;
 		case "killall -9":
 			currentBattles.clear();
@@ -489,7 +477,6 @@ public class Tournament {
 			print("Invalid admin command. Returning to tournament...\n");
 			break;
 		}
-
 		GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 	}
 
@@ -500,7 +487,7 @@ public class Tournament {
 		return "on";
 	}
 
-	private void printHistory(Player p) {
+	void printHistory(Player p) {
 		logger.info("printHistory: " + p.getName());
 		if (p.getOpponentsList().size() > 0) {
 			for (String s : p.getListOfNamesPlayed()) {
@@ -516,6 +503,7 @@ public class Tournament {
 		} else {
 			print("No games involving " + p.getName() + " have been reported yet.");
 		}
+		GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 	}
 
 	private void generateRRpairings() {
@@ -597,65 +585,74 @@ public class Tournament {
 
 	public void dropPlayer(String nameToDrop) {
 		logger.info("dropPlayer: " + nameToDrop);
-		Boolean foundPlayerToDrop = false;
-		for (Battle b : currentBattles) {
-			if (b.getP1().getName().equals(nameToDrop) && b.getP2().getName().equals("BYE")) {
-				currentBattles.remove(b);
-				players.remove(b.getP1());
-				players.remove(b.getP2());
-				foundPlayerToDrop = true;
-				break;
-			} else if (b.getP2().getName().equals(nameToDrop) && b.getP1().getName().equals("BYE")) {
-				currentBattles.remove(b);
-				players.remove(b.getP1());
-				players.remove(b.getP2());
-				foundPlayerToDrop = true;
-				break;
-			} else if (b.getP2().getName().equals(nameToDrop) || b.getP1().getName().equals(nameToDrop)) {
-				foundPlayerToDrop = true;
-				print("You can't drop a player while that player's in a non-Bye battle.");
-				break;
+
+		if (nameToDrop.contains(",")) {
+			String[] namesToDrop = nameToDrop.split(",");
+			for (String s : namesToDrop) {
+				dropPlayer(Utils.trimWhitespace(s));
 			}
-		}
-		if (!foundPlayerToDrop) {
-			Player toDrop = Utils.findPlayerByName(nameToDrop, players);
-			if (toDrop != null) {
-				players.remove(toDrop);
-			}
-		}
+		} else {
 
-		if (topCutThreshold >= players.size()) {
-			topCutThreshold = 0;
-		}
-
-		if (!nameToDrop.equals("BYE") && (players.size() % 2 == 1) && !doesPlayerExist("BYE")) {
-			addPlayer("BYE");
-		} else if (!nameToDrop.equals("BYE")) {
-			dropPlayer("BYE");
-		}
-
-		if ((players.size() % 2 == 1) && doesPlayerExist("BYE")) {
-			Battle byeMatch = null;
+			Boolean foundPlayerToDrop = false;
 			for (Battle b : currentBattles) {
-				if (b.getP1().getName().equals("BYE")) {
-					byeMatch = b;
-					b.getP2().beats(b.getP1());
-					b = null;
-				} else if (b.getP2().getName().equals("BYE")) {
-					byeMatch = b;
-					b.getP1().beats(b.getP2());
-					b = null;
+				if (b.getP1().getName().equals(nameToDrop) && b.getP2().getName().equals("BYE")) {
+					currentBattles.remove(b);
+					players.remove(b.getP1());
+					players.remove(b.getP2());
+					foundPlayerToDrop = true;
+					break;
+				} else if (b.getP2().getName().equals(nameToDrop) && b.getP1().getName().equals("BYE")) {
+					currentBattles.remove(b);
+					players.remove(b.getP1());
+					players.remove(b.getP2());
+					foundPlayerToDrop = true;
+					break;
+				} else if (b.getP2().getName().equals(nameToDrop) || b.getP1().getName().equals(nameToDrop)) {
+					foundPlayerToDrop = true;
+					print("You can't drop a player while that player's in a non-Bye battle.");
+					break;
 				}
 			}
-			if (byeMatch != null) {
-				currentBattles.remove(byeMatch);
+			if (!foundPlayerToDrop) {
+				Player toDrop = Utils.findPlayerByName(nameToDrop, players);
+				if (toDrop != null) {
+					players.remove(toDrop);
+				}
 			}
-			dropPlayer("BYE");
-		}
 
-		if (!isElimination) {
-			while (numberOfRounds > players.size()) {
-				numberOfRounds--;
+			if (topCutThreshold >= players.size()) {
+				topCutThreshold = 0;
+			}
+
+			if (!nameToDrop.equals("BYE") && (players.size() % 2 == 1) && !doesPlayerExist("BYE")) {
+				addPlayer("BYE");
+			} else if (!nameToDrop.equals("BYE")) {
+				dropPlayer("BYE");
+			}
+
+			if ((players.size() % 2 == 1) && doesPlayerExist("BYE")) {
+				Battle byeMatch = null;
+				for (Battle b : currentBattles) {
+					if (b.getP1().getName().equals("BYE")) {
+						byeMatch = b;
+						b.getP2().beats(b.getP1());
+						b = null;
+					} else if (b.getP2().getName().equals("BYE")) {
+						byeMatch = b;
+						b.getP1().beats(b.getP2());
+						b = null;
+					}
+				}
+				if (byeMatch != null) {
+					currentBattles.remove(byeMatch);
+				}
+				dropPlayer("BYE");
+			}
+
+			if (!isElimination) {
+				while (numberOfRounds > players.size()) {
+					numberOfRounds--;
+				}
 			}
 		}
 	}
@@ -960,9 +957,9 @@ public class Tournament {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}  
-	    logger.addHandler(fh);
-	    SimpleFormatter formatter = new SimpleFormatter();  
-	    fh.setFormatter(formatter); 
+		}
+		logger.addHandler(fh);
+		SimpleFormatter formatter = new SimpleFormatter();
+		fh.setFormatter(formatter);
 	}
 }
