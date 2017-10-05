@@ -11,9 +11,10 @@ public class PlayerCreator {
 	public void capturePlayers() {
 		GUI.wipePane();
 		while (!t.allParticipantsIn) {
-			t.print("Enter the name of the next participant, or enter 'no' if done. ");
+			t.print("Enter the name of the next participant. ");
 			t.print("You can enter 'help' mid-tournament to access the user manual.");
-			t.print("While registering players, enter 'drop' to remove a player before we begin, or enter 'seed' to begin the tournament while choosing [some] Round 1 pairings.");
+			t.print("While registering players, enter 'drop' to remove a player before we begin.");
+			t.print("When satisfied, hit the [START] button to seed initial pairings and start round 1.");
 			t.print("Current Participants: " + (t.players.size() + (t.currentBattles.size() * 2))
 					+ "  Rounds required: " + t.logBase2(t.players.size()));
 			t.print("");
@@ -48,7 +49,6 @@ public class PlayerCreator {
 					break;
 				}
 			case "no":
-				t.allParticipantsIn = true;
 				break;
 			case "seed":
 				t.print("Pick Player 1 for an initial pairing. (Numbers shown below)");

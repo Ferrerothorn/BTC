@@ -275,6 +275,61 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(reopenGameButton);
 
+		JButton initialSeed = new JButton("START");
+		initialSeed.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() == 0) {
+					JFrame seedPanel = new JFrame("Initial Seed");
+					seedPanel.setSize(450, 150);
+					seedPanel.setLayout(new MigLayout("", "[grow,fill]"));
+					ArrayList<String> playerNames = new ArrayList<String>();
+					for (Player p : t.players) {
+						playerNames.add(p.getName());
+					}
+					Collections.sort(playerNames);
+					String[] ps = playerNames.toArray(new String[playerNames.size()]);
+					JComboBox seed1 = new JComboBox(ps);
+					JComboBox seed2 = new JComboBox(ps);
+					JButton submitPair = new JButton("Seed Pairing");
+					JButton start = new JButton("Start Tournament");
+					seedPanel.add(seed1);
+					seedPanel.add(seed2, "wrap");
+					seedPanel.add(submitPair);
+					seedPanel.add(start);
+					seedPanel.setVisible(true);
+					submitPair.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String n1 = seed1.getSelectedItem().toString();
+							String n2 = seed2.getSelectedItem().toString();
+							if (!n1.equals(n2)) {
+								Player p1 = Utils.findPlayerByName(n1, t.players);
+								Player p2 = Utils.findPlayerByName(n2, t.players);
+								t.players.remove(p1);
+								t.players.remove(p2);
+								t.initialSeed(p1, p2);
+								seed1.removeItem(p1.getName());
+								seed1.removeItem(p2.getName());
+								seed2.removeItem(p1.getName());
+								seed2.removeItem(p2.getName());
+								t.postListOfConfirmedSignups();
+							}
+						}
+					});
+					start.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent arg0) {
+							t.setUserSelection("no");
+							seedPanel.dispose();
+							toolbar.remove(initialSeed);
+							toolbar.repaint();
+						}
+					});
+				}
+			}
+		});
+		toolbar.add(initialSeed);
+
 		pairingsBox = new JTextArea(20, 60);
 		pairingsBox.setEditable(false);
 		pairingsBox.setLineWrap(true);

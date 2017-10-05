@@ -908,6 +908,7 @@ public class Tournament {
 			generatePairings(0);
 			sortRankings();
 			GUI.postResultsString(generateInDepthRankings(players));
+			GUI.pairingsBox.setCaretPosition(0);
 			pollForResults();
 			if (isElimination) {
 				elimination();
