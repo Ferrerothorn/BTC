@@ -34,6 +34,7 @@ public class Tournament {
 			print("Enter the name of this tournament.");
 			waitForUserInput();
 			activeMetadataFile = readInput();
+			gui.frame.setTitle(activeMetadataFile);
 			if (!activeMetadataFile.contains(".tnt")) {
 				activeMetadataFile += ".tnt";
 			}
