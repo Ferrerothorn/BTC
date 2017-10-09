@@ -122,7 +122,7 @@ public class Utils {
 				return p;
 			}
 		}
-		return new Player(s);
+		return null;
 	}
 
 	public static void print() {
