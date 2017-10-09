@@ -1199,14 +1199,4 @@ public class JUnit {
 		assertEquals(4, t.currentBattles.size());
 		assertEquals(8, t.players.size());
 	}
-
-	@Test
-	public void testCapturePlayers() {
-		t.setAllParticipantsIn(false);
-		t.addPlayer("p1");
-		PlayerCreator pc = new PlayerCreator(t);
-		t.setUserSelection("no");
-		pc.capturePlayers();
-		assertEquals(2, t.players.size());
-	}
 }
