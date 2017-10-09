@@ -903,8 +903,8 @@ public class Tournament {
 			if (roundNumber == 1) {
 				shufflePlayers();
 			}
-
 			generatePairings(0);
+			save();
 			sortRankings();
 			GUI.postResultsString(generateInDepthRankings(players));
 			GUI.pairingsBox.setCaretPosition(0);
