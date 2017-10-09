@@ -54,7 +54,7 @@ public class Tournament {
 
 	public void addPlayer(String p1) {
 		logger.info("addPlayer: " + p1);
-		if (doesPlayerExist("BYE")) {
+		if (doesPlayerExist("BYE") && !doesPlayerExist(p1)) {
 			renamePlayer("BYE", p1);
 		}
 		if (!doesPlayerExist(p1)) {
@@ -132,18 +132,9 @@ public class Tournament {
 
 	public boolean doesPlayerExist(String string) {
 		logger.info("doesPlayerExist: " + string);
-		for (Player p : players) {
-			if (p.getName().equals(string)) {
-				return true;
-			}
-		}
-		for (Battle b : currentBattles) {
-			if (b.getP1().getName().equals(string)) {
-				return true;
-			}
-			if (b.getP2().getName().equals(string)) {
-				return true;
-			}
+		Player p = Utils.findPlayerByName(string, players);
+		if (p != null) {
+			return true;
 		}
 		return false;
 	}
@@ -543,18 +534,12 @@ public class Tournament {
 	}
 
 	public void addBatch(String playerList) {
-
 		logger.info("addBatch: " + playerList);
 		String[] names = playerList.split(",");
 		ArrayList<String> newPlayerNames = new ArrayList<>();
 		for (String s : names) {
 			newPlayerNames.add(s);
 		}
-
-		if (doesPlayerExist("BYE")) {
-			renamePlayer("BYE", newPlayerNames.remove(0));
-		}
-
 		for (String s : newPlayerNames) {
 			addPlayer(Utils.trimWhitespace(s));
 			postListOfConfirmedSignups();
