@@ -15,13 +15,15 @@ public class GUI implements ActionListener {
 	public static JTextArea pairingsBox;
 	public static JTextArea resultsBox;
 	public static JFrame frame = new JFrame("BTC");
+	public JToolBar toolbar;
+	public JButton startButton;
 
 	public GUI(Tournament t) {
 		tourney = t;
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setLayout(new MigLayout("wrap ", "[grow,fill]"));
 
-		JToolBar toolbar = new JToolBar("Admin Tools");
+		toolbar = new JToolBar("Admin Tools");
 
 		JButton addRoundButton = new JButton("Edit # of Rounds");
 		addRoundButton.addActionListener(new ActionListener() {
@@ -275,8 +277,8 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(reopenGameButton);
 
-		JButton initialSeed = new JButton("START");
-		initialSeed.addActionListener(new ActionListener() {
+		startButton = new JButton("START");
+		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() == 0) {
 					JFrame seedPanel = new JFrame("Initial Seed");
@@ -319,16 +321,17 @@ public class GUI implements ActionListener {
 					start.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent arg0) {
+							t.allParticipantsIn = true;
 							t.setUserSelection("no");
 							seedPanel.dispose();
-							toolbar.remove(initialSeed);
+							toolbar.remove(startButton);
 							toolbar.repaint();
 						}
 					});
 				}
 			}
 		});
-		toolbar.add(initialSeed);
+		toolbar.add(startButton);
 
 		pairingsBox = new JTextArea(20, 60);
 		pairingsBox.setEditable(false);
