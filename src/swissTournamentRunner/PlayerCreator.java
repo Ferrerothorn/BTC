@@ -11,12 +11,16 @@ public class PlayerCreator {
 	public void capturePlayers() {
 		GUI.wipePane();
 		while (!t.allParticipantsIn) {
+			int playerNumbers = (t.players.size() + (t.currentBattles.size() * 2));
+			if (Utils.findPlayerByName("BYE", t.players) != null) {
+				playerNumbers--;
+			}
+
 			t.print("Enter the name of the next participant. ");
 			t.print("You can enter 'help' mid-tournament to access the user manual.");
 			t.print("While registering players, enter 'drop' to remove a player before we begin.");
 			t.print("When satisfied, hit the [START] button to seed initial pairings and start round 1.");
-			t.print("Current Participants: " + (t.players.size() + (t.currentBattles.size() * 2))
-					+ "  Rounds required: " + t.logBase2(t.players.size()));
+			t.print("Current Participants: " + playerNumbers + "  Rounds required: " + t.logBase2(t.players.size()));
 			t.print("");
 			t.waitForUserInput();
 			String input = t.readInput();
