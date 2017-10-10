@@ -287,7 +287,8 @@ public class GUI implements ActionListener {
 					seedPanel.addWindowListener(new WindowAdapter() {
 						@Override
 						public void windowClosing(WindowEvent e) {
-							t.currentBattles.clear();
+							t.disseminateBattles(t.currentBattles);
+							t.postListOfConfirmedSignups();
 						}
 					});
 					ArrayList<String> playerNames = new ArrayList<String>();
