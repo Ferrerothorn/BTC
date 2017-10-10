@@ -314,7 +314,11 @@ public class GUI implements ActionListener {
 							if (!n1.equals(n2)) {
 								Player p1 = Utils.findPlayerByName(n1, t.players);
 								Player p2 = Utils.findPlayerByName(n2, t.players);
-								t.currentBattles.add(new Battle(p1, p2));
+								t.players.remove(p1);
+								t.players.remove(p2);
+								Battle b = new Battle(p1, p2);
+								b.wasSeeded = true;
+								t.currentBattles.add(b);
 								seed1.removeItem(p1.getName());
 								seed1.removeItem(p2.getName());
 								seed2.removeItem(p1.getName());
@@ -352,6 +356,7 @@ public class GUI implements ActionListener {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							Utils.reportWinnerByName(p1Button.getText(), t.currentBattles);
+							t.setUserSelection("P1 Wins");
 							t.updateParticipantStats();
 							t.sortRankings();
 							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
@@ -359,6 +364,7 @@ public class GUI implements ActionListener {
 							pairingsPanel.remove(p1Button);
 							pairingsPanel.remove(vs);
 							pairingsPanel.remove(p2Button);
+							pairingsPanel.revalidate();
 							pairingsPanel.repaint();
 							t.save();
 						}
@@ -367,6 +373,7 @@ public class GUI implements ActionListener {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							Utils.reportWinnerByName(p2Button.getText(), t.currentBattles);
+							t.setUserSelection("P2 Wins");
 							t.updateParticipantStats();
 							t.sortRankings();
 							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
@@ -374,6 +381,7 @@ public class GUI implements ActionListener {
 							pairingsPanel.remove(p1Button);
 							pairingsPanel.remove(vs);
 							pairingsPanel.remove(p2Button);
+							pairingsPanel.revalidate();
 							pairingsPanel.repaint();
 							t.save();
 						}
@@ -458,4 +466,5 @@ public class GUI implements ActionListener {
 	public void refresh() {
 		frame.repaint();
 	}
+	
 }
