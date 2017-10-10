@@ -284,6 +284,12 @@ public class GUI implements ActionListener {
 					JFrame seedPanel = new JFrame("Initial Seed");
 					seedPanel.setSize(450, 150);
 					seedPanel.setLayout(new MigLayout("", "[grow,fill]"));
+					seedPanel.addWindowListener(new WindowAdapter() {
+						@Override
+						public void windowClosing(WindowEvent e) {
+							t.currentBattles.clear();
+						}
+					});
 					ArrayList<String> playerNames = new ArrayList<String>();
 					for (Player p : t.players) {
 						playerNames.add(p.getName());
