@@ -69,7 +69,7 @@ public class Tournament {
 		if (!allParticipantsIn) {
 			postListOfConfirmedSignups();
 		}
-		addBye();
+		//TODO addBye();
 	}
 
 	public void postListOfConfirmedSignups() {
@@ -541,7 +541,7 @@ public class Tournament {
 			addPlayer(Utils.trimWhitespace(s));
 			postListOfConfirmedSignups();
 		}
-		addBye();
+		//TODO addBye();
 	}
 
 	public void renamePlayer(String renameMe, String newName) {
