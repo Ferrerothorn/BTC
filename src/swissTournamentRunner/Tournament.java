@@ -324,10 +324,6 @@ public class Tournament {
 				String input = readInput();
 
 				switch (input) {
-
-				case "help":
-					Utils.showHelp();
-					break;
 				case "admintools":
 					print("Admin functions enabled.");
 					waitForUserInput();

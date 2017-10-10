@@ -17,9 +17,8 @@ public class PlayerCreator {
 			}
 
 			t.print("Enter the name of the next participant. ");
-			t.print("You can enter 'help' mid-tournament to access the user manual.");
 			t.print("While registering players, enter 'drop' to remove a player before we begin.");
-			t.print("When satisfied, hit the [START] button to seed initial pairings and start round 1.");
+			t.print("When satisfied, hit the [START] button to seed initial pairings and/or start round 1.");
 			t.print("Current Participants: " + playerNumbers + "  Rounds required: " + t.logBase2(t.players.size()));
 			t.print("");
 			t.waitForUserInput();
@@ -32,9 +31,6 @@ public class PlayerCreator {
 	public void processPlayerName(String input) throws NumberFormatException {
 		try {
 			switch (input.toLowerCase()) {
-			case "help":
-				Utils.showHelp();
-				break;
 			case "drop":
 				t.print("Enter the player number (shown below) or comma-separated list of numbers of the player(s) you'd like to remove.");
 				t.waitForUserInput();
