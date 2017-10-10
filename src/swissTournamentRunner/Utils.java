@@ -64,4 +64,19 @@ public class Utils {
 				+ "                                                                                                                          ")
 						.substring(0, finalLength);
 	}
+
+	public static void reportWinnerByName(String text, ArrayList<Battle> currentBattles) {
+		for (Battle b : currentBattles) {
+			if (b.getP1().getName().equals(text)) {
+				handleBattleWinner(b, "1");
+				currentBattles.remove(b);
+				break;
+			}
+			if (b.getP2().getName().equals(text)) {
+				handleBattleWinner(b, "2");
+				currentBattles.remove(b);
+				break;
+			}
+		}
+	}
 }
