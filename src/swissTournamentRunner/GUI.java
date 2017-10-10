@@ -337,6 +337,55 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(startButton);
 
+		JButton reportResults = new JButton("Report Results");
+		reportResults.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFrame pairingsPanel = new JFrame("Report Results");
+				pairingsPanel.setSize(700, 500);
+				pairingsPanel.setLayout(new MigLayout("fill,wrap 3"));
+				for (Battle b : t.currentBattles) {
+					JButton p1Button = new JButton(b.getP1().getName());
+					JLabel vs = new JLabel("vs.");
+					JButton p2Button = new JButton(b.getP2().getName());
+					p1Button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Utils.reportWinnerByName(p1Button.getText(), t.currentBattles);
+							t.updateParticipantStats();
+							t.sortRankings();
+							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+							resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
+							pairingsPanel.remove(p1Button);
+							pairingsPanel.remove(vs);
+							pairingsPanel.remove(p2Button);
+							pairingsPanel.repaint();
+							t.save();
+						}
+					});
+					p2Button.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							Utils.reportWinnerByName(p2Button.getText(), t.currentBattles);
+							t.updateParticipantStats();
+							t.sortRankings();
+							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+							resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
+							pairingsPanel.remove(p1Button);
+							pairingsPanel.remove(vs);
+							pairingsPanel.remove(p2Button);
+							pairingsPanel.repaint();
+							t.save();
+						}
+					});
+					pairingsPanel.add(p1Button, "growx, gapright 100");
+					pairingsPanel.add(vs);
+					pairingsPanel.add(p2Button, "growx, gapleft 100");
+				}
+				pairingsPanel.setVisible(true);
+			}
+		});
+		toolbar.add(reportResults);
+
 		pairingsBox = new JTextArea(20, 60);
 		pairingsBox.setEditable(false);
 		pairingsBox.setLineWrap(true);
@@ -403,5 +452,9 @@ public class GUI implements ActionListener {
 
 	public static void printRankings(String generateInDepthRankings) {
 		postResultsString(generateInDepthRankings);
+	}
+
+	public void refresh() {
+		frame.repaint();
 	}
 }
