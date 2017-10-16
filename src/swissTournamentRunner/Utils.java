@@ -2,6 +2,10 @@ package swissTournamentRunner;
 
 import java.util.ArrayList;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import java.awt.Component;
+
 public class Utils {
 
 	public static void autocompleteRound(ArrayList<Battle> battles) {
@@ -78,5 +82,9 @@ public class Utils {
 				break;
 			}
 		}
+	}
+
+	public static String eloBuilder(Battle b) {
+		return "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
 	}
 }

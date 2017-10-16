@@ -17,6 +17,8 @@ public class GUI implements ActionListener {
 	public static JFrame frame = new JFrame("BTC");
 	public JToolBar toolbar;
 	public JButton startButton;
+	public JFrame seedPanel;
+	public JButton reportResults;
 
 	public GUI(Tournament t) {
 		tourney = t;
@@ -219,7 +221,8 @@ public class GUI implements ActionListener {
 							String oldName = players.getSelectedItem().toString();
 							String newName = editedName.getText();
 							tourney.renamePlayer(oldName, newName);
-							pairingsBox.setText(tourney.getCurrentBattles(tourney.currentBattles, tourney.roundString) + "\n");
+							pairingsBox.setText(
+									tourney.getCurrentBattles(tourney.currentBattles, tourney.roundString) + "\n");
 							resultsBox.setText(tourney.generateInDepthRankings(tourney.players) + "\n");
 							tourney.save();
 							nameEditor.dispose();
@@ -260,7 +263,9 @@ public class GUI implements ActionListener {
 							} else {
 								Boolean reopened = tourney.reopenBattle(p1, p2);
 								if (reopened) {
-									pairingsBox.setText(tourney.getCurrentBattles(tourney.currentBattles, tourney.roundString) + "\n");
+									pairingsBox.setText(
+											tourney.getCurrentBattles(tourney.currentBattles, tourney.roundString)
+													+ "\n");
 									resultsBox.setText(tourney.generateInDepthRankings(tourney.players) + "\n");
 									postString("Game between " + p1.getName() + " and  " + p2.getName() + " reopened.");
 								} else {
@@ -281,7 +286,7 @@ public class GUI implements ActionListener {
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (tourney.currentBattles.size() == 0) {
-					JFrame seedPanel = new JFrame("Initial Seed");
+					seedPanel = new JFrame("Initial Seed");
 					seedPanel.setSize(450, 150);
 					seedPanel.setLayout(new MigLayout("", "[grow,fill]"));
 					seedPanel.addWindowListener(new WindowAdapter() {
@@ -342,57 +347,79 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(startButton);
 
-		JButton reportResults = new JButton("Report Results");
+		reportResults = new JButton("Report Results");
 		reportResults.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFrame pairingsPanel = new JFrame("Report Results");
-				pairingsPanel.setSize(700, 500);
-				pairingsPanel.setLayout(new MigLayout("fill,wrap 3"));
-				for (Battle b : t.currentBattles) {
-					JButton p1Button = new JButton(b.getP1().getName());
-					JLabel vs = new JLabel("vs.");
-					JButton p2Button = new JButton(b.getP2().getName());
-					p1Button.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							Utils.reportWinnerByName(p1Button.getText(), t.currentBattles);
-							t.setUserSelection("P1 Wins");
-							t.updateParticipantStats();
-							t.sortRankings();
-							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-							resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
-							pairingsPanel.remove(p1Button);
-							pairingsPanel.remove(vs);
-							pairingsPanel.remove(p2Button);
-							pairingsPanel.revalidate();
-							pairingsPanel.repaint();
-							t.save();
-						}
-					});
-					p2Button.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							Utils.reportWinnerByName(p2Button.getText(), t.currentBattles);
-							t.setUserSelection("P2 Wins");
-							t.updateParticipantStats();
-							t.sortRankings();
-							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-							resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
-							pairingsPanel.remove(p1Button);
-							pairingsPanel.remove(vs);
-							pairingsPanel.remove(p2Button);
-							pairingsPanel.revalidate();
-							pairingsPanel.repaint();
-							t.save();
-						}
-					});
-					pairingsPanel.add(p1Button, "growx, gapright 100");
-					pairingsPanel.add(vs);
-					pairingsPanel.add(p2Button, "growx, gapleft 100");
+				if (tourney.currentBattles.size() > 0) {
+					JFrame pairingsPanel = new JFrame("Report Results");
+					pairingsPanel.setSize(700, 500);
+					pairingsPanel.setLayout(new MigLayout("fill,wrap 5"));
+					for (Battle b : t.currentBattles) {
+						JLabel tableLabel = new JLabel("Table " + b.getTableNumber() + ")");
+						JButton p1Button = new JButton(b.getP1().getName());
+						JLabel vs = new JLabel("vs.");
+						JButton p2Button = new JButton(b.getP2().getName());
+						JLabel prediction = new JLabel(Utils.eloBuilder(b));
+						p1Button.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Utils.reportWinnerByName(p1Button.getText(), t.currentBattles);
+								t.setUserSelection("P1");
+								t.updateParticipantStats();
+								t.sortRankings();
+								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+								resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
+								pairingsPanel.remove(tableLabel);
+								pairingsPanel.remove(p1Button);
+								pairingsPanel.remove(vs);
+								pairingsPanel.remove(p2Button);
+								pairingsPanel.remove(prediction);
+								t.save();
+								if (t.currentBattles.size() == 0) {
+									pairingsPanel.dispose();
+								}
+								if (t.currentBattles.size() == t.players.size() / 2) {
+									pairingsPanel.dispose();
+								} else {
+									pairingsPanel.revalidate();
+									pairingsPanel.repaint();
+								}
+							}
+						});
+						p2Button.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Utils.reportWinnerByName(p2Button.getText(), t.currentBattles);
+								t.setUserSelection("P2");
+								t.updateParticipantStats();
+								t.sortRankings();
+								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+								resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
+								pairingsPanel.remove(tableLabel);
+								pairingsPanel.remove(p1Button);
+								pairingsPanel.remove(vs);
+								pairingsPanel.remove(p2Button);
+								pairingsPanel.remove(prediction);
+								t.save();
+								if (t.currentBattles.size() == t.players.size() / 2) {
+									pairingsPanel.dispose();
+								} else {
+									pairingsPanel.revalidate();
+									pairingsPanel.repaint();
+								}
+							}
+						});
+						pairingsPanel.add(tableLabel, "growx, gapright 100");
+						pairingsPanel.add(p1Button, "growx, gapright 100");
+						pairingsPanel.add(vs);
+						pairingsPanel.add(p2Button, "growx, gapleft 100");
+						pairingsPanel.add(prediction, "growx, gapleft 100");
+					}
+					pairingsPanel.setVisible(true);
 				}
-				pairingsPanel.setVisible(true);
 			}
 		});
+
 		toolbar.add(reportResults);
 
 		pairingsBox = new JTextArea(20, 60);
@@ -463,8 +490,13 @@ public class GUI implements ActionListener {
 		postResultsString(generateInDepthRankings);
 	}
 
-	public void refresh() {
-		frame.repaint();
+	public void refreshReportResults(JFrame jf) {
+		if (jf != null) {
+			for (Component c : jf.getComponents()) {
+				c.revalidate();
+				c.repaint();
+			}
+		}
 	}
-	
+
 }

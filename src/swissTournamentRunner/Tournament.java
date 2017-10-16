@@ -69,13 +69,13 @@ public class Tournament {
 		if (!allParticipantsIn) {
 			postListOfConfirmedSignups();
 		}
-		//TODO addBye();
+		// TODO addBye();
 	}
 
 	public void postListOfConfirmedSignups() {
 		Collections.sort(players);
 		int totalNumberOfPlayers = players.size() + currentBattles.size() * 2;
-		
+
 		String post = "-=-=-Registered: " + totalNumberOfPlayers + " players. -=-=-" + "\n";
 		for (int i = 1; i <= players.size(); i++) {
 			post += "" + i + ") " + players.get(i - 1).getName() + "\n";
@@ -316,7 +316,7 @@ public class Tournament {
 
 			try {
 				print(getCurrentBattles(currentBattles, roundString));
-				GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
+				GUI.pairingsBox.setCaretPosition(0);
 
 				waitForUserInput();
 				String input = readInput();
@@ -361,7 +361,8 @@ public class Tournament {
 					break;
 				}
 			} catch (Exception e) {
-				print("Illegal input.");
+			//	print("Illegal input.");
+				gui.wipePane();
 				pollForResults();
 			}
 			GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
@@ -539,7 +540,7 @@ public class Tournament {
 			addPlayer(Utils.trimWhitespace(s));
 			postListOfConfirmedSignups();
 		}
-		//TODO addBye();
+		// TODO addBye();
 	}
 
 	public void renamePlayer(String renameMe, String newName) {
@@ -876,7 +877,7 @@ public class Tournament {
 		logger.info("run");
 		while (roundNumber <= getNumberOfRounds() && players.size() > 1) {
 			Collections.shuffle(players);
-			GUI.wipePane();
+			gui.wipePane();
 			updateParticipantStats();
 
 			sortRankings();
@@ -884,10 +885,13 @@ public class Tournament {
 				shufflePlayers();
 			}
 			generatePairings(0);
+			assignTableNumbers(currentBattles);
 			save();
 			sortRankings();
-			GUI.postResultsString(generateInDepthRankings(players));
-			GUI.pairingsBox.setCaretPosition(0);
+			gui.refreshReportResults(gui.seedPanel);
+			gui.postResultsString(generateInDepthRankings(players));
+			gui.pairingsBox.setCaretPosition(0);
+			gui.reportResults.doClick();
 			pollForResults();
 			if (isElimination) {
 				elimination();

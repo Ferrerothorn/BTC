@@ -63,7 +63,8 @@ public class TntFileManager {
 		t.currentBattles.clear();
 
 		t.gui.toolbar.remove(t.gui.startButton);
-		t.gui.frame.repaint();
+		t.gui.frame.revalidate();
+	//	t.gui.frame.repaint();
 		
 		t.activeMetadataFile = fileName;
 		BufferedReader br = new BufferedReader(new FileReader(t.activeMetadataFile));
@@ -77,6 +78,7 @@ public class TntFileManager {
 					line = br.readLine();
 					t.addBye();
 				}
+				t.allParticipantsIn = true;
 				line = br.readLine();
 				while (!line.contains("GAMES")) {
 					addGamesToPlayerHistory(line);
