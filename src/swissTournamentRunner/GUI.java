@@ -352,7 +352,7 @@ public class GUI implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if (tourney.currentBattles.size() > 0) {
 					JFrame pairingsPanel = new JFrame("Report Results");
-					pairingsPanel.setSize(700, 500);
+					pairingsPanel.setExtendedState(pairingsPanel.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 					pairingsPanel.setLayout(new MigLayout("fill,wrap 5"));
 					for (Battle b : t.currentBattles) {
 						JLabel tableLabel = new JLabel("Table " + b.getTableNumber() + ")");
@@ -401,6 +401,9 @@ public class GUI implements ActionListener {
 								pairingsPanel.remove(p2Button);
 								pairingsPanel.remove(prediction);
 								t.save();
+								if (t.currentBattles.size() == 0) {
+									pairingsPanel.dispose();
+								}
 								if (t.currentBattles.size() == t.players.size() / 2) {
 									pairingsPanel.dispose();
 								} else {
