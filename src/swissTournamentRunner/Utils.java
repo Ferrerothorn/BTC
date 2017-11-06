@@ -2,10 +2,6 @@ package swissTournamentRunner;
 
 import java.util.ArrayList;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import java.awt.Component;
-
 public class Utils {
 
 	public static void autocompleteRound(ArrayList<Battle> battles) {
@@ -15,6 +11,16 @@ public class Utils {
 	}
 
 	public static void handleBattleWinner(Battle b, String winner) {
+		if (b.getP1().getName().equals("BYE")) {
+			b.getP2().beats(b.getP1());
+			b = null;
+			winner = "3";
+		}
+		if (b.getP2().getName().equals("BYE")) {
+			b.getP1().beats(b.getP2());
+			b = null;
+			winner = "3";
+		}
 		switch (winner) {
 		case "1":
 			b.getP1().beats(b.getP2());
