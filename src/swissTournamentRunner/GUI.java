@@ -2,8 +2,13 @@ package swissTournamentRunner;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
 import javax.swing.*;
 import net.miginfocom.swing.MigLayout;
 
@@ -19,6 +24,7 @@ public class GUI implements ActionListener {
 	public JButton startButton;
 	public JFrame seedPanel;
 	public JButton reportResults;
+	public static Logger logger = Logger.getLogger(GUI.class.getName());
 
 	public GUI(Tournament t) {
 		tourney = t;
@@ -30,6 +36,7 @@ public class GUI implements ActionListener {
 		JButton addRoundButton = new JButton("Edit # of Rounds");
 		addRoundButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				logger.info("User tried to add round.");
 				if (tourney.currentBattles.size() > 0) {
 					JFrame addRoundBox = new JFrame("New Round Number");
 					addRoundBox.setSize(500, 100);
@@ -43,6 +50,7 @@ public class GUI implements ActionListener {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							String newMax = input.getText();
+							logger.info("User submitted '" + newMax + "' as new number of rounds.");
 							tourney.alterRoundNumbers(newMax);
 							tourney.save();
 							addRoundBox.dispose();
@@ -59,7 +67,7 @@ public class GUI implements ActionListener {
 				if (tourney.currentBattles.size() > 0) {
 					tourney.elo = tourney.toggle(tourney.elo);
 					pairingsBox.setCaretPosition(0);
-					pairingsBox.setText("ELO switched " + tourney.elo + ".\n");
+					logger.info("User toggled ELO display to " + tourney.elo + ".");
 					postString(tourney.getCurrentBattles(tourney.currentBattles, tourney.roundString));
 					tourney.save();
 				}
@@ -83,6 +91,7 @@ public class GUI implements ActionListener {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							String newTCsize = input.getText();
+							logger.info("Top cut size was amended to " + newTCsize + ".");
 							tourney.alterTopCut(newTCsize);
 							tourney.save();
 							topCutBox.dispose();
@@ -129,6 +138,7 @@ public class GUI implements ActionListener {
 						public void actionPerformed(ActionEvent e) {
 							String selected = players.getSelectedItem().toString();
 							tourney.printHistory(Utils.findPlayerByName(selected, tourney.players));
+							logger.info("T.O. enquired into " + selected + "'s history.");
 							tourney.save();
 						}
 					});
@@ -363,11 +373,13 @@ public class GUI implements ActionListener {
 						p1Button.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
+								logger.info("T.O. said that Player 1 (" + p1Button.getText() + ") won the game.");
 								Utils.reportWinnerByName(p1Button.getText(), t.currentBattles);
 								t.setUserSelection("P1");
 								t.updateParticipantStats();
 								t.sortRankings();
 								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+								logger.info("Pairings box text was set to: " + pairingsBox.getText());
 								resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
 								pairingsPanel.remove(tableLabel);
 								pairingsPanel.remove(p1Button);
@@ -389,6 +401,7 @@ public class GUI implements ActionListener {
 						p2Button.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
+								logger.info("T.O. said that Player 2 (" + p2Button.getText() + ") won the game.");
 								Utils.reportWinnerByName(p2Button.getText(), t.currentBattles);
 								t.setUserSelection("P2");
 								t.updateParticipantStats();
@@ -500,6 +513,20 @@ public class GUI implements ActionListener {
 				c.repaint();
 			}
 		}
+	}
+
+	public void setUpLogger() {
+		FileHandler fh = null;
+		try {
+			fh = new FileHandler("GUI-" + tourney.activeMetadataFile.replace(".tnt", "") + ".log");
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.addHandler(fh);
+		SimpleFormatter formatter = new SimpleFormatter();
+		fh.setFormatter(formatter);
 	}
 
 }
