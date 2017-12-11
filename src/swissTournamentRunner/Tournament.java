@@ -893,7 +893,6 @@ public class Tournament {
 			gui.refreshReportResults(gui.seedPanel);
 			gui.postResultsString(generateInDepthRankings(players));
 			gui.pairingsBox.setCaretPosition(0);
-			gui.reportResults.doClick();
 			pollForResults();
 			if (isElimination) {
 				elimination();
