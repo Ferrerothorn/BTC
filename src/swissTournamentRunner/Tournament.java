@@ -507,7 +507,7 @@ public class Tournament {
 
 		for (Player p : players) {
 			for (Player q : players) {
-				if (p != q && noSuchPairing(currentBattles, p, q)) {
+				if (p != q && !activeBattleExists(currentBattles, p, q)) {
 					currentBattles.add(new Battle(p, q));
 				}
 			}
