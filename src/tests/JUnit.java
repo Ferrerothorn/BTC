@@ -993,7 +993,56 @@ public class JUnit {
 			file.delete();
 		}
 	}
+	
+	@Test
+	public void testCreatePlayDeleteSaveLoad() {
+		Player p1 = new Player("P1");
+		Player p2 = new Player("P2");
+		Player p3 = new Player("P3");
+		Player p4 = new Player("P4");
+		Player p5 = new Player("P5");
+		Player p6 = new Player("P6");
+		t.addPlayer(p1);
+		t.addPlayer(p2);
+		t.addPlayer(p3);
+		t.addPlayer(p4);
+		t.addPlayer(p5);
+		t.addPlayer(p6);
+		t.setNumberOfRounds(3);
+		t.generatePairings(0);
+		t.activeMetadataFile = "test.tnt";
+		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
+		t.dropPlayer("P2");
+		tntfm.saveTournament();
+		t.currentBattles.clear();
+		t.players.clear();
+		try {
+			TntFileManager.loadTournament(t, t.activeMetadataFile);
+		} catch (IOException e) {
+		}
+		assertEquals(3, t.getNumberOfRounds());
+		assertEquals(6, t.players.size());
+		assertEquals(2, t.currentBattles.size());
+		assertEquals(3, Utils.findPlayerByName("P1", t.players).getScore());
+		assertEquals(1, t.players.get(0).getOpponentsList().size());
+		assertEquals(1, t.players.get(0).getListOfVictories().size());
+		File file = new File("test.tnt");
+		if (file.exists()) {
+			file.delete();
+		}
+	}
 
+	@Test
+	public void simulateGUIRoundRobin(){
+		t.addBatch("1p,2p,3p,4p,5p,6p,7p,8p");
+		t.setNumberOfRounds(3);
+		t.generatePairings(0);
+		t.activeMetadataFile = "simulateGUIRoundRobin.tnt";
+		t.generateRRpairings();
+		t.gui = new GUI(t);
+		t.gui.reportResults.doClick();
+	}
+	
 	@Test
 	public void testAddsGameToPlayerHistory() {
 		Player p1 = new Player("P1");
@@ -1112,13 +1161,6 @@ public class JUnit {
 	public void testProcessPlayerName_no_DoesntAddPlayer() {
 		PlayerCreator pc = new PlayerCreator(t);
 		pc.processPlayerName("no");
-		assertEquals(0, t.players.size());
-	}
-
-	@Test
-	public void testProcessPlayerName_help_DoesntAddPlayer() {
-		PlayerCreator pc = new PlayerCreator(t);
-		pc.processPlayerName("help");
 		assertEquals(0, t.players.size());
 	}
 
