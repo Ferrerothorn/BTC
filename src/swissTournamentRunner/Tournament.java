@@ -316,7 +316,7 @@ public class Tournament {
 
 			try {
 				print(getCurrentBattles(currentBattles, roundString));
-				GUI.pairingsBox.setCaretPosition(0);
+				GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 
 				waitForUserInput();
 				String input = readInput();
@@ -361,7 +361,7 @@ public class Tournament {
 					break;
 				}
 			} catch (Exception e) {
-			//	print("Illegal input.");
+				// print("Illegal input.");
 				gui.wipePane();
 				pollForResults();
 			}
@@ -493,7 +493,7 @@ public class Tournament {
 		GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 	}
 
-	private void generateRRpairings() {
+	public void generateRRpairings() {
 
 		logger.info("generateRRpairings");
 		currentBattles.clear();
@@ -501,6 +501,7 @@ public class Tournament {
 			p.getOpponentsList().clear();
 			p.getListOfVictories().clear();
 		}
+		players.remove(Utils.findPlayerByName("BYE", players));
 		this.setNumberOfRounds(1);
 		this.roundNumber = 1;
 
@@ -514,15 +515,15 @@ public class Tournament {
 		assignTableNumbers(currentBattles);
 	}
 
-	private boolean noSuchPairing(ArrayList<Battle> battles, Player p, Player q) {
+	private boolean activeBattleExists(ArrayList<Battle> battles, Player p, Player q) {
 		logger.info("noSuchPairing");
-		boolean doesntExist = true;
+		boolean exists = false;
 		for (Battle b : battles) {
-			if ((b.getP1().equals(p) || b.getP2().equals(p)) && (b.getP1().equals(q) || b.getP2().equals(q))) {
-				doesntExist = false;
+			if ((b.getP1().equals(p) && b.getP2().equals(q)) || (b.getP1().equals(q) && b.getP2().equals(p))) {
+				exists = true;
 			}
 		}
-		return doesntExist;
+		return exists;
 	}
 
 	void setTopCut(int parseInt) {
@@ -540,7 +541,7 @@ public class Tournament {
 			addPlayer(Utils.trimWhitespace(s));
 			postListOfConfirmedSignups();
 		}
-		// TODO addBye();
+		addBye();
 	}
 
 	public void renamePlayer(String renameMe, String newName) {
@@ -633,6 +634,7 @@ public class Tournament {
 					numberOfRounds--;
 				}
 			}
+			addBye();
 		}
 	}
 
@@ -927,7 +929,7 @@ public class Tournament {
 
 	public void setUpLogger() {
 		try {
-			fh = new FileHandler("BTCLogFile.log");
+			fh = new FileHandler("BTCLogFile" + activeMetadataFile.replace(".tnt", "") + ".log");
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -937,4 +939,10 @@ public class Tournament {
 		SimpleFormatter formatter = new SimpleFormatter();
 		fh.setFormatter(formatter);
 	}
+
+	public void setUpLoggers() {
+		setUpLogger();
+		gui.setUpLogger();
+	}
+
 }
