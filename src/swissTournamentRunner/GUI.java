@@ -388,21 +388,11 @@ public class GUI implements ActionListener {
 								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
 								logger.info("Pairings box text was set to: " + pairingsBox.getText());
 								resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
-								pairingsPanel.remove(tableLabel);
-								pairingsPanel.remove(p1Button);
-								pairingsPanel.remove(vs);
-								pairingsPanel.remove(p2Button);
-								pairingsPanel.remove(prediction);
+								pairingsPanel.dispose();
+								if (t.currentBattles.size() != 0) {
+									reportResults.doClick();
+								}
 								t.save();
-								if (t.currentBattles.size() == 0) {
-									pairingsPanel.dispose();
-								}
-								if (t.currentBattles.size() == t.players.size() / 2) {
-									pairingsPanel.dispose();
-								} else {
-									pairingsPanel.revalidate();
-									pairingsPanel.repaint();
-								}
 							}
 						});
 						p2Button.addActionListener(new ActionListener() {
@@ -415,21 +405,11 @@ public class GUI implements ActionListener {
 								t.sortRankings();
 								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
 								resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
-								pairingsPanel.remove(tableLabel);
-								pairingsPanel.remove(p1Button);
-								pairingsPanel.remove(vs);
-								pairingsPanel.remove(p2Button);
-								pairingsPanel.remove(prediction);
+								pairingsPanel.dispose();
+								if (t.currentBattles.size() != 0) {
+									reportResults.doClick();
+								}
 								t.save();
-								if (t.currentBattles.size() == 0) {
-									pairingsPanel.dispose();
-								}
-								if (t.currentBattles.size() == t.players.size() / 2) {
-									pairingsPanel.dispose();
-								} else {
-									pairingsPanel.revalidate();
-									pairingsPanel.repaint();
-								}
 							}
 						});
 						pairingsPanel.add(tableLabel, "growx, gapright 100");
