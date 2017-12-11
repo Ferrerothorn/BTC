@@ -62,10 +62,11 @@ public class TntFileManager {
 		t.players.clear();
 		t.currentBattles.clear();
 
-		t.gui.toolbar.remove(t.gui.startButton);
-		t.gui.frame.revalidate();
-	//	t.gui.frame.repaint();
-		
+		if (t.gui != null) {
+			t.gui.toolbar.remove(t.gui.startButton);
+			t.gui.frame.revalidate();
+		}
+
 		t.activeMetadataFile = fileName;
 		BufferedReader br = new BufferedReader(new FileReader(t.activeMetadataFile));
 		try {
