@@ -27,6 +27,7 @@ public class GUI implements ActionListener {
 	public static Logger logger = Logger.getLogger(GUI.class.getName());
 
 	public GUI(Tournament t) {
+		logger.info("Created GUI.");
 		tourney = t;
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setLayout(new MigLayout("wrap ", "[grow,fill]"));
@@ -173,14 +174,20 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(addPlayersButton);
 
-		JButton dropPlayersButton = new JButton("Drop Player(s)");
+		JButton dropPlayersButton = new JButton("Drop Player");
 		dropPlayersButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (tourney.currentBattles.size() > 0) {
-					JFrame dropPlayersBox = new JFrame("Drop Player(s)");
+					JFrame dropPlayersBox = new JFrame("Drop Player");
 					dropPlayersBox.setSize(450, 150);
 					dropPlayersBox.setLayout(new GridLayout());
-					JTextField input = new JTextField("Enter comma-separated player list of players to drop.");
+					ArrayList<String> playerNames = new ArrayList<String>();
+					for (Player p : tourney.players) {
+						playerNames.add(p.getName());
+					}
+					Collections.sort(playerNames);
+					String[] ps = playerNames.toArray(new String[playerNames.size()]);
+					JComboBox input = new JComboBox(ps);
 					JButton dropSubmitButton = new JButton("Submit");
 					dropPlayersBox.add(input);
 					dropPlayersBox.add(dropSubmitButton);
@@ -188,8 +195,8 @@ public class GUI implements ActionListener {
 					dropSubmitButton.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							String newPlayers = input.getText();
-							tourney.dropPlayer(newPlayers);
+							String dropPlayer = input.getSelectedItem().toString();
+							tourney.dropPlayer(dropPlayer);
 							tourney.save();
 							dropPlayersBox.dispose();
 						}
