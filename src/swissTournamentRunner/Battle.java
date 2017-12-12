@@ -74,4 +74,8 @@ public class Battle implements Comparable<Battle> {
 	private int shoeInFactor() {
 		return Math.abs(getElo(p1) - getElo(p2));
 	}
+
+	public boolean contains(String winner) {
+		return (p1.name.equals(winner) || p2.name.equals(winner));
+	}
 }

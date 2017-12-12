@@ -75,14 +75,15 @@ public class Utils {
 						.substring(0, finalLength);
 	}
 
-	public static void reportWinnerByName(String text, ArrayList<Battle> currentBattles) {
+	public static void reportWinnerByName(String winner, String loser, ArrayList<Battle> currentBattles) {
 		for (Battle b : currentBattles) {
-			if (b.getP1().getName().equals(text)) {
+
+			if (b.getP1().getName().equals(winner) && b.getP2().getName().equals(loser)) {
 				handleBattleWinner(b, "1");
 				currentBattles.remove(b);
 				break;
 			}
-			if (b.getP2().getName().equals(text)) {
+			if (b.getP2().getName().equals(winner) && b.getP1().getName().equals(loser)) {
 				handleBattleWinner(b, "2");
 				currentBattles.remove(b);
 				break;

@@ -381,7 +381,7 @@ public class GUI implements ActionListener {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								logger.info("T.O. said that Player 1 (" + p1Button.getText() + ") won the game.");
-								Utils.reportWinnerByName(p1Button.getText(), t.currentBattles);
+								Utils.reportWinnerByName(p1Button.getText(), p2Button.getText(), t.currentBattles);
 								t.setUserSelection("P1");
 								t.updateParticipantStats();
 								t.sortRankings();
@@ -399,7 +399,7 @@ public class GUI implements ActionListener {
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								logger.info("T.O. said that Player 2 (" + p2Button.getText() + ") won the game.");
-								Utils.reportWinnerByName(p2Button.getText(), t.currentBattles);
+								Utils.reportWinnerByName(p2Button.getText(), p1Button.getText(), t.currentBattles);
 								t.setUserSelection("P2");
 								t.updateParticipantStats();
 								t.sortRankings();

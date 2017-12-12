@@ -29,7 +29,7 @@ public class PairingsPanel extends JFrame {
 			p1Button.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Utils.reportWinnerByName(p1Button.getText(), currentBattles);
+					Utils.reportWinnerByName(p1Button.getText(), p2Button.getText(), currentBattles);
 					t.setUserSelection("P1");
 					t.updateParticipantStats();
 					t.sortRankings();
@@ -48,7 +48,7 @@ public class PairingsPanel extends JFrame {
 			p2Button.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Utils.reportWinnerByName(p2Button.getText(), t.currentBattles);
+					Utils.reportWinnerByName(p2Button.getText(), p1Button.getText(), t.currentBattles);
 					t.setUserSelection("P2");
 					t.updateParticipantStats();
 					t.sortRankings();

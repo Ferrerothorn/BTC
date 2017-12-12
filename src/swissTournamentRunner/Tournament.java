@@ -928,7 +928,7 @@ public class Tournament {
 
 	public void setUpLogger() {
 		try {
-			fh = new FileHandler("BTCLogFile" + activeMetadataFile.replace(".tnt", "") + ".log");
+			fh = new FileHandler("BTCLogFile-" + activeMetadataFile.replace(".tnt", "") + ".log");
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
