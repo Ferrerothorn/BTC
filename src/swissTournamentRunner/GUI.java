@@ -380,13 +380,14 @@ public class GUI implements ActionListener {
 						p1Button.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								logger.info("T.O. said that Player 1 (" + p1Button.getText() + ") won the game.");
+								logger.info("T.O. clicked button labelled " + p1Button.getText());
+								logger.info("T.O. said that Player 1 (" + p1Button.getText() + ") won the game against "
+										+ p2Button.getText());
 								Utils.reportWinnerByName(p1Button.getText(), p2Button.getText(), t.currentBattles);
 								t.setUserSelection("P1");
 								t.updateParticipantStats();
 								t.sortRankings();
 								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-								logger.info("Pairings box text was set to: " + pairingsBox.getText());
 								resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
 								pairingsPanel.dispose();
 								if (t.currentBattles.size() != 0) {
@@ -398,7 +399,9 @@ public class GUI implements ActionListener {
 						p2Button.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
-								logger.info("T.O. said that Player 2 (" + p2Button.getText() + ") won the game.");
+								logger.info("T.O. clicked button labelled " + p2Button.getText());
+								logger.info("T.O. said that Player 2 (" + p2Button.getText() + ") won the game against "
+										+ p1Button.getText());
 								Utils.reportWinnerByName(p2Button.getText(), p1Button.getText(), t.currentBattles);
 								t.setUserSelection("P2");
 								t.updateParticipantStats();

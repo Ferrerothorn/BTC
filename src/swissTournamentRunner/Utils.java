@@ -77,17 +77,19 @@ public class Utils {
 
 	public static void reportWinnerByName(String winner, String loser, ArrayList<Battle> currentBattles) {
 		for (Battle b : currentBattles) {
-
-			if (b.getP1().getName().equals(winner) && b.getP2().getName().equals(loser)) {
+			if (b.getP1().getName().equals(winner) && b.getP2().getName().equals(loser) && winner != "BYE") {
 				handleBattleWinner(b, "1");
 				currentBattles.remove(b);
 				break;
 			}
-			if (b.getP2().getName().equals(winner) && b.getP1().getName().equals(loser)) {
+			if (b.getP2().getName().equals(winner) && b.getP1().getName().equals(loser) && winner != "BYE") {
 				handleBattleWinner(b, "2");
 				currentBattles.remove(b);
 				break;
 			}
+		}
+		if (winner == "BYE") {
+			reportWinnerByName(loser, winner, currentBattles);
 		}
 	}
 
