@@ -575,7 +575,9 @@ public class Tournament {
 				Player toDropZone = b.getP1();
 				players.remove(toDropZone);
 				dropZone.add(toDropZone);
-				players.remove(b.getP2());
+				Player bye = b.getP2();
+				toDropZone.beats(bye);
+				players.remove(bye);
 				foundPlayerToDrop = true;
 				break;
 			} else if (b.getP2().getName().equals(nameToDrop) && b.getP1().getName().equals("BYE")) {
@@ -583,19 +585,39 @@ public class Tournament {
 				Player toDropZone = b.getP2();
 				players.remove(toDropZone);
 				dropZone.add(toDropZone);
-				players.remove(b.getP1());
-				break;
-			} else if (b.getP2().getName().equals(nameToDrop)) {
-				// TODO
+				Player bye = b.getP1();
+				toDropZone.beats(bye);
+				players.remove(bye);
+				foundPlayerToDrop = true;
 				break;
 			} else if (b.getP1().getName().equals(nameToDrop)) {
-				// TODO
+				currentBattles.remove(b);
+				Player toDropZone = b.getP1();
+				b.getP2().beats(toDropZone);
+				players.remove(toDropZone);
+				dropZone.add(toDropZone);
+				foundPlayerToDrop = true;
+				break;
+			} else if (b.getP2().getName().equals(nameToDrop)) {
+				currentBattles.remove(b);
+				Player toDropZone = b.getP2();
+				b.getP1().beats(toDropZone);
+				players.remove(toDropZone);
+				dropZone.add(toDropZone);
+				foundPlayerToDrop = true;
 				break;
 			}
 		}
 
 		if (!foundPlayerToDrop) {
-			// TODO
+			for (Player p : players) {
+				if (p.getName().equals(nameToDrop)) {
+					players.remove(p);
+					dropZone.add(p);
+					foundPlayerToDrop = true;
+					break;
+				}
+			}
 		}
 
 		if (topCutThreshold >= players.size()) {
@@ -603,9 +625,7 @@ public class Tournament {
 		}
 
 		if (!nameToDrop.equals("BYE") && (players.size() % 2 == 1)) {
-			// TODO
-		} else if (!nameToDrop.equals("BYE")) {
-			// TODO
+			dropPlayer("BYE");
 		}
 
 		if ((players.size() % 2 == 1) && doesPlayerExist("BYE")) {
