@@ -158,6 +158,7 @@ public class Player implements Comparable<Player> {
 	public void recalculateTB() {
 		tb = 0;
 		for (Player p : victories) {
+			Tournament.logger.info(this.getName() + ": " + victories.toString());
 			if (p.getScore() == this.score) {
 				tb++;
 			}

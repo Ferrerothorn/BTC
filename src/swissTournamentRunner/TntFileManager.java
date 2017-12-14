@@ -26,12 +26,12 @@ public class TntFileManager {
 			File file = new File(t.activeMetadataFile);
 
 			output += "PLAYERS:\n";
-			for (Player p : t.players) {
+			for (Player p : Tournament.players) {
 				output += p.getName() + ",";
 			}
 			output = output.substring(0, output.length() - 1) + "\n";
 			String dropped = "DROP ZONE:\n";
-			for (Player p : t.dropZone) {
+			for (Player p : Tournament.dropZone) {
 				dropped += p.getName() + "_" + p.getListOfNamesBeaten().toString() + "_"
 						+ p.getListOfNamesPlayed().toString() + "|";
 			}
@@ -40,7 +40,7 @@ public class TntFileManager {
 			;
 
 			output += "VICTORIES:\n";
-			for (Player p : t.players) {
+			for (Player p : Tournament.players) {
 				output += p.getName() + "_" + p.getListOfNamesBeaten().toString() + "_"
 						+ p.getListOfNamesPlayed().toString() + "\n";
 			}
@@ -54,7 +54,7 @@ public class TntFileManager {
 			if (t.isElimination) {
 				output += "elimination:" + t.x_elimination + "\n";
 			}
-			output += "topCut:" + t.getTopCutThreshold() + "\n";
+			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
 
 			try {
@@ -70,12 +70,12 @@ public class TntFileManager {
 	}
 
 	public static void loadTournament(Tournament t, String fileName) throws IOException {
-		t.players.clear();
+		Tournament.players.clear();
 		t.currentBattles.clear();
 
 		if (t.gui != null) {
 			t.gui.toolbar.remove(t.gui.startButton);
-			t.gui.frame.revalidate();
+			GUI.frame.revalidate();
 		}
 
 		t.activeMetadataFile = fileName;
@@ -113,6 +113,7 @@ public class TntFileManager {
 					parseProperties(line);
 					line = br.readLine();
 				}
+				addGamesToDropZoneHistory(listToGrantScores);
 			}
 		} catch (IOException e) {
 			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\"");
@@ -124,49 +125,42 @@ public class TntFileManager {
 		t.updateParticipantStats();
 	}
 
+	private static void addGamesToDropZoneHistory(ArrayList<String[]> list) {
+		for (String[] Ss : list) {
+			try {
+				Player p = Tournament.findPlayerByName(Ss[0]);
+
+				String hasBeaten = Ss[1];
+				hasBeaten = hasBeaten.replaceAll("\\[", "");
+				hasBeaten = hasBeaten.replaceAll("\\]", "");
+				String[] playersBeaten = hasBeaten.split(",");
+				for (String ps : playersBeaten) {
+					if (ps.length() > 0) {
+						p.addToListOfVictories(Tournament.findPlayerByName(Utils.trimWhitespace(ps)));
+					}
+				}
+
+				String hasPlayed = Ss[2];
+				hasPlayed = hasPlayed.replaceAll("\\[", "");
+				hasPlayed = hasPlayed.replaceAll("\\]", "");
+				String[] playersPlayed = hasPlayed.split(",");
+				for (String ps : playersPlayed) {
+					if (ps.length() > 0) {
+						p.addToListOfPlayed(Tournament.findPlayerByName(Utils.trimWhitespace(ps)));
+					}
+				}
+			} catch (Exception e) {
+				GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
+			}
+		}
+	}
+
 	private static void parseLineToDroppedPlayers(String line) {
 		String[] droppedPlayer = line.split("_");
 
 		Player p = new Player(droppedPlayer[0]);
+		Tournament.dropZone.add(p);
 		listToGrantScores.add(droppedPlayer);
-		
-		for (String s : droppedPlayerNames) {
-			Player player = new Player(s);
-			t.dropZone.add(player);
-		}
-		
-		for (String s : droppedPlayers) {
-			addGamesToDroppedPlayerHistory(s);
-		}
-	}
-
-	private static void addGamesToDroppedPlayerHistory(String s) {
-		try {
-			String[] information = s.split("_");
-			Player p = t.findPlayerByName(information[0]);
-
-			String hasBeaten = information[1];
-			hasBeaten = hasBeaten.replaceAll("\\[", "");
-			hasBeaten = hasBeaten.replaceAll("\\]", "");
-			String[] playersBeaten = hasBeaten.split(",");
-			for (String ps : playersBeaten) {
-				if (ps.length() > 0) {
-					p.addToListOfVictories(t.findPlayerByName(Utils.trimWhitespace(ps)));
-				}
-			}
-
-			String hasPlayed = information[2];
-			hasPlayed = hasPlayed.replaceAll("\\[", "");
-			hasPlayed = hasPlayed.replaceAll("\\]", "");
-			String[] playersPlayed = hasPlayed.split(",");
-			for (String ps : playersPlayed) {
-				if (ps.length() > 0) {
-					p.addToListOfPlayed(t.findPlayerByName(Utils.trimWhitespace(ps)));
-				}
-			}
-		} catch (Exception e) {
-			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
-		}
 	}
 
 	public static void parseProperties(String line2) {
@@ -186,7 +180,7 @@ public class TntFileManager {
 				break;
 			case "topcut":
 				int tC = Integer.parseInt(propertyPair[1]);
-				if (tC < t.players.size()) {
+				if (tC < Tournament.players.size()) {
 					t.setTopCut(tC);
 				}
 				break;
@@ -205,8 +199,8 @@ public class TntFileManager {
 
 	static Battle parseLineToBattle(String line) {
 		String[] currentCombatants = line.split(",");
-		Player p1 = t.findPlayerByName(currentCombatants[0]);
-		Player p2 = t.findPlayerByName(currentCombatants[1]);
+		Player p1 = Tournament.findPlayerByName(currentCombatants[0]);
+		Player p2 = Tournament.findPlayerByName(currentCombatants[1]);
 		Battle b = new Battle(p1, p2);
 		return b;
 	}
@@ -214,7 +208,7 @@ public class TntFileManager {
 	public static void addGamesToPlayerHistory(String line) {
 		try {
 			String[] information = line.split("_");
-			Player p = t.findPlayerByName(information[0]);
+			Player p = Tournament.findPlayerByName(information[0]);
 
 			String hasBeaten = information[1];
 			hasBeaten = hasBeaten.replaceAll("\\[", "");
@@ -222,7 +216,7 @@ public class TntFileManager {
 			String[] playersBeaten = hasBeaten.split(",");
 			for (String s : playersBeaten) {
 				if (s.length() > 0) {
-					p.addToListOfVictories(t.findPlayerByName(Utils.trimWhitespace(s)));
+					p.addToListOfVictories(Tournament.findPlayerByName(Utils.trimWhitespace(s)));
 				}
 			}
 
@@ -232,7 +226,7 @@ public class TntFileManager {
 			String[] playersPlayed = hasPlayed.split(",");
 			for (String s : playersPlayed) {
 				if (s.length() > 0) {
-					p.addToListOfPlayed(t.findPlayerByName(Utils.trimWhitespace(s)));
+					p.addToListOfPlayed(Tournament.findPlayerByName(Utils.trimWhitespace(s)));
 				}
 			}
 		} catch (Exception e) {
