@@ -138,7 +138,7 @@ public class GUI implements ActionListener {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							String selected = players.getSelectedItem().toString();
-							tourney.printHistory(Utils.findPlayerByName(selected, tourney.players));
+							tourney.printHistory(t.findPlayerByName(selected));
 							logger.info("T.O. enquired into " + selected + "'s history.");
 							tourney.save();
 						}
@@ -273,8 +273,8 @@ public class GUI implements ActionListener {
 					submitEditName.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							Player p1 = Utils.findPlayerByName(p1s.getSelectedItem().toString(), tourney.players);
-							Player p2 = Utils.findPlayerByName(p2s.getSelectedItem().toString(), tourney.players);
+							Player p1 = t.findPlayerByName(p1s.getSelectedItem().toString());
+							Player p2 = t.findPlayerByName(p2s.getSelectedItem().toString());
 							if (p1.getName().equals(p2.getName())) {
 								postString("A player can't possibly have played themself.\n");
 							} else {
@@ -334,8 +334,8 @@ public class GUI implements ActionListener {
 							String n1 = seed1.getSelectedItem().toString();
 							String n2 = seed2.getSelectedItem().toString();
 							if (!n1.equals(n2)) {
-								Player p1 = Utils.findPlayerByName(n1, tourney.players);
-								Player p2 = Utils.findPlayerByName(n2, tourney.players);
+								Player p1 = t.findPlayerByName(n1);
+								Player p2 = t.findPlayerByName(n2);
 								tourney.players.remove(p1);
 								tourney.players.remove(p2);
 								Battle b = new Battle(p1, p2);

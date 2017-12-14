@@ -10,8 +10,8 @@ import java.util.logging.SimpleFormatter;
 
 public class Tournament {
 
-	public ArrayList<Player> players = new ArrayList<>();
-	public ArrayList<Player> dropZone = new ArrayList<>();
+	public static ArrayList<Player> players = new ArrayList<>();
+	public static ArrayList<Player> dropZone = new ArrayList<>();
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	TntFileManager tntfm = new TntFileManager(this);
@@ -70,7 +70,7 @@ public class Tournament {
 		if (!allParticipantsIn) {
 			postListOfConfirmedSignups();
 		}
-		addBye();
+		//addBye();
 	}
 
 	public void postListOfConfirmedSignups() {
@@ -132,7 +132,7 @@ public class Tournament {
 
 	public boolean doesPlayerExist(String string) {
 		logger.info("doesPlayerExist: " + string);
-		Player p = Utils.findPlayerByName(string, players);
+		Player p = findPlayerByName(string);
 		if (p != null) {
 			return true;
 		}
@@ -503,7 +503,7 @@ public class Tournament {
 			p.getOpponentsList().clear();
 			p.getListOfVictories().clear();
 		}
-		players.remove(Utils.findPlayerByName("BYE", players));
+		players.remove(findPlayerByName("BYE"));
 		this.setNumberOfRounds(1);
 		this.roundNumber = 1;
 
@@ -785,7 +785,7 @@ public class Tournament {
 
 	public void reportBattleWinner(String text) {
 		logger.info("reportBattleWinner: " + text);
-		Player winner = Utils.findPlayerByName(text, players);
+		Player winner = findPlayerByName(text);
 		for (Battle b : currentBattles) {
 			if (b.contains(winner)) {
 				if (b.getP1() == winner) {
@@ -956,6 +956,20 @@ public class Tournament {
 		fh.setFormatter(formatter);
 	}
 
+	public static Player findPlayerByName(String s) {
+		for (Player p : players) {
+			if (p.getName().equals(s)) {
+				return p;
+			}
+		}
+		for (Player p : dropZone) {
+			if (p.getName().equals(s)) {
+				return p;
+			}
+		}
+		return null;
+	}
+	
 	public void setUpLoggers() {
 		setUpLogger();
 		gui.setUpLogger();

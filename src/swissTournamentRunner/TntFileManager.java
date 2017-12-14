@@ -7,11 +7,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 public class TntFileManager {
 
 	static Tournament t;
 	static String line;
+	static ArrayList<String[]> listToGrantScores = new ArrayList<>();
 
 	public TntFileManager(Tournament tourney) {
 		t = tourney;
@@ -27,8 +29,17 @@ public class TntFileManager {
 			for (Player p : t.players) {
 				output += p.getName() + ",";
 			}
-			output = output.substring(0, output.length() - 1);
-			output += "\nVICTORIES:\n";
+			output = output.substring(0, output.length() - 1) + "\n";
+			String dropped = "DROP ZONE:\n";
+			for (Player p : t.dropZone) {
+				dropped += p.getName() + "_" + p.getListOfNamesBeaten().toString() + "_"
+						+ p.getListOfNamesPlayed().toString() + "|";
+			}
+			dropped = dropped.substring(0, dropped.length() - 1);
+			output += dropped + "\n";
+			;
+
+			output += "VICTORIES:\n";
 			for (Player p : t.players) {
 				output += p.getName() + "_" + p.getListOfNamesBeaten().toString() + "_"
 						+ p.getListOfNamesPlayed().toString() + "\n";
@@ -74,12 +85,18 @@ public class TntFileManager {
 
 			if (line.contains("PLAYERS")) {
 				line = br.readLine();
-				while (!line.contains("VICTORIES")) {
+				
+				while (!line.contains("DROP ZONE")) {
 					t.addBatch(line);
 					line = br.readLine();
 					t.addBye();
 				}
 				t.allParticipantsIn = true;
+				line = br.readLine();
+				while (!line.contains("VICTORIES")) {
+					line = br.readLine();
+					parseLineToDroppedPlayers(line);
+				}
 				line = br.readLine();
 				while (!line.contains("GAMES")) {
 					addGamesToPlayerHistory(line);
@@ -105,6 +122,51 @@ public class TntFileManager {
 			br.close();
 		}
 		t.updateParticipantStats();
+	}
+
+	private static void parseLineToDroppedPlayers(String line) {
+		String[] droppedPlayer = line.split("_");
+
+		Player p = new Player(droppedPlayer[0]);
+		listToGrantScores.add(droppedPlayer);
+		
+		for (String s : droppedPlayerNames) {
+			Player player = new Player(s);
+			t.dropZone.add(player);
+		}
+		
+		for (String s : droppedPlayers) {
+			addGamesToDroppedPlayerHistory(s);
+		}
+	}
+
+	private static void addGamesToDroppedPlayerHistory(String s) {
+		try {
+			String[] information = s.split("_");
+			Player p = t.findPlayerByName(information[0]);
+
+			String hasBeaten = information[1];
+			hasBeaten = hasBeaten.replaceAll("\\[", "");
+			hasBeaten = hasBeaten.replaceAll("\\]", "");
+			String[] playersBeaten = hasBeaten.split(",");
+			for (String ps : playersBeaten) {
+				if (ps.length() > 0) {
+					p.addToListOfVictories(t.findPlayerByName(Utils.trimWhitespace(ps)));
+				}
+			}
+
+			String hasPlayed = information[2];
+			hasPlayed = hasPlayed.replaceAll("\\[", "");
+			hasPlayed = hasPlayed.replaceAll("\\]", "");
+			String[] playersPlayed = hasPlayed.split(",");
+			for (String ps : playersPlayed) {
+				if (ps.length() > 0) {
+					p.addToListOfPlayed(t.findPlayerByName(Utils.trimWhitespace(ps)));
+				}
+			}
+		} catch (Exception e) {
+			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
+		}
 	}
 
 	public static void parseProperties(String line2) {
@@ -143,8 +205,8 @@ public class TntFileManager {
 
 	static Battle parseLineToBattle(String line) {
 		String[] currentCombatants = line.split(",");
-		Player p1 = Utils.findPlayerByName(currentCombatants[0], t.players);
-		Player p2 = Utils.findPlayerByName(currentCombatants[1], t.players);
+		Player p1 = t.findPlayerByName(currentCombatants[0]);
+		Player p2 = t.findPlayerByName(currentCombatants[1]);
 		Battle b = new Battle(p1, p2);
 		return b;
 	}
@@ -152,7 +214,7 @@ public class TntFileManager {
 	public static void addGamesToPlayerHistory(String line) {
 		try {
 			String[] information = line.split("_");
-			Player p = Utils.findPlayerByName(information[0], t.players);
+			Player p = t.findPlayerByName(information[0]);
 
 			String hasBeaten = information[1];
 			hasBeaten = hasBeaten.replaceAll("\\[", "");
@@ -160,7 +222,7 @@ public class TntFileManager {
 			String[] playersBeaten = hasBeaten.split(",");
 			for (String s : playersBeaten) {
 				if (s.length() > 0) {
-					p.addToListOfVictories(Utils.findPlayerByName(Utils.trimWhitespace(s), t.players));
+					p.addToListOfVictories(t.findPlayerByName(Utils.trimWhitespace(s)));
 				}
 			}
 
@@ -170,7 +232,7 @@ public class TntFileManager {
 			String[] playersPlayed = hasPlayed.split(",");
 			for (String s : playersPlayed) {
 				if (s.length() > 0) {
-					p.addToListOfPlayed(Utils.findPlayerByName(Utils.trimWhitespace(s), t.players));
+					p.addToListOfPlayed(t.findPlayerByName(Utils.trimWhitespace(s)));
 				}
 			}
 		} catch (Exception e) {

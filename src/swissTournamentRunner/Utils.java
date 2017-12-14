@@ -52,15 +52,6 @@ public class Utils {
 		return s;
 	}
 
-	public static Player findPlayerByName(String s, ArrayList<Player> players) {
-		for (Player p : players) {
-			if (p.getName().equals(s)) {
-				return p;
-			}
-		}
-		return null;
-	}
-
 	public static void print() {
 		GUI.postString("");
 	}
@@ -96,4 +87,5 @@ public class Utils {
 	public static String eloBuilder(Battle b) {
 		return "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
 	}
+
 }

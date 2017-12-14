@@ -12,7 +12,7 @@ public class PlayerCreator {
 		GUI.wipePane();
 		while (!t.allParticipantsIn) {
 			int playerNumbers = (t.players.size() + (t.currentBattles.size() * 2));
-			if (Utils.findPlayerByName("BYE", t.players) != null) {
+			if (t.findPlayerByName("BYE") != null) {
 				playerNumbers--;
 			}
 
