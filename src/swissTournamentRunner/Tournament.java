@@ -632,7 +632,7 @@ public class Tournament {
 			topCutThreshold = 0;
 		}
 
-		if (!nameToDrop.equals("BYE") && (players.size() % 2 == 1)) {
+		if (!nameToDrop.equals("BYE") && (activePlayerSize() % 2 == 1)) {
 			dropPlayer("BYE");
 		}
 
