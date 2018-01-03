@@ -47,6 +47,13 @@ public class TntFileManager {
 			}
 			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
+			output += "Dropped:";
+			for (Player p : Tournament.players) {
+				if(p.isDropped){
+				output += p.getName() + ",";
+				}
+			}
+			output = output.substring(0, output.length() - 1) + "\n";
 
 			try {
 				PrintWriter writer = new PrintWriter(file, "UTF-8");
@@ -165,6 +172,15 @@ public class TntFileManager {
 			case "elo":
 				if (propertyPair[1].equals("on")) {
 					t.setElo("on");
+				}
+				break;
+			case "Dropped":
+				String[] dropouts = propertyPair[1].split(",");
+				for (String s : dropouts) {
+					t.namesDroppedAtLastLoad.add(s);
+				}
+				for (String s : t.namesDroppedAtLastLoad) {
+					t.findPlayerByName(s).drop();
 				}
 				break;
 			default:
