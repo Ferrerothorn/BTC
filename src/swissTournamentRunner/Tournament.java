@@ -633,7 +633,7 @@ public class Tournament {
 			}
 		}
 
-		if (topCutThreshold >= players.size()) {
+		if (topCutThreshold >= activePlayerSize()) {
 			topCutThreshold = 0;
 		}
 
@@ -641,7 +641,7 @@ public class Tournament {
 			dropPlayer("BYE");
 		}
 
-		if ((players.size() % 2 == 1) && doesPlayerExist("BYE")) {
+		if ((activePlayerSize() % 2 == 1) && doesPlayerExist("BYE")) {
 			Battle byeMatch = null;
 			for (Battle b : currentBattles) {
 				if (b.getP1().getName().equals("BYE")) {
@@ -668,11 +668,22 @@ public class Tournament {
 		addBye();
 	}
 
+	private int activePlayerSize() {
+		int activePlayers = 0;
+
+		for (Player p : players) {
+			if (p.isDropped() != true) {
+				activePlayers++;
+			}
+		}
+		return activePlayers;
+	}
+
 	public void alterTopCut(String newSize) throws NumberFormatException {
 		logger.info("alterTopCut: " + newSize);
 		try {
 			int tC = Integer.parseInt(newSize);
-			if (tC < players.size()) {
+			if (tC < activePlayerSize()) {
 				setTopCut(tC);
 				Utils.print("Top Cut size set to " + tC + ".\n");
 			} else {
@@ -687,7 +698,7 @@ public class Tournament {
 	}
 
 	public int size() {
-		return players.size();
+		return activePlayerSize();
 	}
 
 	public void addPlayer(Player p) {
