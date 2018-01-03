@@ -25,7 +25,6 @@ public class JUnit {
 	public void setup() {
 		t = new Tournament();
 		t.players.clear();
-		t.dropZone.clear();
 		t.currentBattles.clear();
 		t.setAllParticipantsIn(true);
 		GUI gui = new GUI(t);
