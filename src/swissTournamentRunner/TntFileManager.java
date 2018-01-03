@@ -30,15 +30,6 @@ public class TntFileManager {
 				output += p.getName() + ",";
 			}
 			output = output.substring(0, output.length() - 1) + "\n";
-			String dropped = "DROP ZONE:\n";
-			for (Player p : Tournament.dropZone) {
-				dropped += p.getName() + "_" + p.getListOfNamesBeaten().toString() + "_"
-						+ p.getListOfNamesPlayed().toString() + "|";
-			}
-			dropped = dropped.substring(0, dropped.length() - 1);
-			output += dropped + "\n";
-			;
-
 			output += "VICTORIES:\n";
 			for (Player p : Tournament.players) {
 				output += p.getName() + "_" + p.getListOfNamesBeaten().toString() + "_"
@@ -86,17 +77,12 @@ public class TntFileManager {
 			if (line.contains("PLAYERS")) {
 				line = br.readLine();
 				
-				while (!line.contains("DROP ZONE")) {
+				while (!line.contains("VICTORIES")) {
 					t.addBatch(line);
 					line = br.readLine();
 					t.addBye();
 				}
 				t.allParticipantsIn = true;
-				line = br.readLine();
-				while (!line.contains("VICTORIES")) {
-					line = br.readLine();
-					parseLineToDroppedPlayers(line);
-				}
 				line = br.readLine();
 				while (!line.contains("GAMES")) {
 					addGamesToPlayerHistory(line);
@@ -153,14 +139,6 @@ public class TntFileManager {
 				GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
 			}
 		}
-	}
-
-	private static void parseLineToDroppedPlayers(String line) {
-		String[] droppedPlayer = line.split("_");
-
-		Player p = new Player(droppedPlayer[0]);
-		Tournament.dropZone.add(p);
-		listToGrantScores.add(droppedPlayer);
 	}
 
 	public static void parseProperties(String line2) {
