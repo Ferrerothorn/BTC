@@ -13,6 +13,7 @@ public class Tournament {
 	public static ArrayList<Player> players = new ArrayList<>();
 	public static ArrayList<Player> dropZone = new ArrayList<>();
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
+	public ArrayList<String> namesDroppedAtLastLoad = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	TntFileManager tntfm = new TntFileManager(this);
 	static String roundString;
@@ -844,7 +845,7 @@ public class Tournament {
 		int highestSTB = 0;
 		Player topSTB = null;
 		for (Player p : players) {
-			if (p.getSTB() >= highestSTB && !p.getName().equals("BYE")) {
+			if (p.getSTB() >= highestSTB && !p.getName().equals("BYE") && p.isDropped == false) {
 				topSTB = p;
 				highestSTB = p.getSTB();
 			}
@@ -857,7 +858,7 @@ public class Tournament {
 		int highestOWR = 0;
 		Player hardest = null;
 		for (Player p : players) {
-			if (p.getOppWr() > highestOWR && !p.getName().equals("BYE")) {
+			if (p.getOppWr() > highestOWR && !p.getName().equals("BYE") && p.isDropped == false) {
 				hardest = p;
 				highestOWR = p.getOppWr();
 			}
