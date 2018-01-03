@@ -832,7 +832,7 @@ public class Tournament {
 		int highestSTB = 0;
 		Player topSTB = null;
 		for (Player p : players) {
-			if (p.getSTB() >= highestSTB) {
+			if (p.getSTB() >= highestSTB && !p.getName().equals("BYE")) {
 				topSTB = p;
 				highestSTB = p.getSTB();
 			}
@@ -845,7 +845,7 @@ public class Tournament {
 		int highestOWR = 0;
 		Player hardest = null;
 		for (Player p : players) {
-			if (p.getOppWr() > highestOWR) {
+			if (p.getOppWr() > highestOWR && !p.getName().equals("BYE")) {
 				hardest = p;
 				highestOWR = p.getOppWr();
 			}
