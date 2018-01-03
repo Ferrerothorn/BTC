@@ -585,37 +585,33 @@ public class Tournament {
 			if (b.getP1().getName().equals(nameToDrop) && b.getP2().getName().equals("BYE")) {
 				currentBattles.remove(b);
 				Player toDropZone = b.getP1();
-				players.remove(toDropZone);
-				dropZone.add(toDropZone);
+				toDropZone.drop();
 				Player bye = b.getP2();
 				toDropZone.beats(bye);
-				players.remove(bye);
+				bye.drop();
 				foundPlayerToDrop = true;
 				break;
 			} else if (b.getP2().getName().equals(nameToDrop) && b.getP1().getName().equals("BYE")) {
 				currentBattles.remove(b);
 				Player toDropZone = b.getP2();
-				players.remove(toDropZone);
-				dropZone.add(toDropZone);
+				toDropZone.drop();
 				Player bye = b.getP1();
 				toDropZone.beats(bye);
-				players.remove(bye);
+				bye.drop();
 				foundPlayerToDrop = true;
 				break;
 			} else if (b.getP1().getName().equals(nameToDrop)) {
 				currentBattles.remove(b);
 				Player toDropZone = b.getP1();
 				b.getP2().beats(toDropZone);
-				players.remove(toDropZone);
-				dropZone.add(toDropZone);
+				b.getP1().drop();
 				foundPlayerToDrop = true;
 				break;
 			} else if (b.getP2().getName().equals(nameToDrop)) {
 				currentBattles.remove(b);
 				Player toDropZone = b.getP2();
 				b.getP1().beats(toDropZone);
-				players.remove(toDropZone);
-				dropZone.add(toDropZone);
+				b.getP2().drop();
 				foundPlayerToDrop = true;
 				break;
 			}
