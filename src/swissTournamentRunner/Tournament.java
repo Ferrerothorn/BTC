@@ -192,6 +192,8 @@ public class Tournament {
 			currentBattles.addAll(totallyKosherPairings);
 			totallyKosherPairings.clear();
 
+			players.addAll(dropZone);
+			dropZone.clear();
 			if (attempts > 100) {
 				abort();
 				Utils.print(generateInDepthRankings(players));
