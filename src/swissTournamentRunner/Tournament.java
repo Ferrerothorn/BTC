@@ -275,6 +275,7 @@ public class Tournament {
 
 		if (p1.isDropped()) {
 			dropZone.add(p1);
+			players.remove(p1);
 		} else {
 			try {
 				boolean opponentFound = false;
