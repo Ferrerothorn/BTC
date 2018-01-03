@@ -48,13 +48,10 @@ public class TntFileManager {
 			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
 			output += "Dropped:";
-			for (Player p : Tournament.players) {
-				if(p.isDropped){
-				output += p.getName() + ",";
-				}
+			for(String s : t.namesDroppedAtLastLoad) {
+				output +=s + ",";
 			}
 			output = output.substring(0, output.length() - 1) + "\n";
-
 			try {
 				PrintWriter writer = new PrintWriter(file, "UTF-8");
 				writer.print(output);
