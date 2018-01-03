@@ -271,34 +271,40 @@ public class Tournament {
 
 	public void pairThisGuyUp(Player p1, ArrayList<Battle> targetBattleList, int attempts) {
 		logger.info("pairThisGuyUp: " + p1.getName());
-		try {
-			boolean opponentFound = false;
-			int playerIndex = 0;
 
-			while (!opponentFound) {
-				Player temp = players.get(playerIndex);
-				if (isElimination || (!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1))) {
-					temp = players.remove(playerIndex);
-					Battle b = new Battle(p1, temp);
-					targetBattleList.add(b);
-					break;
+		if (p1.isDropped()) {
+			dropZone.add(p1);
+		} else {
+			try {
+				boolean opponentFound = false;
+				int playerIndex = 0;
+
+				while (!opponentFound) {
+					Player temp = players.get(playerIndex);
+					if (isElimination || (!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1)
+							&& temp.isDropped() != true)) {
+						temp = players.remove(playerIndex);
+						Battle b = new Battle(p1, temp);
+						targetBattleList.add(b);
+						break;
+					}
+					playerIndex++;
 				}
-				playerIndex++;
-			}
-		} catch (Exception e) {
-			if (attempts >= 100) {
-				players.add(p1);
-				abort();
-			} else {
-				disseminateBattles(currentBattles);
-				players.add(p1);
-				sortRankings();
-				players.remove(p1);
-				if (p1.getPositionInRankings() > players.size() / 2) {
-					Collections.reverse(players);
+			} catch (Exception e) {
+				if (attempts >= 100) {
+					players.add(p1);
+					abort();
+				} else {
+					disseminateBattles(currentBattles);
+					players.add(p1);
+					sortRankings();
+					players.remove(p1);
+					if (p1.getPositionInRankings() > players.size() / 2) {
+						Collections.reverse(players);
+					}
+					pairThisGuyUp(p1, totallyKosherPairings, attempts + 1);
+					sortRankings();
 				}
-				pairThisGuyUp(p1, totallyKosherPairings, attempts + 1);
-				sortRankings();
 			}
 		}
 	}
