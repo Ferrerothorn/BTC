@@ -141,7 +141,17 @@ public class Tournament {
 
 	public void addBye() {
 		logger.info("addBye()");
-		if (players.size() % 2 != 0) {
+
+		if (activePlayerSize() % 2 != 0) {
+			rekindleBye();
+		}
+	}
+
+	private void rekindleBye() {
+		Player bye = findPlayerByName("BYE");
+		if (bye != null) {
+			bye.isDropped = false;
+		} else {
 			players.add(new Player("BYE"));
 		}
 	}
