@@ -626,8 +626,7 @@ public class Tournament {
 		if (!foundPlayerToDrop) {
 			for (Player p : players) {
 				if (p.getName().equals(nameToDrop)) {
-					players.remove(p);
-					dropZone.add(p);
+					p.drop();
 					foundPlayerToDrop = true;
 					break;
 				}
@@ -976,17 +975,11 @@ public class Tournament {
 				return p;
 			}
 		}
-		for (Player p : dropZone) {
-			if (p.getName().equals(s)) {
-				return p;
-			}
-		}
 		return null;
 	}
-	
+
 	public void setUpLoggers() {
 		setUpLogger();
 		gui.setUpLogger();
 	}
-
 }
