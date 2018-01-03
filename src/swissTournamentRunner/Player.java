@@ -13,6 +13,7 @@ public class Player implements Comparable<Player> {
 	public int lastDocumentedPosition = 0;
 	public ArrayList<Player> previousRounds = new ArrayList<>();
 	ArrayList<Player> victories = new ArrayList<>();
+	boolean isDropped = false;
 
 	public Player(String string) {
 		name = string;
@@ -212,6 +213,14 @@ public class Player implements Comparable<Player> {
 
 	public void addToListOfPlayed(Player played) {
 		previousRounds.add(played);
+	}
+
+	public void drop() {
+		this.isDropped = true;
+	}
+
+	public boolean isDropped() {
+		return isDropped;
 	}
 
 }
