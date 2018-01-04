@@ -666,14 +666,7 @@ public class Tournament {
 	}
 
 	private int activePlayerSize() {
-		int activePlayers = 0;
-
-		for (Player p : players) {
-			if (dropped.contains(p.getName())) {
-				activePlayers++;
-			}
-		}
-		return activePlayers;
+		return players.size() - dropped.size();
 	}
 
 	public void alterTopCut(String newSize) throws NumberFormatException {
