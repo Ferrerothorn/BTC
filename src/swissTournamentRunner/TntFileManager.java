@@ -97,13 +97,12 @@ public class TntFileManager {
 					t.currentBattles.add(parseLineToBattle(line));
 					line = br.readLine();
 				}
-				t.assignTableNumbers(t.currentBattles);
 				line = br.readLine();
 				while (line != null) {
 					parseProperties(line);
 					line = br.readLine();
 				}
-				addGamesToDropZoneHistory(listToGrantScores);
+				t.assignTableNumbers(t.currentBattles);
 			}
 		} catch (IOException e) {
 			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\"");
@@ -113,36 +112,6 @@ public class TntFileManager {
 			br.close();
 		}
 		t.updateParticipantStats();
-	}
-
-	private static void addGamesToDropZoneHistory(ArrayList<String[]> list) {
-		for (String[] Ss : list) {
-			try {
-				Player p = Tournament.findPlayerByName(Ss[0]);
-
-				String hasBeaten = Ss[1];
-				hasBeaten = hasBeaten.replaceAll("\\[", "");
-				hasBeaten = hasBeaten.replaceAll("\\]", "");
-				String[] playersBeaten = hasBeaten.split(",");
-				for (String ps : playersBeaten) {
-					if (ps.length() > 0) {
-						p.addToListOfVictories(Tournament.findPlayerByName(Utils.trimWhitespace(ps)));
-					}
-				}
-
-				String hasPlayed = Ss[2];
-				hasPlayed = hasPlayed.replaceAll("\\[", "");
-				hasPlayed = hasPlayed.replaceAll("\\]", "");
-				String[] playersPlayed = hasPlayed.split(",");
-				for (String ps : playersPlayed) {
-					if (ps.length() > 0) {
-						p.addToListOfPlayed(Tournament.findPlayerByName(Utils.trimWhitespace(ps)));
-					}
-				}
-			} catch (Exception e) {
-				GUI.postString("Error reading supplied file, starting at line: \"" + line + "\".");
-			}
-		}
 	}
 
 	public static void parseProperties(String line2) {
