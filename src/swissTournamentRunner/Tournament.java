@@ -562,19 +562,19 @@ public class Tournament {
 		addBye();
 	}
 
-	public void renamePlayer(String renameMe, String newName) {
-		logger.info("renamePlayer: " + renameMe + " --> " + newName);
+	public void renamePlayer(String playerToRename, String newName) {
+		logger.info("renamePlayer: " + playerToRename + " --> " + newName);
 		for (Player p : players) {
-			if (p.getName().equals(renameMe)) {
+			if (p.getName().equals(playerToRename)) {
 				p.setName(newName);
 				break;
 			}
 		}
 		for (Battle b : currentBattles) {
-			if (b.getP1().getName().equals(renameMe)) {
+			if (b.getP1().getName().equals(playerToRename)) {
 				b.getP1().setName(newName);
 				break;
-			} else if (b.getP2().getName().equals(renameMe)) {
+			} else if (b.getP2().getName().equals(playerToRename)) {
 				b.getP2().setName(newName);
 				break;
 			}
