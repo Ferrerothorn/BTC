@@ -88,4 +88,49 @@ public class Utils {
 		return "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
 	}
 
+	public static boolean dropPlayerMidBattle(String nameToDrop, ArrayList<Battle> currentBattles, ArrayList<String> dropped) {
+		for (Battle b : currentBattles) {
+			if (b.getP1().getName().equals(nameToDrop) && b.getP2().getName().equals("BYE")) {
+				currentBattles.remove(b);
+				Player toDropZone = b.getP1();
+				dropped.add(toDropZone.getName());
+				Player bye = b.getP2();
+				toDropZone.beats(bye);
+				dropped.add("BYE");
+				return true;
+			} else if (b.getP2().getName().equals(nameToDrop) && b.getP1().getName().equals("BYE")) {
+				currentBattles.remove(b);
+				Player toDropZone = b.getP2();
+				dropped.add(toDropZone.getName());
+				Player bye = b.getP1();
+				toDropZone.beats(bye);
+				dropped.add("BYE");
+				return true;
+			} else if (b.getP1().getName().equals(nameToDrop)) {
+				currentBattles.remove(b);
+				Player toDropZone = b.getP1();
+				b.getP2().beats(toDropZone);
+				dropped.add(b.getP1().getName());
+				return true;
+			} else if (b.getP2().getName().equals(nameToDrop)) {
+				currentBattles.remove(b);
+				Player toDropZone = b.getP2();
+				b.getP1().beats(toDropZone);
+				dropped.add(b.getP2().getName());
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean dropPlayerOutsideBattle(ArrayList<Player> players, String nameToDrop, ArrayList<Battle> currentBattles, ArrayList<String> dropped) {
+		for (Player p : players) {
+			if (p.getName().equals(nameToDrop)) {
+				dropped.add(p.getName());
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
