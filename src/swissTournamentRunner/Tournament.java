@@ -142,11 +142,10 @@ public class Tournament {
 
 	public void addBye() {
 		logger.info("addBye()");
-		if(dropped.contains("BYE")) {
+		if (dropped.contains("BYE")) {
 			dropped.remove("BYE");
-		}
-		else {
-			if (findPlayerByName("BYE")  == null) {
+		} else {
+			if (findPlayerByName("BYE") == null && activePlayerSize() % 2 == 1) {
 				addPlayer("BYE");
 			}
 		}
