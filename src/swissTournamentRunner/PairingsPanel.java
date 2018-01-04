@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 
 import net.miginfocom.swing.MigLayout;
 
+@SuppressWarnings("serial")
 public class PairingsPanel extends JFrame {
 
 	public ArrayList<Battle> currentBattles;
