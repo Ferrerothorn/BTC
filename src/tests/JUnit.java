@@ -872,8 +872,8 @@ public class JUnit {
 		t.addPlayer(p1);
 		t.addPlayer(p2);
 		t.x_elimination = 1;
+		t.isElimination = true;
 		p1.beats(p2);
-		t.elimination();
 		assertEquals(1, Tournament.players.size());
 	}
 
