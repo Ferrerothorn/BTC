@@ -25,6 +25,7 @@ public class GUI implements ActionListener {
 	public JFrame seedPanel;
 	public JButton reportResults;
 	public static Logger logger = Logger.getLogger(GUI.class.getName());
+
 	public GUI(Tournament t) {
 		logger.info("Created GUI.");
 		tourney = t;
@@ -352,6 +353,8 @@ public class GUI implements ActionListener {
 								seed1.removeItem(p2.getName());
 								seed2.removeItem(p1.getName());
 								seed2.removeItem(p2.getName());
+								logger.info("Game between " + p1.getName() + " and " + p2.getName()
+										+ " was seeded for Round 1.");
 								tourney.postListOfConfirmedSignups();
 							}
 						}
@@ -376,6 +379,7 @@ public class GUI implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if (tourney.currentBattles.size() > 0) {
 					JFrame pairingsPanel = new JFrame("Report Results");
+					logger.info("T.O. opened the button reporting interface.");
 					pairingsPanel.setExtendedState(pairingsPanel.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 					pairingsPanel.setLayout(new MigLayout("fill,wrap 5"));
 					for (Battle b : t.currentBattles) {
@@ -394,7 +398,8 @@ public class GUI implements ActionListener {
 								t.setUserSelection("P1");
 								t.updateParticipantStats();
 								t.sortRankings();
-								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
+								pairingsBox
+										.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
 								resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
 								pairingsPanel.dispose();
 								if (t.currentBattles.size() != 0) {
@@ -413,7 +418,8 @@ public class GUI implements ActionListener {
 								t.setUserSelection("P2");
 								t.updateParticipantStats();
 								t.sortRankings();
-								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
+								pairingsBox
+										.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
 								resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
 								pairingsPanel.dispose();
 								if (t.currentBattles.size() != 0) {
@@ -463,6 +469,7 @@ public class GUI implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 		String text = textField.getText();
+		logger.info("Command line input recieved: " + text);
 		tourney.setUserSelection(text);
 		if (text.length() > 0) {
 			if (text.length() <= 30) {
