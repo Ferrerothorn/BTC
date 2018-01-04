@@ -25,7 +25,7 @@ public class Tournament {
 	public int numberOfRounds;
 	public int roundNumber = 1;
 	public GUI gui;
-	public int x_elimination = 99999;
+	public int x_elimination = 0;
 	public Boolean isElimination = false;
 	public String activeMetadataFile = "TournamentInProgress.tnt";
 	public static Logger logger = Logger.getLogger(Tournament.class.getName());
@@ -366,6 +366,8 @@ public class Tournament {
 						String winner = readInput();
 						if (winner.equals("1") || winner.equals("2") || winner.equals("0")) {
 							Utils.handleBattleWinner(b, winner);
+							eliminationChecker(b.getP1());
+							eliminationChecker(b.getP2());
 						} else {
 							currentBattles.add(b);
 						}
@@ -382,12 +384,17 @@ public class Tournament {
 					break;
 				}
 			} catch (Exception e) {
-				// print("Illegal input.");
 				GUI.wipePane();
 				pollForResults();
 			}
 			GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 			save();
+		}
+	}
+
+	private void eliminationChecker(Player p1) {
+		if (isElimination && x_elimination >0 &&   (p1.getListOfNamesPlayed().size() - p1.getListOfNamesBeaten().size() >x_elimination)) {
+			dropPlayer(p1.getName());
 		}
 	}
 
@@ -731,12 +738,6 @@ public class Tournament {
 		return results;
 	}
 
-	public void elimination() {
-		logger.info("elimination");
-		Eliminator elim = new Eliminator(players, this);
-		elim.eliminate();
-	}
-
 	public void setAllParticipantsIn(boolean b) {
 		allParticipantsIn = b;
 	}
@@ -870,9 +871,7 @@ public class Tournament {
 			GUI.postResultsString(generateInDepthRankings(players));
 			GUI.pairingsBox.setCaretPosition(0);
 			pollForResults();
-			if (isElimination) {
-				elimination();
-			} else {
+			if (!isElimination) {
 				roundNumber++;
 			}
 		}
