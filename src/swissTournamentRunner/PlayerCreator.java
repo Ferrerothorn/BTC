@@ -19,7 +19,8 @@ public class PlayerCreator {
 			t.print("Enter the name of the next participant. ");
 			t.print("While registering players, enter 'drop' to remove a player before we begin.");
 			t.print("When satisfied, hit the [START] button to seed initial pairings and/or start round 1.");
-			t.print("Current Participants: " + playerNumbers + "  Rounds required: " + t.logBase2(Tournament.players.size()));
+			t.print("Current Participants: " + playerNumbers + "  Rounds required: "
+					+ t.logBase2(Tournament.players.size()));
 			t.print("");
 			t.waitForUserInput();
 			String input = t.readInput();
@@ -32,22 +33,11 @@ public class PlayerCreator {
 		try {
 			switch (input.toLowerCase()) {
 			case "drop":
-				t.print("Enter the player number (shown below) or comma-separated list of numbers of the player(s) you'd like to remove.");
+				t.print("Enter the player number (shown below) of the player you'd like to remove.");
 				t.waitForUserInput();
 				String dropMe = t.readInput();
-				if (!dropMe.contains(",")) {
-					dropPlayerByIndex(dropMe);
-					break;
-				} else {
-					String[] indexes = dropMe.split(",");
-					for (String s : indexes) {
-						s = Utils.trimWhitespace(s);
-					}
-					for (String s : indexes) {
-						dropPlayerByIndex(s);
-					}
-					break;
-				}
+				dropPlayerByIndex(dropMe);
+				break;
 			case "no":
 				break;
 			case "seed":
