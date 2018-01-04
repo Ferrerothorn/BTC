@@ -281,6 +281,8 @@ public class Tournament {
 							&& !dropped.contains(temp.getName()))) {
 						temp = players.remove(playerIndex);
 						Battle b = new Battle(p1, temp);
+						logger.info("Pairing decided between: " + p1.getName() + " (" + p1.lastDocumentedPosition + ") "
+								+ " and " + temp.getName() + " (" + temp.lastDocumentedPosition + ").");
 						targetBattleList.add(b);
 						break;
 					}
