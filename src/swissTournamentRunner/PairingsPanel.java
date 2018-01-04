@@ -34,8 +34,8 @@ public class PairingsPanel extends JFrame {
 					t.setUserSelection("P1");
 					t.updateParticipantStats();
 					t.sortRankings();
-					t.gui.pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-					t.gui.resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
+					GUI.pairingsBox.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
+					GUI.resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
 					pairingsPanel.remove(tableLabel);
 					pairingsPanel.remove(p1Button);
 					pairingsPanel.remove(vs);
@@ -53,8 +53,8 @@ public class PairingsPanel extends JFrame {
 					t.setUserSelection("P2");
 					t.updateParticipantStats();
 					t.sortRankings();
-					t.gui.pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-					t.gui.resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
+					GUI.pairingsBox.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
+					GUI.resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
 					pairingsPanel.remove(tableLabel);
 					pairingsPanel.remove(p1Button);
 					pairingsPanel.remove(vs);
