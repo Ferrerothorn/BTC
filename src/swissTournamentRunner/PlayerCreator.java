@@ -11,15 +11,15 @@ public class PlayerCreator {
 	public void capturePlayers() {
 		GUI.wipePane();
 		while (!t.allParticipantsIn) {
-			int playerNumbers = (t.players.size() + (t.currentBattles.size() * 2));
-			if (t.findPlayerByName("BYE") != null) {
+			int playerNumbers = (Tournament.players.size() + (t.currentBattles.size() * 2));
+			if (Tournament.findPlayerByName("BYE") != null) {
 				playerNumbers--;
 			}
 
 			t.print("Enter the name of the next participant. ");
 			t.print("While registering players, enter 'drop' to remove a player before we begin.");
 			t.print("When satisfied, hit the [START] button to seed initial pairings and/or start round 1.");
-			t.print("Current Participants: " + playerNumbers + "  Rounds required: " + t.logBase2(t.players.size()));
+			t.print("Current Participants: " + playerNumbers + "  Rounds required: " + t.logBase2(Tournament.players.size()));
 			t.print("");
 			t.waitForUserInput();
 			String input = t.readInput();
@@ -55,10 +55,10 @@ public class PlayerCreator {
 				t.waitForUserInput();
 				int pairP1 = Integer.parseInt(t.readInput());
 				pairP1--;
-				Player p1 = t.players.get(pairP1);
+				Player p1 = Tournament.players.get(pairP1);
 				t.print("\nSeed chosen as " + p1.getName() + ".");
 
-				if (pairP1 < 0 || pairP1 > t.players.size()) {
+				if (pairP1 < 0 || pairP1 > Tournament.players.size()) {
 					t.print("Invalid input - initial seeding aborted.");
 					break;
 				}
@@ -67,17 +67,17 @@ public class PlayerCreator {
 				t.waitForUserInput();
 				int pairP2 = Integer.parseInt(t.readInput());
 				pairP2--;
-				Player p2 = t.players.get(pairP2);
+				Player p2 = Tournament.players.get(pairP2);
 
-				if (pairP2 < 0 || pairP2 > t.players.size()) {
+				if (pairP2 < 0 || pairP2 > Tournament.players.size()) {
 					t.print("Invalid input - initial seeding aborted.");
 					break;
 				}
 
 				if (pairP1 != pairP2) {
 					t.updateParticipantStats();
-					t.players.remove(p1);
-					t.players.remove(p2);
+					Tournament.players.remove(p1);
+					Tournament.players.remove(p2);
 					t.initialSeed(p1, p2);
 					t.print("\nSeeded " + p1.getName() + " with " + p2.getName() + " for Round 1.");
 					t.postListOfConfirmedSignups();
@@ -112,8 +112,8 @@ public class PlayerCreator {
 		int index = Integer.parseInt(dropMe);
 
 		index--;
-		if (index >= 0 && index < t.players.size()) {
-			Player p = t.players.remove(index);
+		if (index >= 0 && index < Tournament.players.size()) {
+			Player p = Tournament.players.remove(index);
 			t.print("Removed " + p.getName() + ".");
 		} else {
 			t.print("Player at index " + dropMe + 1 + " does not exist.");
