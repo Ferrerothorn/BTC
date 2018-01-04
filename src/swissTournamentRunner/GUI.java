@@ -25,7 +25,6 @@ public class GUI implements ActionListener {
 	public JFrame seedPanel;
 	public JButton reportResults;
 	public static Logger logger = Logger.getLogger(GUI.class.getName());
-
 	public GUI(Tournament t) {
 		logger.info("Created GUI.");
 		tourney = t;
@@ -187,6 +186,10 @@ public class GUI implements ActionListener {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
+					playerNames.remove("BYE");
+					for (String s : t.dropped) {
+						playerNames.remove(s);
+					}
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
 					JComboBox input = new JComboBox(ps);
 					JButton dropSubmitButton = new JButton("Submit");
