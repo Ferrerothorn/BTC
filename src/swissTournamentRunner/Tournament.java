@@ -13,7 +13,7 @@ public class Tournament {
 	public static ArrayList<Player> players = new ArrayList<>();
 	public static ArrayList<Player> dropZone = new ArrayList<>();
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
-	public ArrayList<String> namesDroppedAtLastLoad = new ArrayList<>();
+	public ArrayList<String> dropped = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	TntFileManager tntfm = new TntFileManager(this);
 	static String roundString;
@@ -36,7 +36,7 @@ public class Tournament {
 			print("Enter the name of this tournament.");
 			waitForUserInput();
 			activeMetadataFile = readInput();
-			gui.frame.setTitle(activeMetadataFile);
+			GUI.frame.setTitle(activeMetadataFile);
 			if (!activeMetadataFile.contains(".tnt")) {
 				activeMetadataFile += ".tnt";
 			}
@@ -142,18 +142,13 @@ public class Tournament {
 
 	public void addBye() {
 		logger.info("addBye()");
-
-		if (activePlayerSize() % 2 != 0) {
-			rekindleBye();
+		if(dropped.contains("BYE")) {
+			dropped.remove("BYE");
 		}
-	}
-
-	private void rekindleBye() {
-		Player bye = findPlayerByName("BYE");
-		if (bye != null) {
-			bye.isDropped = false;
-		} else {
-			players.add(new Player("BYE"));
+		else {
+			if (findPlayerByName("BYE")  == null) {
+				addPlayer("BYE");
+			}
 		}
 	}
 
@@ -273,7 +268,7 @@ public class Tournament {
 	public void pairThisGuyUp(Player p1, ArrayList<Battle> targetBattleList, int attempts) {
 		logger.info("pairThisGuyUp: " + p1.getName());
 
-		if (p1.isDropped()) {
+		if (dropped.contains(p1.getName())) {
 			dropZone.add(p1);
 			players.remove(p1);
 		} else {
@@ -284,7 +279,7 @@ public class Tournament {
 				while (!opponentFound) {
 					Player temp = players.get(playerIndex);
 					if (isElimination || (!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1)
-							&& temp.isDropped() != true)) {
+							&& !dropped.contains(temp.getName()))) {
 						temp = players.remove(playerIndex);
 						Battle b = new Battle(p1, temp);
 						targetBattleList.add(b);
@@ -384,7 +379,7 @@ public class Tournament {
 				}
 			} catch (Exception e) {
 				// print("Illegal input.");
-				gui.wipePane();
+				GUI.wipePane();
 				pollForResults();
 			}
 			GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
@@ -575,10 +570,10 @@ public class Tournament {
 			}
 		}
 		for (Battle b : currentBattles) {
-			if (b.getP1().equals(renameMe)) {
+			if (b.getP1().getName().equals(renameMe)) {
 				b.getP1().setName(newName);
 				break;
-			} else if (b.getP2().equals(renameMe)) {
+			} else if (b.getP2().getName().equals(renameMe)) {
 				b.getP2().setName(newName);
 				break;
 			}
@@ -593,33 +588,33 @@ public class Tournament {
 			if (b.getP1().getName().equals(nameToDrop) && b.getP2().getName().equals("BYE")) {
 				currentBattles.remove(b);
 				Player toDropZone = b.getP1();
-				toDropZone.drop();
+				dropped.add(toDropZone.getName());
 				Player bye = b.getP2();
 				toDropZone.beats(bye);
-				bye.drop();
+				dropped.add("BYE");
 				foundPlayerToDrop = true;
 				break;
 			} else if (b.getP2().getName().equals(nameToDrop) && b.getP1().getName().equals("BYE")) {
 				currentBattles.remove(b);
 				Player toDropZone = b.getP2();
-				toDropZone.drop();
+				dropped.add(toDropZone.getName());
 				Player bye = b.getP1();
 				toDropZone.beats(bye);
-				bye.drop();
+				dropped.add("BYE");
 				foundPlayerToDrop = true;
 				break;
 			} else if (b.getP1().getName().equals(nameToDrop)) {
 				currentBattles.remove(b);
 				Player toDropZone = b.getP1();
 				b.getP2().beats(toDropZone);
-				b.getP1().drop();
+				dropped.add(b.getP1().getName());
 				foundPlayerToDrop = true;
 				break;
 			} else if (b.getP2().getName().equals(nameToDrop)) {
 				currentBattles.remove(b);
 				Player toDropZone = b.getP2();
 				b.getP1().beats(toDropZone);
-				b.getP2().drop();
+				dropped.add(b.getP2().getName());
 				foundPlayerToDrop = true;
 				break;
 			}
@@ -628,7 +623,7 @@ public class Tournament {
 		if (!foundPlayerToDrop) {
 			for (Player p : players) {
 				if (p.getName().equals(nameToDrop)) {
-					p.drop();
+					dropped.add(p.getName());
 					foundPlayerToDrop = true;
 					break;
 				}
@@ -674,7 +669,7 @@ public class Tournament {
 		int activePlayers = 0;
 
 		for (Player p : players) {
-			if (p.isDropped() != true) {
+			if (dropped.contains(p.getName())) {
 				activePlayers++;
 			}
 		}
@@ -922,7 +917,7 @@ public class Tournament {
 		logger.info("run");
 		while (roundNumber <= getNumberOfRounds() && players.size() > 1) {
 			Collections.shuffle(players);
-			gui.wipePane();
+			GUI.wipePane();
 			updateParticipantStats();
 
 			sortRankings();
@@ -934,8 +929,8 @@ public class Tournament {
 			save();
 			sortRankings();
 			gui.refreshReportResults(gui.seedPanel);
-			gui.postResultsString(generateInDepthRankings(players));
-			gui.pairingsBox.setCaretPosition(0);
+			GUI.postResultsString(generateInDepthRankings(players));
+			GUI.pairingsBox.setCaretPosition(0);
 			pollForResults();
 			if (isElimination) {
 				elimination();
