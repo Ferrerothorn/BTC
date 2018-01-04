@@ -69,7 +69,7 @@ public class GUI implements ActionListener {
 					tourney.elo = tourney.toggle(tourney.elo);
 					pairingsBox.setCaretPosition(0);
 					logger.info("User toggled ELO display to " + tourney.elo + ".");
-					postString(tourney.getCurrentBattles(tourney.currentBattles, tourney.roundString));
+					postString(tourney.getCurrentBattles(tourney.currentBattles, Tournament.roundString));
 					tourney.save();
 				}
 			}
@@ -109,7 +109,7 @@ public class GUI implements ActionListener {
 				if (tourney.currentBattles.size() > 0) {
 					pairingsBox.setCaretPosition(0);
 					pairingsBox.setText(tourney.getResultsOfAllMatchesSoFar() + "\n");
-					postString(tourney.getCurrentBattles(tourney.currentBattles, tourney.roundString));
+					postString(tourney.getCurrentBattles(tourney.currentBattles, Tournament.roundString));
 				}
 			}
 		});
@@ -123,7 +123,7 @@ public class GUI implements ActionListener {
 					matchesOfButtonFrame.setSize(450, 150);
 					matchesOfButtonFrame.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : tourney.players) {
+					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
@@ -138,7 +138,7 @@ public class GUI implements ActionListener {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							String selected = players.getSelectedItem().toString();
-							tourney.printHistory(t.findPlayerByName(selected));
+							tourney.printHistory(Tournament.findPlayerByName(selected));
 							logger.info("T.O. enquired into " + selected + "'s history.");
 							tourney.save();
 						}
@@ -176,13 +176,14 @@ public class GUI implements ActionListener {
 
 		JButton dropPlayersButton = new JButton("Drop Player");
 		dropPlayersButton.addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
 				if (tourney.currentBattles.size() > 0) {
 					JFrame dropPlayersBox = new JFrame("Drop Player");
 					dropPlayersBox.setSize(450, 150);
 					dropPlayersBox.setLayout(new GridLayout());
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : tourney.players) {
+					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
@@ -214,7 +215,7 @@ public class GUI implements ActionListener {
 					nameEditor.setSize(450, 150);
 					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : tourney.players) {
+					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
@@ -239,8 +240,8 @@ public class GUI implements ActionListener {
 							String newName = editedName.getText();
 							tourney.renamePlayer(oldName, newName);
 							pairingsBox.setText(
-									tourney.getCurrentBattles(tourney.currentBattles, tourney.roundString) + "\n");
-							resultsBox.setText(tourney.generateInDepthRankings(tourney.players) + "\n");
+									tourney.getCurrentBattles(tourney.currentBattles, Tournament.roundString) + "\n");
+							resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
 							tourney.save();
 							nameEditor.dispose();
 						}
@@ -252,13 +253,14 @@ public class GUI implements ActionListener {
 
 		JButton reopenGameButton = new JButton("Reopen Game");
 		reopenGameButton.addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
 			public void actionPerformed(ActionEvent e) {
 				if (tourney.currentBattles.size() > 0) {
 					JFrame nameEditor = new JFrame("Reopen Game");
 					nameEditor.setSize(450, 150);
 					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : tourney.players) {
+					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
@@ -273,17 +275,17 @@ public class GUI implements ActionListener {
 					submitEditName.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							Player p1 = t.findPlayerByName(p1s.getSelectedItem().toString());
-							Player p2 = t.findPlayerByName(p2s.getSelectedItem().toString());
+							Player p1 = Tournament.findPlayerByName(p1s.getSelectedItem().toString());
+							Player p2 = Tournament.findPlayerByName(p2s.getSelectedItem().toString());
 							if (p1.getName().equals(p2.getName())) {
 								postString("A player can't possibly have played themself.\n");
 							} else {
 								Boolean reopened = tourney.reopenBattle(p1, p2);
 								if (reopened) {
 									pairingsBox.setText(
-											tourney.getCurrentBattles(tourney.currentBattles, tourney.roundString)
+											tourney.getCurrentBattles(tourney.currentBattles, Tournament.roundString)
 													+ "\n");
-									resultsBox.setText(tourney.generateInDepthRankings(tourney.players) + "\n");
+									resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
 									postString("Game between " + p1.getName() + " and  " + p2.getName() + " reopened.");
 								} else {
 									postString("Could not reopen game between " + p1.getName() + " and " + p2.getName()
@@ -314,12 +316,14 @@ public class GUI implements ActionListener {
 						}
 					});
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : tourney.players) {
+					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
+					@SuppressWarnings("unchecked")
 					JComboBox seed1 = new JComboBox(ps);
+					@SuppressWarnings("unchecked")
 					JComboBox seed2 = new JComboBox(ps);
 					JButton submitPair = new JButton("Seed Pairing");
 					JButton start = new JButton("Start Tournament");
@@ -334,10 +338,10 @@ public class GUI implements ActionListener {
 							String n1 = seed1.getSelectedItem().toString();
 							String n2 = seed2.getSelectedItem().toString();
 							if (!n1.equals(n2)) {
-								Player p1 = t.findPlayerByName(n1);
-								Player p2 = t.findPlayerByName(n2);
-								tourney.players.remove(p1);
-								tourney.players.remove(p2);
+								Player p1 = Tournament.findPlayerByName(n1);
+								Player p2 = Tournament.findPlayerByName(n2);
+								Tournament.players.remove(p1);
+								Tournament.players.remove(p2);
 								Battle b = new Battle(p1, p2);
 								b.wasSeeded = true;
 								tourney.currentBattles.add(b);
@@ -387,8 +391,8 @@ public class GUI implements ActionListener {
 								t.setUserSelection("P1");
 								t.updateParticipantStats();
 								t.sortRankings();
-								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-								resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
+								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
+								resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
 								pairingsPanel.dispose();
 								if (t.currentBattles.size() != 0) {
 									reportResults.doClick();
@@ -406,8 +410,8 @@ public class GUI implements ActionListener {
 								t.setUserSelection("P2");
 								t.updateParticipantStats();
 								t.sortRankings();
-								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-								resultsBox.setText(t.generateInDepthRankings(t.players) + "\n");
+								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
+								resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
 								pairingsPanel.dispose();
 								if (t.currentBattles.size() != 0) {
 									reportResults.doClick();
