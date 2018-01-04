@@ -866,6 +866,7 @@ public class Tournament {
 				roundNumber = 1;
 				numberOfRounds = logBase2(players.size());
 				topCutThreshold = 0;
+				dropped.clear();
 				run();
 			} else {
 				GUI.postString("Thanks to everyone for taking part!");
