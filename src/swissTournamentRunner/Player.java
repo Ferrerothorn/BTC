@@ -214,13 +214,4 @@ public class Player implements Comparable<Player> {
 	public void addToListOfPlayed(Player played) {
 		previousRounds.add(played);
 	}
-
-	public void drop() {
-		this.isDropped = true;
-	}
-
-	public boolean isDropped() {
-		return isDropped;
-	}
-
 }
