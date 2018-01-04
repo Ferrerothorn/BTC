@@ -444,12 +444,12 @@ public class GUI implements ActionListener {
 		pairingsBox = new JTextArea(20, 60);
 		pairingsBox.setEditable(false);
 		pairingsBox.setLineWrap(true);
-		pairingsBox.setFont(new Font("monospaced", Font.PLAIN, 16));
+		pairingsBox.setFont(new Font("Gadugi", Font.PLAIN, 24));
 
 		resultsBox = new JTextArea(20, 30);
 		resultsBox.setEditable(false);
 		resultsBox.setLineWrap(false);
-		resultsBox.setFont(new Font("monospaced", Font.PLAIN, 14));
+		resultsBox.setFont(new Font("Gadugi", Font.PLAIN, 20));
 
 		JLabel inputLabel = new JLabel(" Enter options here: ");
 		textField = new JTextField(500);
