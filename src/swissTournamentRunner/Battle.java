@@ -28,8 +28,8 @@ public class Battle implements Comparable<Battle> {
 		return tableNumber;
 	}
 
-	public boolean contains(Player winner) {
-		if (p1 == winner || p2 == winner) {
+	public boolean contains(Player nameOfPlayer) {
+		if (p1 == nameOfPlayer || p2 == nameOfPlayer) {
 			return true;
 		}
 		return false;
@@ -75,7 +75,7 @@ public class Battle implements Comparable<Battle> {
 		return Math.abs(getElo(p1) - getElo(p2));
 	}
 
-	public boolean contains(String winner) {
-		return (p1.name.equals(winner) || p2.name.equals(winner));
+	public boolean contains(String checkForName) {
+		return (p1.getName().equals(checkForName) || p2.getName().equals(checkForName));
 	}
 }
