@@ -71,7 +71,6 @@ public class Tournament {
 		if (!allParticipantsIn) {
 			postListOfConfirmedSignups();
 		}
-		// addBye();
 	}
 
 	public void postListOfConfirmedSignups() {
@@ -582,59 +581,28 @@ public class Tournament {
 	public void dropPlayer(String nameToDrop) {
 		logger.info("dropPlayer: " + nameToDrop);
 
-		Boolean foundPlayerToDrop = false;
-		for (Battle b : currentBattles) {
-			if (b.getP1().getName().equals(nameToDrop) && b.getP2().getName().equals("BYE")) {
-				currentBattles.remove(b);
-				Player toDropZone = b.getP1();
-				dropped.add(toDropZone.getName());
-				Player bye = b.getP2();
-				toDropZone.beats(bye);
-				dropped.add("BYE");
-				foundPlayerToDrop = true;
-				break;
-			} else if (b.getP2().getName().equals(nameToDrop) && b.getP1().getName().equals("BYE")) {
-				currentBattles.remove(b);
-				Player toDropZone = b.getP2();
-				dropped.add(toDropZone.getName());
-				Player bye = b.getP1();
-				toDropZone.beats(bye);
-				dropped.add("BYE");
-				foundPlayerToDrop = true;
-				break;
-			} else if (b.getP1().getName().equals(nameToDrop)) {
-				currentBattles.remove(b);
-				Player toDropZone = b.getP1();
-				b.getP2().beats(toDropZone);
-				dropped.add(b.getP1().getName());
-				foundPlayerToDrop = true;
-				break;
-			} else if (b.getP2().getName().equals(nameToDrop)) {
-				currentBattles.remove(b);
-				Player toDropZone = b.getP2();
-				b.getP1().beats(toDropZone);
-				dropped.add(b.getP2().getName());
-				foundPlayerToDrop = true;
-				break;
-			}
+		Boolean droppedSomeone = Utils.dropPlayerMidBattle(nameToDrop, currentBattles, dropped);
+
+		if (!droppedSomeone) {
+			droppedSomeone = Utils.dropPlayerOutsideBattle(players, nameToDrop, currentBattles, dropped);
 		}
 
-		if (!foundPlayerToDrop) {
-			for (Player p : players) {
-				if (p.getName().equals(nameToDrop)) {
-					dropped.add(p.getName());
-					foundPlayerToDrop = true;
-					break;
-				}
+		if (droppedSomeone && activePlayerSize() % 2 == 1 && findPlayerByName("BYE") != null
+				&& !dropped.contains("BYE")) {
+			dropped.add("BYE");
+		} else {
+			if (droppedSomeone && activePlayerSize() % 2 == 1 && findPlayerByName("BYE") != null
+					&& dropped.contains("BYE")) {
+				dropped.remove("BYE");
 			}
-		}
-
-		if (topCutThreshold >= activePlayerSize()) {
-			topCutThreshold = 0;
 		}
 
 		if (!nameToDrop.equals("BYE") && (activePlayerSize() % 2 == 1)) {
 			dropPlayer("BYE");
+		}
+
+		if (topCutThreshold >= activePlayerSize()) {
+			topCutThreshold = 0;
 		}
 
 		if ((activePlayerSize() % 2 == 1) && doesPlayerExist("BYE")) {
