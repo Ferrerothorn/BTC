@@ -60,10 +60,13 @@ public class Tournament {
 		if (doesPlayerExist("BYE") && !doesPlayerExist(p1)) {
 			renamePlayer("BYE", p1);
 		}
-		if (!doesPlayerExist(p1)) {
+		else if (!doesPlayerExist(p1)) {
 			if (p1.length() > 0) {
 				players.add(new Player(p1));
 			}
+		}
+		else {
+			dropped.remove(p1);
 		}
 		while (numberOfRounds < (logBase2(players.size()))) {
 			numberOfRounds++;
