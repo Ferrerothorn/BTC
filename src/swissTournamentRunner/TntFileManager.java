@@ -42,17 +42,15 @@ public class TntFileManager {
 			output += "PROPERTIES:\n";
 			output += "On Round:" + t.roundNumber + "\n";
 			output += "numberOfRounds:" + t.numberOfRounds + "\n";
-			if (t.isElimination) {
-				output += "elimination:" + t.x_elimination + "\n";
-			}
+			output += "elimination:" + t.x_elimination + "\n";
 			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
 			output += "Dropped:";
-			for(String s : t.dropped) {
-				output +=s + ",";
+			for (String s : t.dropped) {
+				output += s + ",";
 			}
 			if (t.dropped.size() != 0) {
-			output = output.substring(0, output.length() - 1) + "\n";
+				output = output.substring(0, output.length() - 1) + "\n";
 			}
 			try {
 				PrintWriter writer = new PrintWriter(file, "UTF-8");
@@ -82,7 +80,7 @@ public class TntFileManager {
 
 			if (line.contains("PLAYERS")) {
 				line = br.readLine();
-				
+
 				while (!line.contains("VICTORIES")) {
 					t.addBatch(line);
 					line = br.readLine();
@@ -129,7 +127,9 @@ public class TntFileManager {
 				break;
 			case "elimination":
 				t.x_elimination = Integer.parseInt(propertyPair[1]);
-				t.elimination();
+				if (t.x_elimination > 0) {
+					t.isElimination = true;
+				}
 				break;
 			case "topcut":
 				int tC = Integer.parseInt(propertyPair[1]);
