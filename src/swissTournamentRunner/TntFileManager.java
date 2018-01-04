@@ -51,7 +51,9 @@ public class TntFileManager {
 			for(String s : t.dropped) {
 				output +=s + ",";
 			}
+			if (t.dropped.size() != 0) {
 			output = output.substring(0, output.length() - 1) + "\n";
+			}
 			try {
 				PrintWriter writer = new PrintWriter(file, "UTF-8");
 				writer.print(output);
@@ -140,7 +142,7 @@ public class TntFileManager {
 					t.setElo("on");
 				}
 				break;
-			case "Dropped":
+			case "dropped":
 				String[] dropouts = propertyPair[1].split(",");
 				for (String s : dropouts) {
 					t.dropped.add(s);
