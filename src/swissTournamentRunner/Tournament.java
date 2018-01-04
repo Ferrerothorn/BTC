@@ -583,56 +583,27 @@ public class Tournament {
 
 	public void dropPlayer(String nameToDrop) {
 		logger.info("dropPlayer: " + nameToDrop);
+		dropped.add(nameToDrop);
 
-		Boolean droppedSomeone = Utils.dropPlayerMidBattle(nameToDrop, currentBattles, dropped);
-
-		if (!droppedSomeone) {
-			droppedSomeone = Utils.dropPlayerOutsideBattle(players, nameToDrop, currentBattles, dropped);
-		}
-
-		if (droppedSomeone && activePlayerSize() % 2 == 1 && findPlayerByName("BYE") != null
-				&& !dropped.contains("BYE")) {
-			dropped.add("BYE");
-		} else {
-			if (droppedSomeone && activePlayerSize() % 2 == 1 && findPlayerByName("BYE") != null
-					&& dropped.contains("BYE")) {
-				dropped.remove("BYE");
-			}
-		}
-
-		if (!nameToDrop.equals("BYE") && (activePlayerSize() % 2 == 1)) {
-			dropPlayer("BYE");
-		}
-
-		if (topCutThreshold >= activePlayerSize()) {
-			topCutThreshold = 0;
-		}
-
-		if ((activePlayerSize() % 2 == 1) && doesPlayerExist("BYE")) {
-			Battle byeMatch = null;
-			for (Battle b : currentBattles) {
-				if (b.getP1().getName().equals("BYE")) {
-					byeMatch = b;
+		for (Battle b : currentBattles) {
+			if (b.contains(nameToDrop)) {
+				if (b.getP1().getName().equals(nameToDrop)) {
 					b.getP2().beats(b.getP1());
-					b = null;
-				} else if (b.getP2().getName().equals("BYE")) {
-					byeMatch = b;
+				} else {
 					b.getP1().beats(b.getP2());
-					b = null;
 				}
-			}
-			if (byeMatch != null) {
-				currentBattles.remove(byeMatch);
-			}
-			dropPlayer("BYE");
-		}
-
-		if (!isElimination) {
-			while (numberOfRounds > players.size()) {
-				numberOfRounds--;
+				currentBattles.remove(b);
+				GUI.pairingsBox.setText(getCurrentBattles(currentBattles, roundString));
+				updateParticipantStats();
+				GUI.resultsBox.setText(generateInDepthRankings(players) + "\n");
+				break;
 			}
 		}
-		addBye();
+		if (doesPlayerExist("BYE") && dropped.contains("BYE")) {
+			dropped.remove("BYE");
+		} else if (doesPlayerExist("BYE") && !dropped.contains("BYE")) {
+			dropped.add("BYE");
+		}
 	}
 
 	private int activePlayerSize() {
