@@ -13,7 +13,7 @@ public class Tournament {
 	public static ArrayList<Player> players = new ArrayList<>();
 	public static ArrayList<Player> dropZone = new ArrayList<>();
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
-	public ArrayList<String> dropped = new ArrayList<>();
+	public static ArrayList<String> dropped = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	TntFileManager tntfm = new TntFileManager(this);
 	static String roundString;
