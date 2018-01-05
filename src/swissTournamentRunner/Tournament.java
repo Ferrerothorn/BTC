@@ -59,13 +59,11 @@ public class Tournament {
 		logger.info("addPlayer: " + p1);
 		if (doesPlayerExist("BYE") && !doesPlayerExist(p1)) {
 			renamePlayer("BYE", p1);
-		}
-		else if (!doesPlayerExist(p1)) {
+		} else if (!doesPlayerExist(p1)) {
 			if (p1.length() > 0) {
 				players.add(new Player(p1));
 			}
-		}
-		else {
+		} else {
 			dropped.remove(p1);
 		}
 		while (numberOfRounds < (logBase2(players.size()))) {
@@ -393,7 +391,8 @@ public class Tournament {
 	}
 
 	private void eliminationChecker(Player p1) {
-		if (isElimination && x_elimination >0 &&   (p1.getListOfNamesPlayed().size() - p1.getListOfNamesBeaten().size() >x_elimination)) {
+		if (isElimination && x_elimination > 0
+				&& (p1.getListOfNamesPlayed().size() - p1.getListOfNamesBeaten().size() > x_elimination)) {
 			dropPlayer(p1.getName());
 		}
 	}
@@ -609,10 +608,14 @@ public class Tournament {
 				break;
 			}
 		}
-		if (doesPlayerExist("BYE") && dropped.contains("BYE")) {
-			dropped.remove("BYE");
-		} else if (doesPlayerExist("BYE") && !dropped.contains("BYE")) {
+		if (!doesPlayerExist("BYE")) {
+			players.add(new Player("BYE"));
+		}
+		if (activePlayerSize() % 2 == 1 && !dropped.contains("BYE")) {
 			dropped.add("BYE");
+		}
+		if (activePlayerSize() % 2 == 1 && dropped.contains("BYE")) {
+			dropped.remove("BYE");
 		}
 	}
 
