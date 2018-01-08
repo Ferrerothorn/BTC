@@ -949,4 +949,13 @@ public class Tournament {
 		setUpLogger();
 		gui.setUpLogger();
 	}
+
+	public Battle findBattleByPlayerName(String text) {
+		for (Battle b : currentBattles) {
+			if (b.getP1().getName().equals(text) || b.getP2().getName().equals(text)) {
+				return b;
+			}
+		}
+		return null;
+	}
 }
