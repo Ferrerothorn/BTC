@@ -16,7 +16,7 @@ public class Tournament {
 	public static ArrayList<String> dropped = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	TntFileManager tntfm = new TntFileManager(this);
-	static String roundString;
+	public static String roundString;
 	private String userSelection = null;
 	public boolean noClicks = true;
 	public String elo = "off";
@@ -30,6 +30,8 @@ public class Tournament {
 	public String activeMetadataFile = "TournamentInProgress.tnt";
 	public static Logger logger = Logger.getLogger(Tournament.class.getName());
 	public static FileHandler fh;
+	public int predictionsMade;
+	public int correctPredictions;
 
 	public void signUpPlayers() {
 		if (activeMetadataFile.equals("TournamentInProgress.tnt")) {
@@ -363,6 +365,15 @@ public class Tournament {
 						waitForUserInput();
 						String winner = readInput();
 						if (winner.equals("1") || winner.equals("2") || winner.equals("0")) {
+							if(b.getElo(b.getP1()) != 50) {
+								predictionsMade++;
+							}
+							if ((b.getElo(b.getP1()) >50 && winner.equals("1")) || (b.getElo(b.getP2()) >50 && winner.equals("2"))){
+								correctPredictions++;
+							}
+							
+							
+							
 							Utils.handleBattleWinner(b, winner);
 							eliminationChecker(b.getP1());
 							eliminationChecker(b.getP2());
@@ -829,6 +840,7 @@ public class Tournament {
 		updateParticipantStats();
 		GUI.postString(generateInDepthRankings(players));
 		GUI.postString(postTournamentAwards());
+		GUI.postString(predictionAnalysis());
 
 		if (topCutThreshold > 1) {
 			GUI.postString("Should we progress to the top cut of " + topCutThreshold + "? (y/n)");
@@ -853,6 +865,13 @@ public class Tournament {
 				GUI.postString("Thanks to everyone for taking part!");
 			}
 		}
+	}
+
+	private String predictionAnalysis() {
+		String s = "";
+		s+= "Over this tournament, " + predictionsMade + " match result predictions were made.\n";
+		s+="Of these, " + correctPredictions + " were correct.";
+		return s;
 	}
 
 	public void run() {

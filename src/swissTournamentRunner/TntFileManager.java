@@ -43,6 +43,8 @@ public class TntFileManager {
 			output += "On Round:" + t.roundNumber + "\n";
 			output += "numberOfRounds:" + t.numberOfRounds + "\n";
 			output += "elimination:" + t.x_elimination + "\n";
+			output += "Predictions:" + t.predictionsMade + "\n";
+			output += "CorrectPredictions:" + t.correctPredictions + "\n";
 			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
 			output += "Dropped:";
@@ -147,6 +149,12 @@ public class TntFileManager {
 				for (String s : dropouts) {
 					t.dropped.add(s);
 				}
+				break;
+			case "predictions":
+				t.predictionsMade = Integer.parseInt(propertyPair[1]);
+				break;
+			case "correctpredictions":
+				t.correctPredictions = Integer.parseInt(propertyPair[1]);
 				break;
 			default:
 				break;

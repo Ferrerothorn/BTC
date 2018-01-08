@@ -291,6 +291,8 @@ public class GUI implements ActionListener {
 													+ "\n");
 									resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
 									postString("Game between " + p1.getName() + " and  " + p2.getName() + " reopened.");
+								t.predictionsMade = 0;
+								t.correctPredictions = 0;
 								} else {
 									postString("Could not reopen game between " + p1.getName() + " and " + p2.getName()
 											+ ". Did it actually occur?");
@@ -394,6 +396,15 @@ public class GUI implements ActionListener {
 								logger.info("T.O. clicked button labelled " + p1Button.getText());
 								logger.info("T.O. said that Player 1 (" + p1Button.getText() + ") won the game against "
 										+ p2Button.getText());
+
+								Battle b = t.findBattleByPlayerName(p1Button.getText());
+								if (b.getElo(b.getP1()) != 50) {
+									t.predictionsMade++;
+								}
+								if (b.getElo(b.getP1()) > 50) {
+									t.correctPredictions++;
+								}
+
 								Utils.reportWinnerByName(p1Button.getText(), p2Button.getText(), t.currentBattles);
 								t.setUserSelection("P1");
 								t.updateParticipantStats();
@@ -414,6 +425,15 @@ public class GUI implements ActionListener {
 								logger.info("T.O. clicked button labelled " + p2Button.getText());
 								logger.info("T.O. said that Player 2 (" + p2Button.getText() + ") won the game against "
 										+ p1Button.getText());
+
+								Battle b = t.findBattleByPlayerName(p2Button.getText());
+								if (b.getElo(b.getP2()) != 50) {
+									t.predictionsMade++;
+								}
+								if (b.getElo(b.getP2()) > 50) {
+									t.correctPredictions++;
+								}
+
 								Utils.reportWinnerByName(p2Button.getText(), p1Button.getText(), t.currentBattles);
 								t.setUserSelection("P2");
 								t.updateParticipantStats();
