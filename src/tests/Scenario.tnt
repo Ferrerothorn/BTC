@@ -1,0 +1,68 @@
+PLAYERS:
+Charlie Innes LATE,Andrew McCartney LATE,Eilidh Glendinning-Clark LATE,Zoe Kennington LATE,Andrew Campbell,Michael Macmillan,Dawn Mathieson,Darren Macey,Erik Anderson,Maxwell Boyle,Andy Thompson,Sam Hogg,Donald MacGillivray,Kieran Boyle,Jordan Wilson,Joshua Shearer,Jess Milne,Jamie Elliott,David McIntyre,Rosie O'Hear,Glen Goldie,Steve Dolman,Gemma Watson,Alex Walker,Mo Bashir,Cameron Thom,Kieron Cardigan,Emily Merrin,Emma Gillespie,Lucy Watters,James Gormley,Lyle Power,Marc James Thomson,Isla Sneddon,Liam Westwater,Heather Power,Callum Hoy,Rachel Dolman,Ciaran Byres,BYE
+VICTORIES:
+Charlie Innes LATE_[]_[Kieran Boyle]
+Andrew McCartney LATE_[]_[Donald MacGillivray]
+Eilidh Glendinning-Clark LATE_[]_[BYE]
+Zoe Kennington LATE_[]_[Emma Gillespie]
+Andrew Campbell_[Gemma Watson, Jordan Wilson]_[Gemma Watson, Jordan Wilson]
+Michael Macmillan_[Rosie O'Hear, Steve Dolman]_[Rosie O'Hear, Steve Dolman]
+Dawn Mathieson_[Jess Milne, BYE]_[Jess Milne, BYE]
+Darren Macey_[Jamie Elliott, Mo Bashir]_[Jamie Elliott, Mo Bashir]
+Erik Anderson_[Alex Walker, Cameron Thom]_[Alex Walker, Cameron Thom]
+Maxwell Boyle_[David McIntyre, Glen Goldie]_[David McIntyre, Glen Goldie]
+Andy Thompson_[Lyle Power, Joshua Shearer]_[Lyle Power, Joshua Shearer]
+Sam Hogg_[Marc James Thomson, Kieron Cardigan]_[Marc James Thomson, Kieron Cardigan]
+Donald MacGillivray_[Andrew McCartney LATE, Emma Gillespie]_[Andrew McCartney LATE, Emma Gillespie]
+Kieran Boyle_[Charlie Innes LATE, Emily Merrin]_[Charlie Innes LATE, Emily Merrin]
+Jordan Wilson_[Lucy Watters]_[Lucy Watters, Andrew Campbell]
+Joshua Shearer_[James Gormley]_[James Gormley, Andy Thompson]
+Jess Milne_[Lyle Power]_[Dawn Mathieson, Lyle Power]
+Jamie Elliott_[Marc James Thomson]_[Darren Macey, Marc James Thomson]
+David McIntyre_[Isla Sneddon]_[Maxwell Boyle, Isla Sneddon]
+Rosie O'Hear_[Callum Hoy]_[Michael Macmillan, Callum Hoy]
+Glen Goldie_[Isla Sneddon]_[Isla Sneddon, Maxwell Boyle]
+Steve Dolman_[Callum Hoy]_[Callum Hoy, Michael Macmillan]
+Gemma Watson_[Heather Power]_[Andrew Campbell, Heather Power]
+Alex Walker_[Liam Westwater]_[Erik Anderson, Liam Westwater]
+Mo Bashir_[Ciaran Byres]_[Ciaran Byres, Darren Macey]
+Cameron Thom_[Heather Power]_[Heather Power, Erik Anderson]
+Kieron Cardigan_[Rachel Dolman]_[Rachel Dolman, Sam Hogg]
+Emily Merrin_[Liam Westwater]_[Liam Westwater, Kieran Boyle]
+Emma Gillespie_[Zoe Kennington LATE]_[Zoe Kennington LATE, Donald MacGillivray]
+Lucy Watters_[Ciaran Byres]_[Jordan Wilson, Ciaran Byres]
+James Gormley_[Rachel Dolman]_[Joshua Shearer, Rachel Dolman]
+Lyle Power_[]_[Andy Thompson, Jess Milne]
+Marc James Thomson_[]_[Sam Hogg, Jamie Elliott]
+Isla Sneddon_[]_[Glen Goldie, David McIntyre]
+Liam Westwater_[]_[Emily Merrin, Alex Walker]
+Heather Power_[]_[Cameron Thom, Gemma Watson]
+Callum Hoy_[]_[Steve Dolman, Rosie O'Hear]
+Rachel Dolman_[]_[Kieron Cardigan, James Gormley]
+Ciaran Byres_[]_[Mo Bashir, Lucy Watters]
+BYE_[Eilidh Glendinning-Clark LATE]_[Eilidh Glendinning-Clark LATE, Dawn Mathieson]
+GAMES:
+Kieron Cardigan,James Gormley
+Cameron Thom,Rosie O'Hear
+Emily Merrin,Jamie Elliott
+Alex Walker,Lucy Watters
+David McIntyre,Mo Bashir
+Emma Gillespie,Joshua Shearer
+Jordan Wilson,Jess Milne
+Ciaran Byres,Glen Goldie
+Rachel Dolman,Callum Hoy
+Heather Power,BYE
+Liam Westwater,Marc James Thompson
+Lyle Power,Isla Sneddon
+Maxwell Boyle,Dawn Mathieson
+Michael Macmillan,Sam Hogg
+Donald MacGillivray,Kieran Boyle
+Darren Macey,Erik Anderson
+Andy Thompson,Andrew Campbell
+PROPERTIES:
+On Round:3
+numberOfRounds:6
+elimination:0
+topCut:8
+ELO:on
+Dropped:Charlie Innes LATE,Andrew McCartney LATE,Eilidh Glendinning-Clark LATE,Steve Dolman,Gemma Watson,Zoe Kennington LATE

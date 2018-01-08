@@ -31,7 +31,18 @@ public class JUnit {
 		t.setAllParticipantsIn(true);
 		new GUI(t);
 	}
-
+	
+	@Test
+	public void testGetCurrentBattles() {
+		try {
+			tntfm.loadTournament(t, "Scenario.tnt");
+			String battles = t.getCurrentBattles(t.currentBattles, t.roundString);
+			assertEquals("ok", battles);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Test
 	public void testReloadingFreshTourneyDoesntAlterSize() throws IOException {
 		t.activeMetadataFile = "xD.tnt";
