@@ -42,7 +42,6 @@ public class TntFileManager {
 			output += "PROPERTIES:\n";
 			output += "On Round:" + t.roundNumber + "\n";
 			output += "numberOfRounds:" + t.numberOfRounds + "\n";
-			output += "elimination:" + t.x_elimination + "\n";
 			output += "Predictions:" + t.predictionsMade + "\n";
 			output += "CorrectPredictions:" + t.correctPredictions + "\n";
 			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
@@ -126,12 +125,6 @@ public class TntFileManager {
 				break;
 			case "numberofrounds":
 				t.numberOfRounds = Integer.parseInt(propertyPair[1]);
-				break;
-			case "elimination":
-				t.x_elimination = Integer.parseInt(propertyPair[1]);
-				if (t.x_elimination > 0) {
-					t.isElimination = true;
-				}
 				break;
 			case "topcut":
 				int tC = Integer.parseInt(propertyPair[1]);
