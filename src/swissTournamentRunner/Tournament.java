@@ -25,13 +25,12 @@ public class Tournament {
 	public int numberOfRounds;
 	public int roundNumber = 1;
 	public GUI gui;
-	public int x_elimination = 0;
-	public Boolean isElimination = false;
 	public String activeMetadataFile = "TournamentInProgress.tnt";
 	public static Logger logger = Logger.getLogger(Tournament.class.getName());
 	public static FileHandler fh;
 	public int predictionsMade;
 	public int correctPredictions;
+	public int elimination;
 
 	public void signUpPlayers() {
 		if (activeMetadataFile.equals("TournamentInProgress.tnt")) {
@@ -280,8 +279,9 @@ public class Tournament {
 
 				while (!opponentFound) {
 					Player temp = players.get(playerIndex);
-					if (isElimination || (!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1)
-							&& !dropped.contains(temp.getName()))) {
+					System.out.println("Active player count: " + activePlayerSize());
+					if ((!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1)
+							&& !dropped.contains(temp.getName())) || elimination > 0) {
 						temp = players.remove(playerIndex);
 						Battle b = new Battle(p1, temp);
 						logger.info("Pairing decided between: " + p1.getName() + " (" + p1.lastDocumentedPosition + ") "
@@ -365,18 +365,15 @@ public class Tournament {
 						waitForUserInput();
 						String winner = readInput();
 						if (winner.equals("1") || winner.equals("2") || winner.equals("0")) {
-							if(b.getElo(b.getP1()) != 50) {
+							if (b.getElo(b.getP1()) != 50) {
 								predictionsMade++;
 							}
-							if ((b.getElo(b.getP1()) >50 && winner.equals("1")) || (b.getElo(b.getP2()) >50 && winner.equals("2"))){
+							if ((b.getElo(b.getP1()) > 50 && winner.equals("1"))
+									|| (b.getElo(b.getP2()) > 50 && winner.equals("2"))) {
 								correctPredictions++;
 							}
-							
-							
-							
+
 							Utils.handleBattleWinner(b, winner);
-							eliminationChecker(b.getP1());
-							eliminationChecker(b.getP2());
 						} else {
 							currentBattles.add(b);
 						}
@@ -398,13 +395,6 @@ public class Tournament {
 			}
 			GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 			save();
-		}
-	}
-
-	private void eliminationChecker(Player p1) {
-		if (isElimination && x_elimination > 0
-				&& (p1.getListOfNamesPlayed().size() - p1.getListOfNamesBeaten().size() > x_elimination)) {
-			dropPlayer(p1.getName());
 		}
 	}
 
@@ -490,13 +480,6 @@ public class Tournament {
 		case "killall -9":
 			currentBattles.clear();
 			players.clear();
-			break;
-		case "elimination":
-			print("To convert to X-Elimination, please first enter the number of losses after which a player is eliminated.\n");
-			waitForUserInput();
-			x_elimination = Integer.parseInt(readInput());
-			print("Players will be eliminated after " + x_elimination + " losses.");
-			currentBattles.clear();
 			break;
 		default:
 			print("Invalid admin command. Returning to tournament...\n");
@@ -631,7 +614,7 @@ public class Tournament {
 	}
 
 	private int activePlayerSize() {
-		return players.size() - dropped.size();
+		return players.size() + -dropped.size();
 	}
 
 	public void alterTopCut(String newSize) throws NumberFormatException {
@@ -869,14 +852,14 @@ public class Tournament {
 
 	private String predictionAnalysis() {
 		String s = "";
-		s+= "Over this tournament, " + predictionsMade + " match result predictions were made.\n";
-		s+="Of these, " + correctPredictions + " were correct.";
+		s += "Over this tournament, " + predictionsMade + " match result predictions were made.\n";
+		s += "Of these, " + correctPredictions + " were correct.";
 		return s;
 	}
 
 	public void run() {
 		logger.info("run");
-		while (roundNumber <= getNumberOfRounds() && players.size() > 1) {
+		while (roundNumber <= getNumberOfRounds() && activePlayerSize() > 1) {
 			Collections.shuffle(players);
 			GUI.wipePane();
 			updateParticipantStats();
@@ -893,7 +876,13 @@ public class Tournament {
 			GUI.postResultsString(generateInDepthRankings(players));
 			GUI.pairingsBox.setCaretPosition(0);
 			pollForResults();
-			if (!isElimination) {
+			if (elimination > 0) {
+				for (Player p : players) {
+					if (p.getListOfNamesPlayed().size() - p.getListOfNamesBeaten().size() >= elimination) {
+						dropPlayer(p.getName());
+					}
+				}
+			} else {
 				roundNumber++;
 			}
 		}
