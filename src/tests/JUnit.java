@@ -35,7 +35,8 @@ public class JUnit {
 	@Test
 	public void testGetCurrentBattles() {
 		try {
-			tntfm.loadTournament(t, "Scenario.tnt");
+			t.updateRoundString();
+			TntFileManager.loadTournament(t, "Scenario.tnt");
 			String battles = t.getCurrentBattles(t.currentBattles, t.roundString);
 			assertEquals("ok", battles);
 		} catch (IOException e) {
@@ -219,15 +220,15 @@ public class JUnit {
 		t.addPlayer(p4);
 		t.generatePairings(0);
 		t.dropPlayer("P4");
-		assertEquals(4, Tournament.players.size());
+		assertEquals(5, Tournament.players.size());
 		assertEquals(3, t.getNumberOfRounds());
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		t.dropPlayer("P2");
-		assertEquals(2, Tournament.players.size());
-		assertEquals(2, t.getNumberOfRounds());
+		assertEquals(5, Tournament.players.size());
+		assertEquals(3, t.getNumberOfRounds());
 		t.dropPlayer("P4");
-		assertEquals(2, Tournament.players.size());
-		assertEquals(2, t.getNumberOfRounds());
+		assertEquals(5, Tournament.players.size());
+		assertEquals(3, t.getNumberOfRounds());
 	}
 
 	@Test
@@ -246,11 +247,12 @@ public class JUnit {
 		p4.lastDocumentedPosition = 1;
 		t.sortRankings();
 		assertEquals(
-				"-=-=-=-Rankings-=-=-=-\n"
-						+ "1) P1       Score: 9          TB: 0      Opp WR: 0%      Opp Opp WR: 0%    STB: 0   \n"
-						+ "2) P3       Score: 6          TB: 0      Opp WR: 0%      Opp Opp WR: 0%    STB: 0   \n"
-						+ "3) P2       Score: 3          TB: 0      Opp WR: 0%      Opp Opp WR: 0%    STB: 0   \n"
-						+ "4) P4       Score: 0          TB: 0      Opp WR: 0%      Opp Opp WR: 0%    STB: 0   \n",
+				"===Rankings - Top Cut===\n" + 
+				"1) P1    Score: 9          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n" + 
+				"2) P3    Score: 6          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n" + 
+				"3) P2    Score: 3          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n" + 
+				"4) P4    Score: 0          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n" + 
+				"==Rankings - Qualifiers==\n",
 				Tournament.generateInDepthRankings(Tournament.players));
 	}
 
@@ -512,7 +514,7 @@ public class JUnit {
 		t.addPlayer("P3");
 		t.addPlayer("P4");
 		t.dropPlayer("P2");
-		assertEquals(4, Tournament.players.size());
+		assertEquals(5, Tournament.players.size());
 	}
 
 	@Test
@@ -756,12 +758,12 @@ public class JUnit {
 		t.generatePairings(0);
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		t.dropPlayer("p1");
-		assertEquals(10, Tournament.players.size());
+		assertEquals(11, Tournament.players.size());
 		assertEquals(1, Tournament.dropped.size());
 		t.dropPlayer("p0");
 		t.updateParticipantStats();
-		assertEquals(10, Tournament.players.size());
-		assertEquals(2, Tournament.dropped.size());
+		assertEquals(11, Tournament.players.size());
+		assertEquals(3, Tournament.dropped.size());
 	}
 
 	@Test
@@ -779,7 +781,7 @@ public class JUnit {
 			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		}
 		t.dropPlayer("p1");
-		assertEquals(10, Tournament.players.size());
+		assertEquals(11, Tournament.players.size());
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 
 		t.updateParticipantStats();
@@ -790,7 +792,7 @@ public class JUnit {
 			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		}
 		t.dropPlayer("p0");
-		assertEquals(8, Tournament.players.size());
+		assertEquals(11, Tournament.players.size());
 	}
 
 	@Test
