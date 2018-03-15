@@ -47,10 +47,10 @@ public class TntFileManager {
 			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
 			output += "Dropped:";
-			for (String s : t.dropped) {
+			for (String s : Tournament.dropped) {
 				output += s + ",";
 			}
-			if (t.dropped.size() != 0) {
+			if (Tournament.dropped.size() != 0) {
 				output = output.substring(0, output.length() - 1) + "\n";
 			}
 			try {
@@ -140,7 +140,7 @@ public class TntFileManager {
 			case "dropped":
 				String[] dropouts = propertyPair[1].split(",");
 				for (String s : dropouts) {
-					t.dropped.add(s);
+					Tournament.dropped.add(s);
 				}
 				break;
 			case "predictions":

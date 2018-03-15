@@ -188,7 +188,7 @@ public class GUI implements ActionListener {
 					}
 					Collections.sort(playerNames);
 					playerNames.remove("BYE");
-					for (String s : t.dropped) {
+					for (String s : Tournament.dropped) {
 						playerNames.remove(s);
 					}
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
