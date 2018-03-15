@@ -398,7 +398,7 @@ public class Tournament {
 		}
 	}
 
-	private void updateRoundString() {
+	public void updateRoundString() {
 		roundString = ("-=-=-=-ROUND " + roundNumber + "/" + numberOfRounds + "-=-=-=-");
 	}
 
