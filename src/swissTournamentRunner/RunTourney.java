@@ -18,7 +18,7 @@ public class RunTourney {
 
 	private static void showCredits() {
 		GUI.postString("Welcome to B-T-C, the Swiss Tournament Bracket Organiser!");
-		GUI.postString("(2018 Edition, subversion 1.2.1 - Made by Steve Dolman.)");
+		GUI.postString("(2018 Edition, version 1.3 - Made by Steve Dolman.)");
 		GUI.postString("Shoutout to Rachel Dolman and Darren Macey for help in testing and debug - #NAK4LYF!");
 	}
 }
