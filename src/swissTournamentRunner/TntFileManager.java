@@ -46,6 +46,7 @@ public class TntFileManager {
 			output += "CorrectPredictions:" + t.correctPredictions + "\n";
 			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
+			output += "x-elimination:" + t.getXElimination() + "\n";
 			output += "Dropped:";
 			for (String s : Tournament.dropped) {
 				output += s + ",";
@@ -143,6 +144,9 @@ public class TntFileManager {
 					Tournament.dropped.add(s);
 				}
 				break;
+			case "x-elimination":
+				t.elimination = Integer.parseInt(propertyPair[1]);
+				break;				
 			case "predictions":
 				t.predictionsMade = Integer.parseInt(propertyPair[1]);
 				break;
