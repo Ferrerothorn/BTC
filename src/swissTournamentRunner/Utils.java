@@ -14,28 +14,28 @@ public class Utils {
 		if (b.getP1().getName().equals("BYE")) {
 			b.getP2().beats(b.getP1());
 			b = null;
-			winner = "3";
-		}
-		if (b.getP2().getName().equals("BYE")) {
+			return;
+		} else if (b.getP2().getName().equals("BYE")) {
 			b.getP1().beats(b.getP2());
 			b = null;
-			winner = "3";
-		}
-		switch (winner) {
-		case "1":
-			b.getP1().beats(b.getP2());
-			b = null;
-			break;
-		case "2":
-			b.getP2().beats(b.getP1());
-			b = null;
-			break;
-		case "0":
-			b.getP1().tied(b.getP2());
-			b = null;
-			break;
-		default:
-			break;
+			return;
+		} else {
+			switch (winner) {
+			case "1":
+				b.getP1().beats(b.getP2());
+				b = null;
+				break;
+			case "2":
+				b.getP2().beats(b.getP1());
+				b = null;
+				break;
+			case "0":
+				b.getP1().tied(b.getP2());
+				b = null;
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
