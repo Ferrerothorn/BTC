@@ -31,36 +31,81 @@ public class JUnit {
 		t.setAllParticipantsIn(true);
 		new GUI(t);
 	}
-	
+
 	@Test
-	public void testGetCurrentBattles() {
+	public void testDoubleEliminationWorks() {
+		t.elimination = 2;
+		t.addBatch("P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12,P13,P14,P15,P16,P17,P18");
+		t.generatePairings(0);
+		while (t.currentBattles.size() > 0) {
+			Battle b = t.currentBattles.remove(0);
+			Utils.handleBattleWinner(b, "1");
+		}
+		t.updateParticipantStats();
+		t.eliminate();
+		assertEquals(18, t.activePlayerSize());
+		//////////////////
+		t.generatePairings(0);
+		while (t.currentBattles.size() > 0) {
+			Battle b = t.currentBattles.remove(0);
+			Utils.handleBattleWinner(b, "1");
+		}
+		t.updateParticipantStats();
+		t.eliminate();
+		assertEquals(14, t.activePlayerSize());
+		//////////////////
+		t.generatePairings(0);
+		while (t.currentBattles.size() > 0) {
+			Battle b = t.currentBattles.remove(0);
+			System.out.println(t.battleToString(b));
+			Utils.handleBattleWinner(b, "1");
+		}
+		t.updateParticipantStats();
+		t.eliminate();
+		assertEquals(10, t.activePlayerSize());
+		//////////////////
+		t.generatePairings(0);
+		while (t.currentBattles.size() > 0) {
+			Battle b = t.currentBattles.remove(0);
+			System.out.println(t.battleToString(b));
+			Utils.handleBattleWinner(b, "1");
+		}
+		t.updateParticipantStats();
+		t.eliminate();
+		assertEquals(6, t.activePlayerSize());
+	}
+
+	@Test
+	public void testGetCurrentBattlesFromFile() {
 		try {
 			t.updateRoundString();
 			TntFileManager.loadTournament(t, "Scenario.tnt");
 			String battles = t.getCurrentBattles(t.currentBattles, t.roundString);
-			assertEquals("-=-=-=-ROUND 1/0-=-=-=-\n" + 
-					"Table 2)   Cameron Thom (7)           vs.    Rosie O'Hear (37)          [50% - 50%]\n" + 
-					"Table 3)   Emily Merrin (15)          vs.    Jamie Elliott (23)         [50% - 50%]\n" + 
-					"Table 5)   David McIntyre (11)        vs.    Mo Bashir (35)             [50% - 50%]\n" + 
-					"Table 9)   Rachel Dolman (36)         vs.    Callum Hoy (6)             [50% - 50%]\n" + 
-					"Table 11)  Liam Westwater (29)        vs.    Marc James Thomson (32)    [50% - 50%]\n" + 
-					"Table 12)  Lyle Power (31)            vs.    Isla Sneddon (21)          [50% - 50%]\n" + 
-					"Table 13)  Maxwell Boyle (33)         vs.    Dawn Mathieson (12)        [50% - 50%]\n" + 
-					"Table 15)  Donald MacGillivray (13)   vs.    Kieran Boyle (27)          [50% - 50%]\n" + 
-					"Table 16)  Darren Macey (10)          vs.    Erik Anderson (17)         [50% - 50%]\n" + 
-					"Table 1)   Kieron Cardigan (28)       vs.    James Gormley (22)         [61% - 39%]\n" + 
-					"Table 4)   Alex Walker (1)            vs.    Lucy Watters (30)          [61% - 39%]\n" + 
-					"Table 6)   Emma Gillespie (16)        vs.    Joshua Shearer (26)        [39% - 61%]\n" + 
-					"Table 7)   Jordan Wilson (25)         vs.    Jess Milne (24)            [61% - 39%]\n" + 
-					"Table 8)   Ciaran Byres (9)           vs.    Glen Goldie (19)           [30% - 70%]\n" + 
-					"Table 14)  Michael Macmillan (34)     vs.    Sam Hogg (38)              [70% - 30%]\n" + 
-					"Table 17)  Andy Thompson (4)          vs.    Andrew Campbell (2)        [30% - 70%]\n" + 
-					"Table 10)  Heather Power (20)         vs.    BYE (5)                    [100% - 0%]\n", battles);
+			assertEquals(
+					"-=-=-=-ROUND 1/0-=-=-=-\n"
+							+ "Table 2)   Cameron Thom (7)           vs.    Rosie O'Hear (37)          [50% - 50%]\n"
+							+ "Table 3)   Emily Merrin (15)          vs.    Jamie Elliott (23)         [50% - 50%]\n"
+							+ "Table 5)   David McIntyre (11)        vs.    Mo Bashir (35)             [50% - 50%]\n"
+							+ "Table 9)   Rachel Dolman (36)         vs.    Callum Hoy (6)             [50% - 50%]\n"
+							+ "Table 11)  Liam Westwater (29)        vs.    Marc James Thomson (32)    [50% - 50%]\n"
+							+ "Table 12)  Lyle Power (31)            vs.    Isla Sneddon (21)          [50% - 50%]\n"
+							+ "Table 13)  Maxwell Boyle (33)         vs.    Dawn Mathieson (12)        [50% - 50%]\n"
+							+ "Table 15)  Donald MacGillivray (13)   vs.    Kieran Boyle (27)          [50% - 50%]\n"
+							+ "Table 16)  Darren Macey (10)          vs.    Erik Anderson (17)         [50% - 50%]\n"
+							+ "Table 1)   Kieron Cardigan (28)       vs.    James Gormley (22)         [61% - 39%]\n"
+							+ "Table 4)   Alex Walker (1)            vs.    Lucy Watters (30)          [61% - 39%]\n"
+							+ "Table 6)   Emma Gillespie (16)        vs.    Joshua Shearer (26)        [39% - 61%]\n"
+							+ "Table 7)   Jordan Wilson (25)         vs.    Jess Milne (24)            [61% - 39%]\n"
+							+ "Table 8)   Ciaran Byres (9)           vs.    Glen Goldie (19)           [30% - 70%]\n"
+							+ "Table 14)  Michael Macmillan (34)     vs.    Sam Hogg (38)              [70% - 30%]\n"
+							+ "Table 17)  Andy Thompson (4)          vs.    Andrew Campbell (2)        [30% - 70%]\n"
+							+ "Table 10)  Heather Power (20)         vs.    BYE (5)                    [100% - 0%]\n",
+					battles);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
 	public void testReloadingFreshTourneyDoesntAlterSize() throws IOException {
 		t.activeMetadataFile = "xD.tnt";
@@ -263,14 +308,12 @@ public class JUnit {
 		p3.lastDocumentedPosition = 1;
 		p4.lastDocumentedPosition = 1;
 		t.sortRankings();
-		assertEquals(
-				"===Rankings - Top Cut===\n" + 
-				"1) P1    Score: 9          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n" + 
-				"2) P3    Score: 6          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n" + 
-				"3) P2    Score: 3          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n" + 
-				"4) P4    Score: 0          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n" + 
-				"==Rankings - Qualifiers==\n",
-				Tournament.generateInDepthRankings(Tournament.players));
+		assertEquals("===Rankings - Top Cut===\n"
+				+ "1) P1    Score: 9          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n"
+				+ "2) P3    Score: 6          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n"
+				+ "3) P2    Score: 3          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n"
+				+ "4) P4    Score: 0          TB: 0      Opp WR: 0%      Opp Opp WR: 0%      STB: 0   \n"
+				+ "==Rankings - Qualifiers==\n", Tournament.generateInDepthRankings(Tournament.players));
 	}
 
 	@Test
