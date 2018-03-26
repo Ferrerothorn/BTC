@@ -88,7 +88,8 @@ public class Utils {
 		return "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
 	}
 
-	public static boolean dropPlayerMidBattle(String nameToDrop, ArrayList<Battle> currentBattles, ArrayList<String> dropped) {
+	public static boolean dropPlayerMidBattle(String nameToDrop, ArrayList<Battle> currentBattles,
+			ArrayList<String> dropped) {
 		for (Battle b : currentBattles) {
 			if (b.getP1().getName().equals(nameToDrop) && b.getP2().getName().equals("BYE")) {
 				currentBattles.remove(b);
@@ -123,7 +124,8 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean dropPlayerOutsideBattle(ArrayList<Player> players, String nameToDrop, ArrayList<Battle> currentBattles, ArrayList<String> dropped) {
+	public static boolean dropPlayerOutsideBattle(ArrayList<Player> players, String nameToDrop,
+			ArrayList<Battle> currentBattles, ArrayList<String> dropped) {
 		for (Player p : players) {
 			if (p.getName().equals(nameToDrop)) {
 				dropped.add(p.getName());
