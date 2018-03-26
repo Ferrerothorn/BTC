@@ -75,7 +75,7 @@ public class GUI implements ActionListener {
 			}
 		});
 		toolbar.add(eloButton);
-
+		
 		JButton topCutButton = new JButton("Top Cut");
 		topCutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -299,7 +299,6 @@ public class GUI implements ActionListener {
 								}
 							}
 							tourney.save();
-							nameEditor.dispose();
 						}
 					});
 				}
@@ -460,6 +459,15 @@ public class GUI implements ActionListener {
 		});
 
 		toolbar.add(reportResults);
+		
+		JButton elimination = new JButton("Elimination");
+		elimination.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				t.elimination = 2;
+				t.save();
+			}
+		});
+		toolbar.add(elimination);
 
 		pairingsBox = new JTextArea(20, 60);
 		pairingsBox.setEditable(false);
