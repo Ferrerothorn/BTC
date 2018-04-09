@@ -586,7 +586,9 @@ public class Tournament {
 
 	public void dropPlayer(String nameToDrop) {
 		logger.info("dropPlayer: " + nameToDrop);
-		dropped.add(nameToDrop);
+		if (!dropped.contains(nameToDrop)) {
+			dropped.add(nameToDrop);
+		}
 
 		for (Battle b : currentBattles) {
 			if (b.contains(nameToDrop)) {
