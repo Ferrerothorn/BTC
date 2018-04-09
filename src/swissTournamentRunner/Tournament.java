@@ -949,4 +949,9 @@ public class Tournament {
 		}
 		return null;
 	}
+
+	public int getXElimination() {
+		return elimination;
+	}
+
 }
