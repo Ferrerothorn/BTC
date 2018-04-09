@@ -615,7 +615,7 @@ public class Tournament {
 		}
 	}
 
-	private int activePlayerSize() {
+	public int activePlayerSize() {
 		return players.size() + -dropped.size();
 	}
 
