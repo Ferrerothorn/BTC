@@ -33,54 +33,11 @@ public class JUnit {
 	}
 
 	@Test
-	public void testDoubleEliminationWorks() {
-		t.elimination = 2;
-		t.addBatch("P1,P2,P3,P4,P5,P6,P7,P8,P9,P10,P11,P12,P13,P14,P15,P16,P17,P18");
-		t.generatePairings(0);
-		while (t.currentBattles.size() > 0) {
-			Battle b = t.currentBattles.remove(0);
-			Utils.handleBattleWinner(b, "1");
-		}
-		t.updateParticipantStats();
-		t.eliminate();
-		assertEquals(18, t.activePlayerSize());
-		//////////////////
-		t.generatePairings(0);
-		while (t.currentBattles.size() > 0) {
-			Battle b = t.currentBattles.remove(0);
-			Utils.handleBattleWinner(b, "1");
-		}
-		t.updateParticipantStats();
-		t.eliminate();
-		assertEquals(14, t.activePlayerSize());
-		//////////////////
-		t.generatePairings(0);
-		while (t.currentBattles.size() > 0) {
-			Battle b = t.currentBattles.remove(0);
-			System.out.println(t.battleToString(b));
-			Utils.handleBattleWinner(b, "1");
-		}
-		t.updateParticipantStats();
-		t.eliminate();
-		assertEquals(10, t.activePlayerSize());
-		//////////////////
-		t.generatePairings(0);
-		while (t.currentBattles.size() > 0) {
-			Battle b = t.currentBattles.remove(0);
-			System.out.println(t.battleToString(b));
-			Utils.handleBattleWinner(b, "1");
-		}
-		t.updateParticipantStats();
-		t.eliminate();
-		assertEquals(6, t.activePlayerSize());
-	}
-
-	@Test
 	public void testGetCurrentBattlesFromFile() {
 		try {
 			t.updateRoundString();
 			TntFileManager.loadTournament(t, "Scenario.tnt");
-			String battles = t.getCurrentBattles(t.currentBattles, t.roundString);
+			String battles = t.getCurrentBattles(t.currentBattles, Tournament.roundString);
 			assertEquals(
 					"-=-=-=-ROUND 1/0-=-=-=-\n"
 							+ "Table 2)   Cameron Thom (7)           vs.    Rosie O'Hear (37)          [50% - 50%]\n"
