@@ -45,8 +45,7 @@ public class TntFileManager {
 			}
 			output += "topCut:" + t.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
-			output += "sortELO:" + t.getSortElo() + "\n";
-
+			
 			try {
 				PrintWriter writer = new PrintWriter(file, "UTF-8");
 				writer.print(output);
@@ -63,6 +62,9 @@ public class TntFileManager {
 		t.players.clear();
 		t.currentBattles.clear();
 
+		t.gui.toolbar.remove(t.gui.startButton); 
+	    t.gui.frame.repaint();	
+		
 		t.activeMetadataFile = fileName;
 		BufferedReader br = new BufferedReader(new FileReader(t.activeMetadataFile));
 		try {
@@ -125,11 +127,6 @@ public class TntFileManager {
 			case "elo":
 				if (propertyPair[1].equals("on")) {
 					t.setElo("on");
-				}
-				break;
-			case "sortelo":
-				if (propertyPair[1].equals("on")) {
-					t.setSortElo("on");
 				}
 				break;
 			default:

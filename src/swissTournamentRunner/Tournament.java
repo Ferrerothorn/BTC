@@ -18,7 +18,6 @@ public class Tournament {
 	private String userSelection = null;
 	public boolean noClicks = true;
 	public String elo = "off";
-	public String sortElo = "off";
 	boolean allParticipantsIn = false;
 	public static int topCutThreshold = 0;
 	public int numberOfRounds;
@@ -55,7 +54,7 @@ public class Tournament {
 
 	public void addPlayer(String p1) {
 		logger.info("addPlayer: " + p1);
-		if (doesPlayerExist("BYE")) {
+		if (doesPlayerExist("BYE") && !doesPlayerExist(p1)) {
 			renamePlayer("BYE", p1);
 		}
 		if (!doesPlayerExist(p1)) {
@@ -69,6 +68,7 @@ public class Tournament {
 		if (!allParticipantsIn) {
 			postListOfConfirmedSignups();
 		}
+		addBye();
 	}
 
 	public void postListOfConfirmedSignups() {
@@ -109,7 +109,7 @@ public class Tournament {
 			}
 		}
 
-		if (getSortElo().equals("on")) {
+		if (getElo().equals("on")) {
 			Collections.sort(currentBattles);
 		}
 
@@ -131,19 +131,9 @@ public class Tournament {
 	}
 
 	public boolean doesPlayerExist(String string) {
-		logger.info("doesPlayerExist: " + string);
-		for (Player p : players) {
-			if (p.getName().equals(string)) {
-				return true;
-			}
-		}
-		for (Battle b : currentBattles) {
-			if (b.getP1().getName().equals(string)) {
-				return true;
-			}
-			if (b.getP2().getName().equals(string)) {
-				return true;
-			}
+		Player p = Utils.findPlayerByName(string, players); 
+	    if (p != null) { 
+	      return true; 
 		}
 		return false;
 	}
@@ -333,9 +323,6 @@ public class Tournament {
 
 				switch (input) {
 
-				case "help":
-					Utils.showHelp();
-					break;
 				case "admintools":
 					print("Admin functions enabled.");
 					waitForUserInput();
@@ -550,18 +537,11 @@ public class Tournament {
 		for (String s : names) {
 			newPlayerNames.add(s);
 		}
-
-		if (doesPlayerExist("BYE")) {
-			renamePlayer("BYE", newPlayerNames.remove(0));
-		}
-
 		for (String s : newPlayerNames) {
 			addPlayer(Utils.trimWhitespace(s));
 			postListOfConfirmedSignups();
 		}
-		if (allParticipantsIn) {
-			addBye();
-		}
+		addBye();
 	}
 
 	public void renamePlayer(String renameMe, String newName) {
@@ -900,13 +880,12 @@ public class Tournament {
 			Collections.shuffle(players);
 			GUI.wipePane();
 			updateParticipantStats();
-
 			sortRankings();
 			if (roundNumber == 1) {
 				shufflePlayers();
 			}
-
 			generatePairings(0);
+			save();
 			sortRankings();
 			GUI.postResultsString(generateInDepthRankings(players));
 			pollForResults();
@@ -938,16 +917,8 @@ public class Tournament {
 		return elo;
 	}
 
-	public String getSortElo() {
-		return sortElo;
-	}
-
 	public void setElo(String elo) {
 		this.elo = elo;
-	}
-
-	public void setSortElo(String sortElo) {
-		this.sortElo = sortElo;
 	}
 
 	public void setUpLogger() {

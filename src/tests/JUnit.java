@@ -34,11 +34,9 @@ public class JUnit {
 		t.addBatch("P1,P2,P3,P4,P5,P6");
 		t.generatePairings(0);
 		t.setElo("on");
-		t.setSortElo("on");
 		assertEquals(6, t.players.size());
 		assertEquals(3, t.currentBattles.size());
 		assertEquals("on", t.getElo());
-		assertEquals("on", t.getSortElo());
 		tntfm.saveTournament();
 		t = new Tournament();
 		tntfm = new TntFileManager(t);
@@ -46,7 +44,6 @@ public class JUnit {
 		assertEquals(6, t.players.size());
 		assertEquals(3, t.currentBattles.size());
 		assertEquals("on", t.getElo());
-		assertEquals("on", t.getSortElo());
 
 	}
 

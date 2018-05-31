@@ -11,12 +11,17 @@ public class PlayerCreator {
 	public void capturePlayers() {
 		GUI.wipePane();
 		while (!t.allParticipantsIn) {
+			 int playerNumbers = (t.players.size() + (t.currentBattles.size() * 2)); 
+		      if (Utils.findPlayerByName("BYE", t.players) != null) { 
+		        playerNumbers--; 
+		      } 
+			
 			t.print("Enter the name of the next participant, or enter 'no' if done. ");
-			t.print("You can enter 'help' mid-tournament to access the user manual.");
 			t.print("While registering players, enter 'drop' to remove a player before we begin, or enter 'seed' to begin the tournament while choosing [some] Round 1 pairings.");
-			t.print("Current Participants: " + (t.players.size() + (t.currentBattles.size() * 2))
-					+ "  Rounds required: " + t.logBase2(t.players.size()));
-			t.print("");
+			t.print("Current Participants: " + playerNumbers + "  Rounds required: " + t.logBase2(t.players.size())); 
+		    t.print("");
+			t.print("START BUTTON XD");
+			
 			t.waitForUserInput();
 			String input = t.readInput();
 			processPlayerName(input);
@@ -27,9 +32,6 @@ public class PlayerCreator {
 	public void processPlayerName(String input) throws NumberFormatException {
 		try {
 			switch (input.toLowerCase()) {
-			case "help":
-				Utils.showHelp();
-				break;
 			case "drop":
 				t.print("Enter the player number (shown below) or comma-separated list of numbers of the player(s) you'd like to remove.");
 				t.waitForUserInput();
@@ -48,7 +50,7 @@ public class PlayerCreator {
 					break;
 				}
 			case "no":
-				t.allParticipantsIn = true;
+			//	t.allParticipantsIn = true;
 				break;
 			case "seed":
 				t.print("Pick Player 1 for an initial pairing. (Numbers shown below)");

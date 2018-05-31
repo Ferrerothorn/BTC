@@ -15,13 +15,15 @@ public class GUI implements ActionListener {
 	public static JTextArea pairingsBox;
 	public static JTextArea resultsBox;
 	public static JFrame frame = new JFrame("BTC");
+	public JToolBar toolbar;
+	public JButton startButton;
 
 	public GUI(Tournament t) {
 		tourney = t;
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setLayout(new MigLayout("wrap ", "[grow,fill]"));
 
-		JToolBar toolbar = new JToolBar("Admin Tools");
+		toolbar = new JToolBar("Admin Tools");
 
 		JButton addRoundButton = new JButton("Edit # of Rounds");
 		addRoundButton.addActionListener(new ActionListener() {
@@ -54,7 +56,6 @@ public class GUI implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() > 0) {
 					t.elo = t.toggle(t.elo);
-					t.sortElo = t.toggle(t.sortElo);
 					pairingsBox.setCaretPosition(0);
 					pairingsBox.setText("ELO switched " + t.elo + ".\n");
 					postString(t.getCurrentBattles(t.currentBattles, Tournament.roundString));
@@ -102,6 +103,38 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(matches);
 
+		JButton matchesOfButton = new JButton("One Player's Matches");
+		matchesOfButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+					JFrame matchesOfButtonFrame = new JFrame("Return Player's Matches");
+					matchesOfButtonFrame.setSize(450, 150);
+					matchesOfButtonFrame.setLayout(new MigLayout("", "[grow,fill]"));
+					ArrayList<String> playerNames = new ArrayList<String>();
+					for (Player p : t.players) {
+						playerNames.add(p.getName());
+					}
+					Collections.sort(playerNames);
+					String[] ps = playerNames.toArray(new String[playerNames.size()]);
+					@SuppressWarnings({ "rawtypes", "unchecked" })
+					JComboBox players = new JComboBox(ps);
+					JButton submitGetMatches = new JButton("Submit");
+					matchesOfButtonFrame.add(players, "span 3,wrap");
+					matchesOfButtonFrame.add(submitGetMatches);
+					matchesOfButtonFrame.setVisible(true);
+					submitGetMatches.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String selected = players.getSelectedItem().toString();
+							t.printHistory(Utils.findPlayerByName(selected, t.players));
+							t.save();
+						}
+					});
+				}
+			}
+		});
+		toolbar.add(matchesOfButton);
+
 		JButton addPlayersButton = new JButton("Add Players");
 		addPlayersButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -128,6 +161,32 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(addPlayersButton);
 
+		JButton dropPlayersButton = new JButton("Drop Player(s)");
+		dropPlayersButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+					JFrame dropPlayersBox = new JFrame("Drop Player(s)");
+					dropPlayersBox.setSize(450, 150);
+					dropPlayersBox.setLayout(new GridLayout());
+					JTextField input = new JTextField("Enter comma-separated player list of players to drop.");
+					JButton dropSubmitButton = new JButton("Submit");
+					dropPlayersBox.add(input);
+					dropPlayersBox.add(dropSubmitButton);
+					dropPlayersBox.setVisible(true);
+					dropSubmitButton.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String newPlayers = input.getText();
+							t.dropPlayer(newPlayers);
+							t.save();
+							dropPlayersBox.dispose();
+						}
+					});
+				}
+			}
+		});
+		toolbar.add(dropPlayersButton);
+
 		JButton editNameButton = new JButton("Edit Name");
 		editNameButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -145,10 +204,10 @@ public class GUI implements ActionListener {
 					JComboBox players = new JComboBox(ps);
 					JTextField editedName = new JTextField("Enter new name here.");
 					JButton submitEditName = new JButton("Submit");
-					players.addActionListener(new ActionListener () {
-					    public void actionPerformed(ActionEvent e) {
-					    	editedName.setText(players.getSelectedItem().toString());
-					    }
+					players.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							editedName.setText(players.getSelectedItem().toString());
+						}
 					});
 					nameEditor.add(players, "span 3,wrap");
 					nameEditor.add(editedName, "span 2");
@@ -218,6 +277,63 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(reopenGameButton);
 
+		startButton = new JButton("START"); 
+		startButton.addActionListener(new ActionListener() { 
+	      public void actionPerformed(ActionEvent e) { 
+	        if (t.currentBattles.size() == 0) { 
+	          JFrame seedPanel = new JFrame("Initial Seed"); 
+	          seedPanel.setSize(450, 150); 
+	          seedPanel.setLayout(new MigLayout("", "[grow,fill]")); 
+	          ArrayList<String> playerNames = new ArrayList<String>(); 
+	          for (Player p : t.players) { 
+	            playerNames.add(p.getName()); 
+	          } 
+	          Collections.sort(playerNames); 
+	          String[] ps = playerNames.toArray(new String[playerNames.size()]); 
+	          JComboBox seed1 = new JComboBox(ps); 
+	          JComboBox seed2 = new JComboBox(ps); 
+	          JButton submitPair = new JButton("Seed Pairing"); 
+	          JButton start = new JButton("Start Tournament"); 
+	          seedPanel.add(seed1); 
+	          seedPanel.add(seed2, "wrap"); 
+	          seedPanel.add(submitPair); 
+	          seedPanel.add(start); 
+	          seedPanel.setVisible(true); 
+	          submitPair.addActionListener(new ActionListener() { 
+	            @Override 
+	            public void actionPerformed(ActionEvent e) { 
+	              String n1 = seed1.getSelectedItem().toString(); 
+	              String n2 = seed2.getSelectedItem().toString(); 
+	              if (!n1.equals(n2)) { 
+	                Player p1 = Utils.findPlayerByName(n1, t.players); 
+	                Player p2 = Utils.findPlayerByName(n2, t.players); 
+	                //t.players.remove(p1); 
+	                //t.players.remove(p2); 
+	                //t.initialSeed(p1, p2); 
+	                t.currentBattles.add(new Battle(p1, p2));
+	                seed1.removeItem(p1.getName()); 
+	                seed1.removeItem(p2.getName()); 
+	                seed2.removeItem(p1.getName()); 
+	                seed2.removeItem(p2.getName()); 
+	                t.postListOfConfirmedSignups(); 
+	              } 
+	            } 
+	          }); 
+	          start.addActionListener(new ActionListener() { 
+	            @Override 
+	            public void actionPerformed(ActionEvent arg0) { 
+	             t.allParticipantsIn = true;
+	             t.setUserSelection("no"); 
+	             seedPanel.dispose(); 
+	             toolbar.remove(startButton); 
+	             toolbar.repaint(); 
+	            } 
+	          }); 
+	        } 
+	      } 
+	    }); 
+	    toolbar.add(startButton); 
+		
 		pairingsBox = new JTextArea(20, 60);
 		pairingsBox.setEditable(false);
 		pairingsBox.setLineWrap(true);
