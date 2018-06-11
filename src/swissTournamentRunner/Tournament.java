@@ -69,10 +69,7 @@ public class Tournament {
 
 	public void postListOfConfirmedSignups() {
 		Collections.sort(players);
-		int totalNumberOfPlayers = players.size();
-		if (allParticipantsIn) {
-			totalNumberOfPlayers += currentBattles.size() * 2;
-		}
+		int totalNumberOfPlayers = players.size() + currentBattles.size() * 2; 
 		String post = "-=-=-Registered: " + totalNumberOfPlayers + " players. -=-=-" + "\n";
 		for (int i = 1; i <= players.size(); i++) {
 			post += "" + i + ") " + players.get(i - 1).getName() + "\n";
@@ -135,7 +132,7 @@ public class Tournament {
 	}
 
 	public void addBye() {
-		if (players.size() % 2 != 0) {
+		if (players.size() % 2 != 0 && Utils.findPlayerByName("BYE", players) == null) {
 			players.add(new Player("BYE"));
 		}
 	}
@@ -490,12 +487,13 @@ public class Tournament {
 			p.getOpponentsList().clear();
 			p.getListOfVictories().clear();
 		}
+		players.remove(Utils.findPlayerByName("BYE", players));
 		this.setNumberOfRounds(1);
 		this.roundNumber = 1;
 
 		for (Player p : players) {
 			for (Player q : players) {
-				if (p != q && noSuchPairing(currentBattles, p, q)) {
+				if (p != q && !activeBattleExists(currentBattles, p, q)) {
 					currentBattles.add(new Battle(p, q));
 				}
 			}
@@ -503,14 +501,14 @@ public class Tournament {
 		assignTableNumbers(currentBattles);
 	}
 
-	private boolean noSuchPairing(ArrayList<Battle> battles, Player p, Player q) {
-		boolean doesntExist = true;
+	private boolean activeBattleExists(ArrayList<Battle> battles, Player p, Player q) {
+		boolean exists = false;
 		for (Battle b : battles) {
-			if ((b.getP1().equals(p) || b.getP2().equals(p)) && (b.getP1().equals(q) || b.getP2().equals(q))) {
-				doesntExist = false;
+			 if ((b.getP1().equals(p) && b.getP2().equals(q)) || (b.getP1().equals(q) && b.getP2().equals(p))) { 
+				 exists = true;
 			}
 		}
-		return doesntExist;
+		return exists;
 	}
 
 	void setTopCut(int parseInt) {
@@ -538,14 +536,15 @@ public class Tournament {
 			}
 		}
 		for (Battle b : currentBattles) {
-			if (b.getP1().equals(renameMe)) {
+			if (b.getP1().getName().equals(renameMe)) {
 				b.getP1().setName(newName);
 				break;
-			} else if (b.getP2().equals(renameMe)) {
+			} else if (b.getP2().getName().equals(renameMe)) {
 				b.getP2().setName(newName);
 				break;
 			}
 		}
+		addBye();
 	}
 
 	public void dropPlayer(String nameToDrop) {
@@ -617,6 +616,7 @@ public class Tournament {
 					numberOfRounds--;
 				}
 			}
+			addBye();
 		}
 	}
 

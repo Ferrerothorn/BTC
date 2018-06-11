@@ -75,6 +75,7 @@ public class TntFileManager {
 				while (!line.contains("VICTORIES")) {
 					t.addBatch(line);
 					line = br.readLine();
+					t.addBye();
 				}
 				line = br.readLine();
 				while (!line.contains("GAMES")) {
