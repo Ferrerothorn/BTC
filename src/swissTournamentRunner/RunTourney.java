@@ -5,7 +5,6 @@ public class RunTourney {
 	static Tournament tourney = new Tournament();
 
 	public static void main(String[] args) {
-		tourney.setUpLogger();
 		GUI gui = new GUI(tourney);
 		tourney.setGUI(gui);
 		GUI.createAndShowGUI(true);
