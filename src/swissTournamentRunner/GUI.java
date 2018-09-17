@@ -174,6 +174,7 @@ public class GUI implements ActionListener {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
+					playerNames.remove("BYE");
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
 					JComboBox input = new JComboBox(ps);
 					JButton dropSubmitButton = new JButton("Submit");
