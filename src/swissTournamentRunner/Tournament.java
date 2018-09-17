@@ -127,9 +127,9 @@ public class Tournament {
 	}
 
 	public boolean doesPlayerExist(String string) {
-		Player p = Utils.findPlayerByName(string, players); 
-	    if (p != null) { 
-	      return true; 
+		Player p = findPlayerByName(string);
+		if (p != null) {
+			return true;
 		}
 		return false;
 	}
