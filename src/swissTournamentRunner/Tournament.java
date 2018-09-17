@@ -10,7 +10,7 @@ import java.util.logging.FileHandler;
 
 public class Tournament {
 
-	public ArrayList<Player> players = new ArrayList<>();
+	public static ArrayList<Player> players = new ArrayList<>();
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	TntFileManager tntfm = new TntFileManager(this);
@@ -54,11 +54,12 @@ public class Tournament {
 	public void addPlayer(String p1) {
 		if (doesPlayerExist("BYE") && !doesPlayerExist(p1)) {
 			renamePlayer("BYE", p1);
-		}
-		if (!doesPlayerExist(p1)) {
+		} else if (!doesPlayerExist(p1)) {
 			if (p1.length() > 0) {
 				players.add(new Player(p1));
 			}
+		} else {
+			dropped.remove(p1);
 		}
 		while (numberOfRounds < (logBase2(players.size()))) {
 			numberOfRounds++;
