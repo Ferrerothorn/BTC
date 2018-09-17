@@ -24,7 +24,7 @@ public class TntFileManager {
 			File file = new File(t.activeMetadataFile);
 
 			output += "PLAYERS:\n";
-			for (Player p : t.players) {
+			for (Player p : Tournament.players) {
 				output += p.getName() + ",";
 			}
 			output = output.substring(0, output.length() - 1);
@@ -40,12 +40,8 @@ public class TntFileManager {
 			output += "PROPERTIES:\n";
 			output += "On Round:" + t.roundNumber + "\n";
 			output += "numberOfRounds:" + t.numberOfRounds + "\n";
-			if (t.isElimination) {
-				output += "elimination:" + t.x_elimination + "\n";
-			}
-			output += "topCut:" + t.getTopCutThreshold() + "\n";
+			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
-			
 			try {
 				PrintWriter writer = new PrintWriter(file, "UTF-8");
 				writer.print(output);
@@ -72,6 +68,7 @@ public class TntFileManager {
 
 			if (line.contains("PLAYERS")) {
 				line = br.readLine();
+
 				while (!line.contains("VICTORIES")) {
 					t.addBatch(line);
 					line = br.readLine();
@@ -115,13 +112,9 @@ public class TntFileManager {
 			case "numberofrounds":
 				t.numberOfRounds = Integer.parseInt(propertyPair[1]);
 				break;
-			case "elimination":
-				t.x_elimination = Integer.parseInt(propertyPair[1]);
-				t.elimination();
-				break;
 			case "topcut":
 				int tC = Integer.parseInt(propertyPair[1]);
-				if (tC < t.players.size()) {
+				if (tC < Tournament.players.size()) {
 					t.setTopCut(tC);
 				}
 				break;
@@ -140,8 +133,8 @@ public class TntFileManager {
 
 	static Battle parseLineToBattle(String line) {
 		String[] currentCombatants = line.split(",");
-		Player p1 = Utils.findPlayerByName(currentCombatants[0], t.players);
-		Player p2 = Utils.findPlayerByName(currentCombatants[1], t.players);
+		Player p1 = Tournament.findPlayerByName(currentCombatants[0]);
+		Player p2 = Tournament.findPlayerByName(currentCombatants[1]);
 		Battle b = new Battle(p1, p2);
 		return b;
 	}
@@ -149,7 +142,7 @@ public class TntFileManager {
 	public static void addGamesToPlayerHistory(String line) {
 		try {
 			String[] information = line.split("_");
-			Player p = Utils.findPlayerByName(information[0], t.players);
+			Player p = Tournament.findPlayerByName(information[0]);
 
 			String hasBeaten = information[1];
 			hasBeaten = hasBeaten.replaceAll("\\[", "");
