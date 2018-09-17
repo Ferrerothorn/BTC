@@ -42,15 +42,6 @@ public class Utils {
 		return s;
 	}
 
-	public static Player findPlayerByName(String s, ArrayList<Player> players) {
-		for (Player p : players) {
-			if (p.getName().equals(s)) {
-				return p;
-			}
-		}
-		return null;
-	}
-
 	public static void print() {
 		GUI.postString("");
 	}

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.FileHandler;
 
+//Bugfix: adding players after start of tourney would glitch the participant numbers.
+
 public class Tournament {
 
 	public ArrayList<Player> players = new ArrayList<>();
@@ -442,13 +444,6 @@ public class Tournament {
 			currentBattles.clear();
 			players.clear();
 			break;
-		case "elimination":
-			print("To convert to X-Elimination, please first enter the number of losses after which a player is eliminated.\n");
-			waitForUserInput();
-			x_elimination = Integer.parseInt(readInput());
-			print("Players will be eliminated after " + x_elimination + " losses.");
-			currentBattles.clear();
-			break;
 		default:
 			print("Invalid admin command. Returning to tournament...\n");
 			break;
@@ -732,11 +727,6 @@ public class Tournament {
 		return results;
 	}
 
-	public void elimination() {
-		Eliminator elim = new Eliminator(players, this);
-		elim.eliminate();
-	}
-
 	public void setAllParticipantsIn(boolean b) {
 		allParticipantsIn = b;
 	}
@@ -857,11 +847,8 @@ public class Tournament {
 			sortRankings();
 			GUI.postResultsString(generateInDepthRankings(players));
 			pollForResults();
-			if (isElimination) {
-				elimination();
-			} else {
-				roundNumber++;
-			}
+			roundNumber++;
+
 		}
 
 		save();
@@ -871,6 +858,15 @@ public class Tournament {
 
 	void save() {
 		tntfm.saveTournament();
+	}
+
+	public static Player findPlayerByName(String s) {
+		for (Player p : players) {
+			if (p.getName().equals(s)) {
+				return p;
+			}
+		}
+		return null;
 	}
 
 	public void initialSeed(Player p1, Player p2) {

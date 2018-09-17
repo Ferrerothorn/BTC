@@ -126,7 +126,7 @@ public class GUI implements ActionListener {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							String selected = players.getSelectedItem().toString();
-							t.printHistory(Utils.findPlayerByName(selected, t.players));
+							t.printHistory(Tournament.findPlayerByName(selected));
 							t.save();
 						}
 					});
@@ -239,14 +239,14 @@ public class GUI implements ActionListener {
 
 		JButton reopenGameButton = new JButton("Reopen Game");
 		reopenGameButton.addActionListener(new ActionListener() {
-			@SuppressWarnings({ "rawtypes", "unchecked" })
+			@SuppressWarnings({ "rawtypes" })
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() > 0) {
 					JFrame nameEditor = new JFrame("Reopen Game");
 					nameEditor.setSize(400, 100);
 					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.players) {
+					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
@@ -261,8 +261,8 @@ public class GUI implements ActionListener {
 					submitEditName.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							Player p1 = Utils.findPlayerByName(p1s.getSelectedItem().toString(), t.players);
-							Player p2 = Utils.findPlayerByName(p2s.getSelectedItem().toString(), t.players);
+							Player p1 = Tournament.findPlayerByName(p1s.getSelectedItem().toString());
+							Player p2 = Tournament.findPlayerByName(p2s.getSelectedItem().toString());
 							if (p1.getName().equals(p2.getName())) {
 								postString("A player can't possibly have played themself.\n");
 							} else {
@@ -323,8 +323,8 @@ public class GUI implements ActionListener {
 							String n1 = seed1.getSelectedItem().toString();
 							String n2 = seed2.getSelectedItem().toString();
 							if (!n1.equals(n2)) {
-								Player p1 = Utils.findPlayerByName(n1, t.players);
-								Player p2 = Utils.findPlayerByName(n2, t.players);
+								Player p1 = Tournament.findPlayerByName(n1);
+								Player p2 = Tournament.findPlayerByName(n2);
 								// t.players.remove(p1);
 								// t.players.remove(p2);
 								// t.initialSeed(p1, p2);
@@ -355,12 +355,12 @@ public class GUI implements ActionListener {
 		pairingsBox = new JTextArea(20, 60);
 		pairingsBox.setEditable(false);
 		pairingsBox.setLineWrap(true);
-		pairingsBox.setFont(new Font("monospaced", Font.PLAIN, 16));
+		pairingsBox.setFont(new Font("monospaced", Font.PLAIN, 20));
 
 		resultsBox = new JTextArea(20, 30);
 		resultsBox.setEditable(false);
 		resultsBox.setLineWrap(false);
-		resultsBox.setFont(new Font("monospaced", Font.PLAIN, 14));
+		resultsBox.setFont(new Font("monospaced", Font.PLAIN, 16));
 
 		JLabel inputLabel = new JLabel(" Enter options here: ");
 		textField = new JTextField(500);
