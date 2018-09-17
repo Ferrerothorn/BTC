@@ -565,7 +565,7 @@ public class Tournament {
 	}
 
 	public int size() {
-		return players.size();
+		return activePlayerSize();
 	}
 
 	public void addPlayer(Player p) {
@@ -664,7 +664,7 @@ public class Tournament {
 	}
 
 	public void reportBattleWinner(String text) {
-		Player winner = Utils.findPlayerByName(text, players);
+		Player winner = findPlayerByName(text);
 		for (Battle b : currentBattles) {
 			if (b.contains(winner)) {
 				if (b.getP1() == winner) {
@@ -697,7 +697,7 @@ public class Tournament {
 		int highestSTB = 0;
 		Player topSTB = null;
 		for (Player p : players) {
-			if (p.getSTB() >= highestSTB) {
+			if (p.getSTB() >= highestSTB && !p.getName().equals("BYE")) {
 				topSTB = p;
 				highestSTB = p.getSTB();
 			}
@@ -709,7 +709,7 @@ public class Tournament {
 		int highestOWR = 0;
 		Player hardest = null;
 		for (Player p : players) {
-			if (p.getOppWr() > highestOWR) {
+			if (p.getOppWr() > highestOWR && !p.getName().equals("BYE")) {
 				hardest = p;
 				highestOWR = p.getOppWr();
 			}
