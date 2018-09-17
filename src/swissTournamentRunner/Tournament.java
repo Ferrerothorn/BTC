@@ -54,13 +54,12 @@ public class Tournament {
 	public void addPlayer(String p1) {
 		if (doesPlayerExist("BYE") && !doesPlayerExist(p1)) {
 			renamePlayer("BYE", p1);
-		} else if (!doesPlayerExist(p1)) {
+		} 
+		else if (!doesPlayerExist(p1)) {
 			if (p1.length() > 0) {
 				players.add(new Player(p1));
 			}
-		} else {
-			dropped.remove(p1);
-		}
+		}		
 		while (numberOfRounds < (logBase2(players.size()))) {
 			numberOfRounds++;
 		}
@@ -252,6 +251,7 @@ public class Tournament {
 	}
 
 	public void pairThisGuyUp(Player p1, ArrayList<Battle> targetBattleList, int attempts) {
+
 		try {
 			boolean opponentFound = false;
 			int playerIndex = 0;
@@ -280,6 +280,7 @@ public class Tournament {
 				}
 				pairThisGuyUp(p1, totallyKosherPairings, attempts + 1);
 				sortRankings();
+
 			}
 		}
 	}
@@ -500,8 +501,8 @@ public class Tournament {
 	private boolean activeBattleExists(ArrayList<Battle> battles, Player p, Player q) {
 		boolean exists = false;
 		for (Battle b : battles) {
-			 if ((b.getP1().equals(p) && b.getP2().equals(q)) || (b.getP1().equals(q) && b.getP2().equals(p))) { 
-				 exists = true;
+			if ((b.getP1().equals(p) && b.getP2().equals(q)) || (b.getP1().equals(q) && b.getP2().equals(p))) {
+				exists = true;
 			}
 		}
 		return exists;

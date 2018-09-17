@@ -184,8 +184,8 @@ public class GUI implements ActionListener {
 					dropSubmitButton.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							String dropPlayer = input.getSelectedItem().toString();
-							tourney.dropPlayer(dropPlayer);
+				//			String dropPlayer = input.getSelectedItem().toString();
+				//			tourney.dropPlayer(dropPlayer);
 							t.save();
 							dropPlayersBox.dispose();
 						}
