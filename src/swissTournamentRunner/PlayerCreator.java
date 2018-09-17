@@ -36,21 +36,7 @@ public class PlayerCreator {
 				t.print("Enter the player number (shown below)  of the player(s) you'd like to remove.");
 				t.waitForUserInput();
 				String dropMe = t.readInput();
-				if (!dropMe.contains(",")) {
-					dropPlayerByIndex(dropMe);
-					break;
-				} else {
-					String[] indexes = dropMe.split(",");
-					for (String s : indexes) {
-						s = Utils.trimWhitespace(s);
-					}
-					for (String s : indexes) {
-						dropPlayerByIndex(s);
-					}
-					break;
-				}
-			case "no":
-			//	t.allParticipantsIn = true;
+				dropPlayerByIndex(dropMe);
 				break;
 			case "seed":
 				t.print("Pick Player 1 for an initial pairing. (Numbers shown below)");
