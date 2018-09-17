@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 public class TntFileManager {
 
@@ -27,9 +28,10 @@ public class TntFileManager {
 			for (Player p : Tournament.players) {
 				output += p.getName() + ",";
 			}
-			output = output.substring(0, output.length() - 1);
-			output += "\nVICTORIES:\n";
-			for (Player p : t.players) {
+			output = output.substring(0, output.length() - 1) + "\n";
+
+			output += "VICTORIES:\n";
+			for (Player p : Tournament.players) {
 				output += p.getName() + "_" + p.getListOfNamesBeaten().toString() + "_"
 						+ p.getListOfNamesPlayed().toString() + "\n";
 			}
@@ -55,12 +57,12 @@ public class TntFileManager {
 	}
 
 	public static void loadTournament(Tournament t, String fileName) throws IOException {
-		t.players.clear();
+		Tournament.players.clear();
 		t.currentBattles.clear();
 
-		t.gui.toolbar.remove(t.gui.startButton); 
-	    t.gui.frame.repaint();	
-		
+		t.gui.toolbar.remove(t.gui.startButton);
+		GUI.frame.repaint();
+
 		t.activeMetadataFile = fileName;
 		BufferedReader br = new BufferedReader(new FileReader(t.activeMetadataFile));
 		try {
@@ -90,6 +92,7 @@ public class TntFileManager {
 					parseProperties(line);
 					line = br.readLine();
 				}
+				t.assignTableNumbers(t.currentBattles); 
 			}
 		} catch (IOException e) {
 			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\"");
@@ -150,7 +153,7 @@ public class TntFileManager {
 			String[] playersBeaten = hasBeaten.split(",");
 			for (String s : playersBeaten) {
 				if (s.length() > 0) {
-					p.addToListOfVictories(Utils.findPlayerByName(Utils.trimWhitespace(s), t.players));
+					p.addToListOfVictories(Tournament.findPlayerByName(Utils.trimWhitespace(s)));
 				}
 			}
 
@@ -160,7 +163,7 @@ public class TntFileManager {
 			String[] playersPlayed = hasPlayed.split(",");
 			for (String s : playersPlayed) {
 				if (s.length() > 0) {
-					p.addToListOfPlayed(Utils.findPlayerByName(Utils.trimWhitespace(s), t.players));
+					p.addToListOfPlayed(Tournament.findPlayerByName(Utils.trimWhitespace(s)));
 				}
 			}
 		} catch (Exception e) {
