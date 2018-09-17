@@ -54,12 +54,11 @@ public class Tournament {
 	public void addPlayer(String p1) {
 		if (doesPlayerExist("BYE") && !doesPlayerExist(p1)) {
 			renamePlayer("BYE", p1);
-		} 
-		else if (!doesPlayerExist(p1)) {
+		} else if (!doesPlayerExist(p1)) {
 			if (p1.length() > 0) {
 				players.add(new Player(p1));
 			}
-		}		
+		}
 		while (numberOfRounds < (logBase2(players.size()))) {
 			numberOfRounds++;
 		}
@@ -544,83 +543,14 @@ public class Tournament {
 		addBye();
 	}
 
-	public void dropPlayer(String nameToDrop) {
-		if (nameToDrop.contains(",")) {
-			String[] namesToDrop = nameToDrop.split(",");
-			for (String s : namesToDrop) {
-				dropPlayer(Utils.trimWhitespace(s));
-			}
-		} else {
-
-			Boolean foundPlayerToDrop = false;
-			for (Battle b : currentBattles) {
-				if (b.getP1().getName().equals(nameToDrop) && b.getP2().getName().equals("BYE")) {
-					currentBattles.remove(b);
-					players.remove(b.getP1());
-					players.remove(b.getP2());
-					foundPlayerToDrop = true;
-					break;
-				} else if (b.getP2().getName().equals(nameToDrop) && b.getP1().getName().equals("BYE")) {
-					currentBattles.remove(b);
-					players.remove(b.getP1());
-					players.remove(b.getP2());
-					foundPlayerToDrop = true;
-					break;
-				} else if (b.getP2().getName().equals(nameToDrop) || b.getP1().getName().equals(nameToDrop)) {
-					foundPlayerToDrop = true;
-					print("You can't drop a player while that player's in a non-Bye battle.");
-					break;
-				}
-			}
-			if (!foundPlayerToDrop) {
-				Player toDrop = Utils.findPlayerByName(nameToDrop, players);
-				if (toDrop != null) {
-					players.remove(toDrop);
-				}
-			}
-
-			if (topCutThreshold >= players.size()) {
-				topCutThreshold = 0;
-			}
-
-			if (!nameToDrop.equals("BYE") && (players.size() % 2 == 1) && !doesPlayerExist("BYE")) {
-				addPlayer("BYE");
-			} else if (!nameToDrop.equals("BYE")) {
-				dropPlayer("BYE");
-			}
-
-			if ((players.size() % 2 == 1) && doesPlayerExist("BYE")) {
-				Battle byeMatch = null;
-				for (Battle b : currentBattles) {
-					if (b.getP1().getName().equals("BYE")) {
-						byeMatch = b;
-						b.getP2().beats(b.getP1());
-						b = null;
-					} else if (b.getP2().getName().equals("BYE")) {
-						byeMatch = b;
-						b.getP1().beats(b.getP2());
-						b = null;
-					}
-				}
-				if (byeMatch != null) {
-					currentBattles.remove(byeMatch);
-				}
-				dropPlayer("BYE");
-			}
-
-			if (!isElimination) {
-				while (numberOfRounds > players.size()) {
-					numberOfRounds--;
-				}
-			}
-			addBye();
-		}
+	private int activePlayerSize() {
+		return players.size();
 	}
 
 	public void alterTopCut(String newSize) throws NumberFormatException {
 		try {
 			int tC = Integer.parseInt(newSize);
-			if (tC < players.size()) {
+			if (tC < activePlayerSize()) {
 				setTopCut(tC);
 				Utils.print("Top Cut size set to " + tC + ".\n");
 			} else {
