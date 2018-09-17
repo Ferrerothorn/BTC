@@ -111,12 +111,12 @@ public class GUI implements ActionListener {
 					matchesOfButtonFrame.setSize(450, 150);
 					matchesOfButtonFrame.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.players) {
+					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					@SuppressWarnings({ "rawtypes", "unchecked" })
+					@SuppressWarnings({ "rawtypes" })
 					JComboBox players = new JComboBox(ps);
 					JButton submitGetMatches = new JButton("Submit");
 					matchesOfButtonFrame.add(players, "span 3,wrap");
@@ -170,7 +170,7 @@ public class GUI implements ActionListener {
 					dropPlayersBox.setSize(450, 150);
 					dropPlayersBox.setLayout(new GridLayout());
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : tourney.players) {
+					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
@@ -183,8 +183,8 @@ public class GUI implements ActionListener {
 					dropSubmitButton.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-				            String dropPlayer = input.getSelectedItem().toString(); 
-				            tourney.dropPlayer(dropPlayer); 
+							String dropPlayer = input.getSelectedItem().toString();
+							tourney.dropPlayer(dropPlayer);
 							t.save();
 							dropPlayersBox.dispose();
 						}
@@ -202,12 +202,12 @@ public class GUI implements ActionListener {
 					nameEditor.setSize(400, 100);
 					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.players) {
+					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					@SuppressWarnings({ "rawtypes", "unchecked" })
+					@SuppressWarnings({ "rawtypes" })
 					JComboBox players = new JComboBox(ps);
 					JTextField editedName = new JTextField("Enter new name here.");
 					JButton submitEditName = new JButton("Submit");
@@ -227,7 +227,7 @@ public class GUI implements ActionListener {
 							String newName = editedName.getText();
 							t.renamePlayer(oldName, newName);
 							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
-							resultsBox.setText(Tournament.generateInDepthRankings(t.players) + "\n");
+							resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
 							t.save();
 							nameEditor.dispose();
 						}
@@ -270,7 +270,7 @@ public class GUI implements ActionListener {
 								if (reopened) {
 									pairingsBox.setText(
 											t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
-									resultsBox.setText(Tournament.generateInDepthRankings(t.players) + "\n");
+									resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
 									postString("Game between " + p1.getName() + " and  " + p2.getName() + " reopened.");
 								} else {
 									postString("Could not reopen game between " + p1.getName() + " and " + p2.getName()
@@ -288,7 +288,7 @@ public class GUI implements ActionListener {
 
 		startButton = new JButton("START");
 		startButton.addActionListener(new ActionListener() {
-			@SuppressWarnings({ "rawtypes", "unchecked" })
+			@SuppressWarnings({ "rawtypes" })
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() == 0) {
 					JFrame seedPanel = new JFrame("Initial Seed");
@@ -303,7 +303,7 @@ public class GUI implements ActionListener {
 						}
 					});
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.players) {
+					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
