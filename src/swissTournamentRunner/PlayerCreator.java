@@ -18,10 +18,10 @@ public class PlayerCreator {
 
 			t.print("Enter the name of the next participant, or enter 'no' if done. ");
 			t.print("While registering players, enter 'drop' to remove a player before we begin, or enter 'seed' to begin the tournament while choosing [some] Round 1 pairings.");
-			t.print("Current Participants: " + playerNumbers + "  Rounds required: " + t.logBase2(t.players.size())); 
-		    t.print("");
-			t.print("START BUTTON XD");
-			
+			t.print("Current Participants: " + playerNumbers + "  Rounds required: "
+					+ t.logBase2(Tournament.players.size()));
+			t.print("");
+
 			t.waitForUserInput();
 			String input = t.readInput();
 			processPlayerName(input);
