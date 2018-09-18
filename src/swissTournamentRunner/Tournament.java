@@ -70,8 +70,7 @@ public class Tournament {
 
 	public void postListOfConfirmedSignups() {
 		Collections.sort(players);
-		int totalNumberOfPlayers = players.size() + currentBattles.size() * 2; 
-		String post = "-=-=-Registered: " + totalNumberOfPlayers + " players. -=-=-" + "\n";
+		String post = "-=-=-Registered: " + activePlayerSize() + " players. -=-=-" + "\n";
 		for (int i = 1; i <= players.size(); i++) {
 			post += "" + i + ") " + players.get(i - 1).getName() + "\n";
 		}
@@ -133,8 +132,8 @@ public class Tournament {
 	}
 
 	public void addBye() {
-		if (players.size() % 2 != 0 && Utils.findPlayerByName("BYE", players) == null) {
-			players.add(new Player("BYE"));
+		if (findPlayerByName("BYE") == null && activePlayerSize() % 2 == 1) {
+			addPlayer("BYE");
 		}
 	}
 
