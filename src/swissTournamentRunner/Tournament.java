@@ -694,9 +694,9 @@ public class Tournament {
 
 	private Player fetchHighestSTBPlayer() {
 		int highestSTB = 0;
-		Player topSTB = null;
+		Player topSTB = players.get(0);
 		for (Player p : players) {
-			if (p.getSTB() >= highestSTB && !p.getName().equals("BYE")) {
+			if (p.getSTB() > highestSTB && !p.getName().equals("BYE")) {
 				topSTB = p;
 				highestSTB = p.getSTB();
 			}
