@@ -206,6 +206,7 @@ public class GUI implements ActionListener {
 					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
+					playerNames.remove("BYE");
 					Collections.sort(playerNames);
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
 					@SuppressWarnings({ "rawtypes" })
@@ -272,7 +273,7 @@ public class GUI implements ActionListener {
 									pairingsBox.setText(
 											t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
 									resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
-									postString("Game between " + p1.getName() + " and  " + p2.getName() + " reopened.");
+									postString("Game between " + p1.getName() + " and " + p2.getName() + " reopened.");
 								} else {
 									postString("Could not reopen game between " + p1.getName() + " and " + p2.getName()
 											+ ". Did it actually occur?");
