@@ -327,10 +327,9 @@ public class GUI implements ActionListener {
 							if (!n1.equals(n2)) {
 								Player p1 = Tournament.findPlayerByName(n1);
 								Player p2 = Tournament.findPlayerByName(n2);
-								// t.players.remove(p1);
-								// t.players.remove(p2);
-								// t.initialSeed(p1, p2);
-								t.currentBattles.add(new Battle(p1, p2));
+								Tournament.players.remove(p1);
+								Tournament.players.remove(p2);
+								t.initialSeed(p1, p2);
 								seed1.removeItem(p1.getName());
 								seed1.removeItem(p2.getName());
 								seed2.removeItem(p1.getName());
