@@ -102,4 +102,14 @@ public class Utils {
 				+ "                                                                                                                          ")
 						.substring(0, finalLength);
 	}
+	
+	public static Battle findBattleByPlayer(Player p, ArrayList<Battle> bs) {
+		for (Battle b : bs) {
+			if (b.getP1().equals(p) || b.getP2().equals(p)) {
+				return b;
+			}
+		}
+		return null;
+	}
+	
 }
