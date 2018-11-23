@@ -173,6 +173,12 @@ public class Tournament {
 	}
 
 	public static String generateInDepthRankings(ArrayList<Player> ps) {
+
+		int STBsum = 0;
+		for (Player p : players) {
+			STBsum += p.oppositionTBSum;
+		}
+
 		String participantString = "";
 		int longestPlayerNameLength = 0;
 
@@ -183,7 +189,7 @@ public class Tournament {
 		}
 
 		if (topCutThreshold != 0) {
-			participantString += "===Rankings - Top Cut===" + "\n";
+			participantString += "===Rankings - Top Cut===" + STBsum + "\n";
 			for (int i = 1; i <= topCutThreshold; i++) {
 				if (!ps.get(i - 1).getName().equals("BYE")) {
 
@@ -204,7 +210,7 @@ public class Tournament {
 			}
 			participantString += "==Rankings - Qualifiers==" + "\n";
 		} else {
-			participantString += "-=-=-=-Rankings-=-=-=-" + '\n';
+			participantString += "-=-=-=-Rankings-=-=-=-" + STBsum + '\n';
 		}
 
 		for (int j = topCutThreshold + 1; j <= ps.size(); j++) {
@@ -767,9 +773,7 @@ public class Tournament {
 			GUI.postResultsString(generateInDepthRankings(players));
 			pollForResults();
 			roundNumber++;
-
 		}
-
 		save();
 		GUI.wipePane();
 		postTourneyProcessing();
