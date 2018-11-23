@@ -676,14 +676,42 @@ public class Tournament {
 		try {
 			Player p1 = fetchHardestFoughtPlayer();
 			Player p2 = fetchHighestSTBPlayer();
+			Player p3 = fetchBiggestMilker();
+			Player p4 = fetchHardestDoneBy();
+
+			Collections.sort(players);
 			output += "Congratulations to " + players.get(0).getName() + " on winning this tournament!\n";
 			output += "Props to " + p1.getName() + " for enduring the toughest range of opponents.\n";
 			output += "Shoutout to " + p2.getName()
-					+ " for generally playing against opponents on top of their peer group.";
+					+ " for generally playing against opponents on top of their peer group.\n";
+			output += p3.getName()
+					+ " can thank their lucky stars for being generally paired down the most considering their win rate.\n";
+			output += "Commiserations to " + p4.getName() + " for being paired up unusually often.\n";
 		} catch (IndexOutOfBoundsException e) {
 			System.out.println("Exception thrown: Tried to access unavailable player.");
 		}
 		return output;
+	}
+
+	private Player fetchHardestDoneBy() {
+		Collections.sort(players);
+		Collections.reverse(players);
+		for (Player ps : players) {
+			if (ps.getOppWr() > 50) {
+				return ps;
+			}
+		}
+		return null;
+	}
+
+	private Player fetchBiggestMilker() {
+		Collections.sort(players);
+		for (Player ps : players) {
+			if (ps.getOppWr() < 50) {
+				return ps;
+			}
+		}
+		return null;
 	}
 
 	private Player fetchHighestSTBPlayer() {
