@@ -212,4 +212,12 @@ public class Player implements Comparable<Player> {
 		previousRounds.add(played);
 	}
 
+	public void updateParticipantStats() {
+		recalculateScore();
+		recalculateTB();
+		recalculateOppWr();
+		recalculateOppOppWr();
+		recalculateOppositionTBSum();
+	}
+
 }

@@ -143,19 +143,7 @@ public class Tournament {
 
 	public void updateParticipantStats() {
 		for (Player p : players) {
-			p.recalculateScore();
-		}
-		for (Player p : players) {
-			p.recalculateTB();
-		}
-		for (Player p : players) {
-			p.recalculateOppWr();
-		}
-		for (Player p : players) {
-			p.recalculateOppOppWr();
-		}
-		for (Player p : players) {
-			p.recalculateOppositionTBSum();
+			p.updateParticipantStats();
 		}
 		sortRankings();
 		for (Player p : players) {
