@@ -1,8 +1,6 @@
 To do list:
 
->Alter pairings algorithm to ignore dropped players
-
->Write drop to file as we save
+>Alter pairings algorithm to ignore dropped players - buggy AF
 
 >Read drop from file as we load
 
