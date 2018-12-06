@@ -26,7 +26,6 @@ public class Tournament {
 	public int roundNumber = 1;
 	public GUI gui;
 	public int x_elimination = 99999;
-	public Boolean isElimination = false;
 	public String activeMetadataFile = "TournamentInProgress.tnt";
 	public static FileHandler fh;
 
@@ -254,10 +253,10 @@ public class Tournament {
 		try {
 			boolean opponentFound = false;
 			int playerIndex = 0;
-
+			
 			while (!opponentFound) {
 				Player temp = players.get(playerIndex);
-				if (isElimination || (!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1))) {
+				if (!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1) && !dropped.contains(temp)) {
 					temp = players.remove(playerIndex);
 					Battle b = new Battle(p1, temp);
 					targetBattleList.add(b);
