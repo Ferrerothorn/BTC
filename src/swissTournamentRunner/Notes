@@ -1,0 +1,8 @@
+To do list:
+
+Add dropPlayer support:
+>Write drop method, that adds players to a dropped list and checks if we need to add, or drop, a bye
+>Write drop to file as we save
+>Alter pairings algorithm to ignore dropped players
+
+>Add support for reporting games by player name
