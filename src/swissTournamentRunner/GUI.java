@@ -171,7 +171,9 @@ public class GUI implements ActionListener {
 					dropPlayersBox.setLayout(new GridLayout());
 					ArrayList<String> playerNames = new ArrayList<String>();
 					for (Player p : Tournament.players) {
-						playerNames.add(p.getName());
+						if (!Tournament.dropped.contains(p)) {
+							playerNames.add(p.getName());
+						}
 					}
 					Collections.sort(playerNames);
 					playerNames.remove("BYE");
@@ -184,8 +186,8 @@ public class GUI implements ActionListener {
 					dropSubmitButton.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-				//			String dropPlayer = input.getSelectedItem().toString();
-				//			tourney.dropPlayer(dropPlayer);
+							String dropPlayer = input.getSelectedItem().toString();
+							tourney.dropPlayer(dropPlayer);
 							t.save();
 							dropPlayersBox.dispose();
 						}
