@@ -22,9 +22,6 @@ public class GUI implements ActionListener {
 	public static JFrame frame = new JFrame("BTC");
 	public JToolBar toolbar;
 	public JButton startButton;
-	public JFrame seedPanel;
-	public JButton reportResults;
-	public static Logger logger = Logger.getLogger(GUI.class.getName());
 
 	public GUI(Tournament t) {
 		logger.info("Created GUI.");
@@ -65,8 +62,8 @@ public class GUI implements ActionListener {
 		JButton eloButton = new JButton("ELO");
 		eloButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tourney.currentBattles.size() > 0) {
-					tourney.elo = tourney.toggle(tourney.elo);
+				if (t.currentBattles.size() > 0) {
+					t.elo = t.toggle(t.elo);
 					pairingsBox.setCaretPosition(0);
 					logger.info("User toggled ELO display to " + tourney.elo + ".");
 					postString(tourney.getCurrentBattles(tourney.currentBattles, Tournament.roundString));
@@ -118,7 +115,7 @@ public class GUI implements ActionListener {
 		JButton matchesOfButton = new JButton("One Player's Matches");
 		matchesOfButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tourney.currentBattles.size() > 0) {
+				if (t.currentBattles.size() > 0) {
 					JFrame matchesOfButtonFrame = new JFrame("Return Player's Matches");
 					matchesOfButtonFrame.setSize(450, 150);
 					matchesOfButtonFrame.setLayout(new MigLayout("", "[grow,fill]"));
@@ -128,7 +125,7 @@ public class GUI implements ActionListener {
 					}
 					Collections.sort(playerNames);
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					@SuppressWarnings({ "rawtypes", "unchecked" })
+					@SuppressWarnings({ "rawtypes" })
 					JComboBox players = new JComboBox(ps);
 					JButton submitGetMatches = new JButton("Submit");
 					matchesOfButtonFrame.add(players, "span 3,wrap");
@@ -138,9 +135,8 @@ public class GUI implements ActionListener {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							String selected = players.getSelectedItem().toString();
-							tourney.printHistory(Tournament.findPlayerByName(selected));
-							logger.info("T.O. enquired into " + selected + "'s history.");
-							tourney.save();
+							t.printHistory(Tournament.findPlayerByName(selected));
+							t.save();
 						}
 					});
 				}
@@ -176,9 +172,9 @@ public class GUI implements ActionListener {
 
 		JButton dropPlayersButton = new JButton("Drop Player");
 		dropPlayersButton.addActionListener(new ActionListener() {
-			@SuppressWarnings("unchecked")
+			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent e) {
-				if (tourney.currentBattles.size() > 0) {
+				if (t.currentBattles.size() > 0) {
 					JFrame dropPlayersBox = new JFrame("Drop Player");
 					dropPlayersBox.setSize(450, 150);
 					dropPlayersBox.setLayout(new GridLayout());
@@ -188,9 +184,6 @@ public class GUI implements ActionListener {
 					}
 					Collections.sort(playerNames);
 					playerNames.remove("BYE");
-					for (String s : Tournament.dropped) {
-						playerNames.remove(s);
-					}
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
 					JComboBox input = new JComboBox(ps);
 					JButton dropSubmitButton = new JButton("Submit");
@@ -200,9 +193,9 @@ public class GUI implements ActionListener {
 					dropSubmitButton.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							String dropPlayer = input.getSelectedItem().toString();
-							tourney.dropPlayer(dropPlayer);
-							tourney.save();
+				//			String dropPlayer = input.getSelectedItem().toString();
+				//			tourney.dropPlayer(dropPlayer);
+							t.save();
 							dropPlayersBox.dispose();
 						}
 					});
@@ -222,9 +215,10 @@ public class GUI implements ActionListener {
 					for (Player p : Tournament.players) {
 						playerNames.add(p.getName());
 					}
+					playerNames.remove("BYE");
 					Collections.sort(playerNames);
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					@SuppressWarnings({ "rawtypes", "unchecked" })
+					@SuppressWarnings({ "rawtypes" })
 					JComboBox players = new JComboBox(ps);
 					JTextField editedName = new JTextField("Enter new name here.");
 					JButton submitEditName = new JButton("Submit");
@@ -242,11 +236,10 @@ public class GUI implements ActionListener {
 						public void actionPerformed(ActionEvent e) {
 							String oldName = players.getSelectedItem().toString();
 							String newName = editedName.getText();
-							tourney.renamePlayer(oldName, newName);
-							pairingsBox.setText(
-									tourney.getCurrentBattles(tourney.currentBattles, Tournament.roundString) + "\n");
+							t.renamePlayer(oldName, newName);
+							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
 							resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
-							tourney.save();
+							t.save();
 							nameEditor.dispose();
 						}
 					});
@@ -257,7 +250,7 @@ public class GUI implements ActionListener {
 
 		JButton reopenGameButton = new JButton("Reopen Game");
 		reopenGameButton.addActionListener(new ActionListener() {
-			@SuppressWarnings("unchecked")
+			@SuppressWarnings({ "rawtypes" })
 			public void actionPerformed(ActionEvent e) {
 				if (tourney.currentBattles.size() > 0) {
 					JFrame nameEditor = new JFrame("Reopen Game");
@@ -287,12 +280,9 @@ public class GUI implements ActionListener {
 								Boolean reopened = tourney.reopenBattle(p1, p2);
 								if (reopened) {
 									pairingsBox.setText(
-											tourney.getCurrentBattles(tourney.currentBattles, Tournament.roundString)
-													+ "\n");
+											t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
 									resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
-									postString("Game between " + p1.getName() + " and  " + p2.getName() + " reopened.");
-								t.predictionsMade = 0;
-								t.correctPredictions = 0;
+									postString("Game between " + p1.getName() + " and " + p2.getName() + " reopened.");
 								} else {
 									postString("Could not reopen game between " + p1.getName() + " and " + p2.getName()
 											+ ". Did it actually occur?");
@@ -308,16 +298,18 @@ public class GUI implements ActionListener {
 
 		startButton = new JButton("START");
 		startButton.addActionListener(new ActionListener() {
+			@SuppressWarnings({ "rawtypes" })
 			public void actionPerformed(ActionEvent e) {
-				if (tourney.currentBattles.size() == 0) {
-					seedPanel = new JFrame("Initial Seed");
+				if (t.currentBattles.size() == 0) {
+					JFrame seedPanel = new JFrame("Initial Seed");
 					seedPanel.setSize(450, 150);
 					seedPanel.setLayout(new MigLayout("", "[grow,fill]"));
 					seedPanel.addWindowListener(new WindowAdapter() {
 						@Override
 						public void windowClosing(WindowEvent e) {
-							tourney.disseminateBattles(tourney.currentBattles);
-							tourney.postListOfConfirmedSignups();
+							t.currentBattles.clear();
+							t.disseminateBattles(t.currentBattles);
+							t.postListOfConfirmedSignups();
 						}
 					});
 					ArrayList<String> playerNames = new ArrayList<String>();
@@ -326,9 +318,7 @@ public class GUI implements ActionListener {
 					}
 					Collections.sort(playerNames);
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					@SuppressWarnings("unchecked")
 					JComboBox seed1 = new JComboBox(ps);
-					@SuppressWarnings("unchecked")
 					JComboBox seed2 = new JComboBox(ps);
 					JButton submitPair = new JButton("Seed Pairing");
 					JButton start = new JButton("Start Tournament");
@@ -347,24 +337,20 @@ public class GUI implements ActionListener {
 								Player p2 = Tournament.findPlayerByName(n2);
 								Tournament.players.remove(p1);
 								Tournament.players.remove(p2);
-								Battle b = new Battle(p1, p2);
-								b.wasSeeded = true;
-								tourney.currentBattles.add(b);
+								t.initialSeed(p1, p2);
 								seed1.removeItem(p1.getName());
 								seed1.removeItem(p2.getName());
 								seed2.removeItem(p1.getName());
 								seed2.removeItem(p2.getName());
-								logger.info("Game between " + p1.getName() + " and " + p2.getName()
-										+ " was seeded for Round 1.");
-								tourney.postListOfConfirmedSignups();
+								t.postListOfConfirmedSignups();
 							}
 						}
 					});
 					start.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent arg0) {
-							tourney.allParticipantsIn = true;
-							tourney.setUserSelection("no");
+							t.allParticipantsIn = true;
+							t.setUserSelection("no");
 							seedPanel.dispose();
 							toolbar.remove(startButton);
 							toolbar.repaint();
@@ -375,109 +361,15 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(startButton);
 
-		reportResults = new JButton("Report Results");
-		reportResults.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (tourney.currentBattles.size() > 0) {
-					JFrame pairingsPanel = new JFrame("Report Results");
-					logger.info("T.O. opened the button reporting interface.");
-					pairingsPanel.setExtendedState(pairingsPanel.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-					pairingsPanel.setLayout(new MigLayout("fill,wrap 5"));
-					for (Battle b : t.currentBattles) {
-						JLabel tableLabel = new JLabel("Table " + b.getTableNumber() + ")");
-						JButton p1Button = new JButton(b.getP1().getName());
-						JLabel vs = new JLabel("vs.");
-						JButton p2Button = new JButton(b.getP2().getName());
-						JLabel prediction = new JLabel(Utils.eloBuilder(b));
-						p1Button.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								logger.info("T.O. clicked button labelled " + p1Button.getText());
-								logger.info("T.O. said that Player 1 (" + p1Button.getText() + ") won the game against "
-										+ p2Button.getText());
-
-								Battle b = t.findBattleByPlayerName(p1Button.getText());
-								if (b.getElo(b.getP1()) != 50) {
-									t.predictionsMade++;
-								}
-								if (b.getElo(b.getP1()) > 50) {
-									t.correctPredictions++;
-								}
-
-								Utils.reportWinnerByName(p1Button.getText(), p2Button.getText(), t.currentBattles);
-								t.setUserSelection("P1");
-								t.updateParticipantStats();
-								t.sortRankings();
-								pairingsBox
-										.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
-								resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
-								pairingsPanel.dispose();
-								if (t.currentBattles.size() != 0) {
-									reportResults.doClick();
-								}
-								t.save();
-							}
-						});
-						p2Button.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								logger.info("T.O. clicked button labelled " + p2Button.getText());
-								logger.info("T.O. said that Player 2 (" + p2Button.getText() + ") won the game against "
-										+ p1Button.getText());
-
-								Battle b = t.findBattleByPlayerName(p2Button.getText());
-								if (b.getElo(b.getP2()) != 50) {
-									t.predictionsMade++;
-								}
-								if (b.getElo(b.getP2()) > 50) {
-									t.correctPredictions++;
-								}
-
-								Utils.reportWinnerByName(p2Button.getText(), p1Button.getText(), t.currentBattles);
-								t.setUserSelection("P2");
-								t.updateParticipantStats();
-								t.sortRankings();
-								pairingsBox
-										.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
-								resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
-								pairingsPanel.dispose();
-								if (t.currentBattles.size() != 0) {
-									reportResults.doClick();
-								}
-								t.save();
-							}
-						});
-						pairingsPanel.add(tableLabel, "growx, gapright 100");
-						pairingsPanel.add(p1Button, "growx, gapright 100");
-						pairingsPanel.add(vs);
-						pairingsPanel.add(p2Button, "growx, gapleft 100");
-						pairingsPanel.add(prediction, "growx, gapleft 100");
-					}
-					pairingsPanel.setVisible(true);
-				}
-			}
-		});
-
-		toolbar.add(reportResults);
-		
-//		JButton elimination = new JButton("Elimination");
-//		elimination.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				t.elimination = 2;
-//				t.save();
-//			}
-//		});
-//		toolbar.add(elimination);
-
 		pairingsBox = new JTextArea(20, 60);
 		pairingsBox.setEditable(false);
 		pairingsBox.setLineWrap(true);
-		pairingsBox.setFont(new Font("Consolas", Font.PLAIN, 24));
+		pairingsBox.setFont(new Font("monospaced", Font.PLAIN, 20));
 
 		resultsBox = new JTextArea(20, 30);
 		resultsBox.setEditable(false);
 		resultsBox.setLineWrap(false);
-		resultsBox.setFont(new Font("Courier", Font.PLAIN, 20));
+		resultsBox.setFont(new Font("monospaced", Font.PLAIN, 16));
 
 		JLabel inputLabel = new JLabel(" Enter options here: ");
 		textField = new JTextField(500);

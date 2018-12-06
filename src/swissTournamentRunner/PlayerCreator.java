@@ -16,12 +16,12 @@ public class PlayerCreator {
 				playerNumbers--;
 			}
 
-			t.print("Enter the name of the next participant. ");
-			t.print("While registering players, enter 'drop' to remove a player before we begin.");
-			t.print("When satisfied, hit the [START] button to seed initial pairings and/or start round 1.");
+			t.print("Enter the name of the next participant, or enter 'no' if done. ");
+			t.print("While registering players, enter 'drop' to remove a player before we begin, or enter 'seed' to begin the tournament while choosing [some] Round 1 pairings.");
 			t.print("Current Participants: " + playerNumbers + "  Rounds required: "
 					+ t.logBase2(Tournament.players.size()));
 			t.print("");
+
 			t.waitForUserInput();
 			String input = t.readInput();
 			processPlayerName(input);
@@ -33,49 +33,12 @@ public class PlayerCreator {
 		try {
 			switch (input.toLowerCase()) {
 			case "drop":
-				t.print("Enter the player number (shown below) of the player you'd like to remove.");
+				t.print("Enter the player number (shown below) of the player(s) you'd like to remove.");
 				t.waitForUserInput();
 				String dropMe = t.readInput();
 				dropPlayerByIndex(dropMe);
 				break;
 			case "no":
-				break;
-			case "seed":
-				t.print("Pick Player 1 for an initial pairing. (Numbers shown below)");
-				t.waitForUserInput();
-				int pairP1 = Integer.parseInt(t.readInput());
-				pairP1--;
-				Player p1 = Tournament.players.get(pairP1);
-				t.print("\nSeed chosen as " + p1.getName() + ".");
-
-				if (pairP1 < 0 || pairP1 > Tournament.players.size()) {
-					t.print("Invalid input - initial seeding aborted.");
-					break;
-				}
-
-				t.print("Pick Player 2 for an initial pairing. (Numbers shown below)");
-				t.waitForUserInput();
-				int pairP2 = Integer.parseInt(t.readInput());
-				pairP2--;
-				Player p2 = Tournament.players.get(pairP2);
-
-				if (pairP2 < 0 || pairP2 > Tournament.players.size()) {
-					t.print("Invalid input - initial seeding aborted.");
-					break;
-				}
-
-				if (pairP1 != pairP2) {
-					t.updateParticipantStats();
-					Tournament.players.remove(p1);
-					Tournament.players.remove(p2);
-					t.initialSeed(p1, p2);
-					t.print("\nSeeded " + p1.getName() + " with " + p2.getName() + " for Round 1.");
-					t.postListOfConfirmedSignups();
-					t.print("Seed another pair, or enter 'no' to begin the tournament.");
-					processPlayerName("seed");
-				} else {
-					t.print("You can't pair someone with themself - initial seeding aborted.");
-				}
 				break;
 			default:
 				if (input.contains(",")) {

@@ -39,53 +39,15 @@ public class Utils {
 		}
 	}
 
-	public static String trimWhitespace(String s) {
-		if (s.length() == 0) {
-			return s;
-		}
-		if (s.charAt(0) == ' ' || s.charAt(0) == '\t') {
-			return trimWhitespace(s.substring(1));
-		}
-		if (s.charAt(s.length() - 1) == ' ' || s.charAt(s.length() - 1) == '\t') {
-			return trimWhitespace(s.substring(0, s.length() - 1));
-		}
-		return s;
-	}
-
-	public static void print() {
-		GUI.postString("");
-	}
-
-	public static void print(String string) {
-		GUI.postString(string);
-	}
-
-	public static String rpad(String inStr, int finalLength) {
-		return (inStr
-				+ "                                                                                                                          ")
-						.substring(0, finalLength);
-	}
-
-	public static void reportWinnerByName(String winner, String loser, ArrayList<Battle> currentBattles) {
-		for (Battle b : currentBattles) {
-			if (b.getP1().getName().equals(winner) && b.getP2().getName().equals(loser) && winner != "BYE") {
-				handleBattleWinner(b, "1");
-				currentBattles.remove(b);
-				break;
-			}
-			if (b.getP2().getName().equals(winner) && b.getP1().getName().equals(loser) && winner != "BYE") {
-				handleBattleWinner(b, "2");
-				currentBattles.remove(b);
-				break;
+	public static boolean dropPlayerOutsideBattle(ArrayList<Player> players, String nameToDrop,
+			ArrayList<Battle> currentBattles, ArrayList<String> dropped) {
+		for (Player p : players) {
+			if (p.getName().equals(nameToDrop)) {
+				dropped.add(p.getName());
+				return true;
 			}
 		}
-		if (winner == "BYE") {
-			reportWinnerByName(loser, winner, currentBattles);
-		}
-	}
-
-	public static String eloBuilder(Battle b) {
-		return "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
+		return false;
 	}
 
 	public static boolean dropPlayerMidBattle(String nameToDrop, ArrayList<Battle> currentBattles,
@@ -124,15 +86,40 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean dropPlayerOutsideBattle(ArrayList<Player> players, String nameToDrop,
-			ArrayList<Battle> currentBattles, ArrayList<String> dropped) {
-		for (Player p : players) {
-			if (p.getName().equals(nameToDrop)) {
-				dropped.add(p.getName());
-				return true;
-			}
+	public static String trimWhitespace(String s) {
+		if (s.length() == 0) {
+			return s;
 		}
-		return false;
+		if (s.charAt(0) == ' ' || s.charAt(0) == '\t') {
+			return trimWhitespace(s.substring(1));
+		}
+		if (s.charAt(s.length() - 1) == ' ' || s.charAt(s.length() - 1) == '\t') {
+			return trimWhitespace(s.substring(0, s.length() - 1));
+		}
+		return s;
 	}
 
+	public static void print() {
+		GUI.postString("");
+	}
+
+	public static void print(String string) {
+		GUI.postString(string);
+	}
+
+	public static String rpad(String inStr, int finalLength) {
+		return (inStr
+				+ "                                                                                                                          ")
+						.substring(0, finalLength);
+	}
+	
+	public static Battle findBattleByPlayer(Player p, ArrayList<Battle> bs) {
+		for (Battle b : bs) {
+			if (b.getP1().equals(p) || b.getP2().equals(p)) {
+				return b;
+			}
+		}
+		return null;
+	}
+	
 }

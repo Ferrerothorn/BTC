@@ -30,6 +30,7 @@ public class TntFileManager {
 				output += p.getName() + ",";
 			}
 			output = output.substring(0, output.length() - 1) + "\n";
+
 			output += "VICTORIES:\n";
 			for (Player p : Tournament.players) {
 				output += p.getName() + "_" + p.getListOfNamesBeaten().toString() + "_"
@@ -42,18 +43,8 @@ public class TntFileManager {
 			output += "PROPERTIES:\n";
 			output += "On Round:" + t.roundNumber + "\n";
 			output += "numberOfRounds:" + t.numberOfRounds + "\n";
-			output += "Predictions:" + t.predictionsMade + "\n";
-			output += "CorrectPredictions:" + t.correctPredictions + "\n";
 			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
-			output += "x-elimination:" + t.getXElimination() + "\n";
-			output += "Dropped:";
-			for (String s : Tournament.dropped) {
-				output += s + ",";
-			}
-			if (Tournament.dropped.size() != 0) {
-				output = output.substring(0, output.length() - 1) + "\n";
-			}
 			try {
 				PrintWriter writer = new PrintWriter(file, "UTF-8");
 				writer.print(output);
@@ -70,10 +61,8 @@ public class TntFileManager {
 		Tournament.players.clear();
 		t.currentBattles.clear();
 
-		if (t.gui != null) {
-			t.gui.toolbar.remove(t.gui.startButton);
-			GUI.frame.revalidate();
-		}
+		t.gui.toolbar.remove(t.gui.startButton);
+		GUI.frame.repaint();
 
 		t.activeMetadataFile = fileName;
 		BufferedReader br = new BufferedReader(new FileReader(t.activeMetadataFile));
@@ -104,7 +93,7 @@ public class TntFileManager {
 					parseProperties(line);
 					line = br.readLine();
 				}
-				t.assignTableNumbers(t.currentBattles);
+				t.assignTableNumbers(t.currentBattles); 
 			}
 		} catch (IOException e) {
 			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\"");
@@ -137,21 +126,6 @@ public class TntFileManager {
 				if (propertyPair[1].equals("on")) {
 					t.setElo("on");
 				}
-				break;
-			case "dropped":
-				String[] dropouts = propertyPair[1].split(",");
-				for (String s : dropouts) {
-					Tournament.dropped.add(s);
-				}
-				break;
-			case "x-elimination":
-				t.elimination = Integer.parseInt(propertyPair[1]);
-				break;				
-			case "predictions":
-				t.predictionsMade = Integer.parseInt(propertyPair[1]);
-				break;
-			case "correctpredictions":
-				t.correctPredictions = Integer.parseInt(propertyPair[1]);
 				break;
 			default:
 				break;
