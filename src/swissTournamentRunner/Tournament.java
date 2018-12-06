@@ -156,10 +156,15 @@ public class Tournament {
 	public void generatePairings(int attempts) {
 		if (currentBattles.size() == 0 || activeGamesWereSeeded(currentBattles)) {
 
-			while (players.size() > 0 && attempts <= 100) {
+			while (livePlayerCount() > 0 && attempts <= 100) {
 				Player p1 = players.remove(0);
-				pairThisGuyUp(p1, currentBattles, attempts);
+				if (!dropped.contains(p1)) {
+					pairThisGuyUp(p1, currentBattles, attempts);
+				} else {
+					players.add(p1);
+				}
 			}
+
 			currentBattles.addAll(totallyKosherPairings);
 			totallyKosherPairings.clear();
 
@@ -434,7 +439,7 @@ public class Tournament {
 	public void adminTools(String string) {
 		switch (string.toLowerCase()) {
 		case "acr":
-			while(currentBattles.size()>0) {
+			while (currentBattles.size() > 0) {
 				Battle b = currentBattles.remove(0);
 				Random r = new Random();
 				int win = r.nextInt(2);
@@ -568,7 +573,7 @@ public class Tournament {
 	}
 
 	public int size() {
-		return activePlayerSize();
+		return players.size();
 	}
 
 	public void addPlayer(Player p) {
