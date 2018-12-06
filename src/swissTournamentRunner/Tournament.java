@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 import java.util.logging.FileHandler;
 
 //Bugfix: adding players after start of tourney would glitch the participant numbers.
@@ -431,6 +432,18 @@ public class Tournament {
 
 	public void adminTools(String string) {
 		switch (string.toLowerCase()) {
+		case "acr":
+			while(currentBattles.size()>0) {
+				Battle b = currentBattles.remove(0);
+				Random r = new Random();
+				int win = r.nextInt(2);
+				win++;
+				Utils.handleBattleWinner(b, Integer.toString(win));
+			}
+			updateParticipantStats();
+			sortRankings();
+			GUI.postResultsString(generateInDepthRankings(players));
+			break;
 		case "roundrobin":
 			generateRRpairings();
 			break;
