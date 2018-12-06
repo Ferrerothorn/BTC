@@ -43,6 +43,15 @@ public class TntFileManager {
 			output += "numberOfRounds:" + t.numberOfRounds + "\n";
 			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
+			String s = "";
+			for (Player p : Tournament.dropped) {
+				s += p.getName();
+				s += ",";
+			}
+			if (s.length() > 0) {
+				s = s.substring(0, s.length() - 1);
+			}
+			output += "Dropped:" + s + "\n";
 			try {
 				PrintWriter writer = new PrintWriter(file, "UTF-8");
 				writer.print(output);
@@ -91,7 +100,7 @@ public class TntFileManager {
 					parseProperties(line);
 					line = br.readLine();
 				}
-				t.assignTableNumbers(t.currentBattles); 
+				t.assignTableNumbers(t.currentBattles);
 			}
 		} catch (IOException e) {
 			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\"");
