@@ -2,10 +2,8 @@ package tests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.IOException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import swissTournamentRunner.Battle;
@@ -25,28 +23,9 @@ public class JUnit {
 	public void setup() {
 		Tournament.players.clear();
 		t.currentBattles.clear();
+		Tournament.dropped.clear();
 		t.setAllParticipantsIn(true);
 		new GUI(t);
-	}
-
-	@Ignore
-	@Test
-	public void testReloadingFreshTourneyDoesntAlterSize() throws IOException {
-		t.activeMetadataFile = "xD.tnt";
-		t.addBatch("P1,P2,P3,P4,P5,P6");
-		t.generatePairings(0);
-		t.setElo("on");
-		assertEquals(6, Tournament.players.size());
-		assertEquals(3, t.currentBattles.size());
-		assertEquals("on", t.getElo());
-		tntfm.saveTournament();
-		t = new Tournament();
-		tntfm = new TntFileManager(t);
-		TntFileManager.loadTournament(t, "xD.tnt");
-		assertEquals(6, Tournament.players.size());
-		assertEquals(3, t.currentBattles.size());
-		assertEquals("on", t.getElo());
-
 	}
 
 	@Test
@@ -196,7 +175,6 @@ public class JUnit {
 		assertEquals(0, p2.previousRounds.size());
 	}
 
-	@Ignore
 	@Test
 	public void testDropPlayers() {
 		new GUI(t);
@@ -211,16 +189,18 @@ public class JUnit {
 		t.addPlayer(p4);
 		t.generatePairings(0);
 		t.dropPlayer("P4");
-		assertEquals(4, Tournament.players.size());
+		assertEquals(5, Tournament.players.size());
 		assertEquals(3, t.getNumberOfRounds());
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		t.dropPlayer("P2");
-		assertEquals(4, Tournament.players.size());
+		assertEquals(5, Tournament.players.size());
 		assertEquals(3, t.getNumberOfRounds());
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		t.dropPlayer("P4");
-		assertEquals(2, Tournament.players.size());
-		assertEquals(2, t.getNumberOfRounds());
+		assertEquals(5, Tournament.players.size());
+		assertEquals(2, Tournament.livePlayerCount());
+		t.recalculateRounds();
+		assertEquals(1, t.getNumberOfRounds());
 	}
 
 	@Test
@@ -273,37 +253,6 @@ public class JUnit {
 		t.addPlayer("P1");
 		t.addPlayer("P2");
 		assertEquals(1, p1.compareTo(p2));
-	}
-
-	@Ignore
-	@Test
-	public void testSavingThenReloadingPersistsByeRecords() {
-		t.addBatch("1,2,3,4,5,6,7");
-		assertEquals(8, Tournament.players.size());
-		t.activeMetadataFile = "test.tnt";
-		t.generatePairings(0);
-
-		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
-		tntfm.saveTournament();
-
-		Utils.handleBattleWinner(t.currentBattles.remove(2), "1");
-		tntfm.saveTournament();
-
-		t.currentBattles.clear();
-		Tournament.players.clear();
-		try {
-			TntFileManager.loadTournament(t, t.activeMetadataFile);
-		} catch (IOException e) {
-		}
-		assertEquals(3, t.getNumberOfRounds());
-		assertEquals(8, Tournament.players.size());
-		assertEquals(2, t.currentBattles.size());
-		assertEquals(1, Tournament.findPlayerByName("1").getListOfNamesPlayed().size());
-		assertEquals(1, Tournament.findPlayerByName("BYE").getListOfNamesPlayed().size());
-		File file = new File("test.tnt");
-		if (file.exists()) {
-			file.delete();
-		}
 	}
 
 	@Test
@@ -482,7 +431,6 @@ public class JUnit {
 		assertEquals(1, p1.getPositionInRankings());
 	}
 
-	@Ignore
 	@Test
 	public void testDroppingNonByeUserRemovesBye() {
 		Player p1 = new Player("P1");
@@ -494,10 +442,9 @@ public class JUnit {
 		t.addBye();
 		p1.beats(p2);
 		t.dropPlayer("P2");
-		assertEquals(2, t.size());
+		assertEquals(4, t.size());
 	}
 
-	@Ignore
 	@Test
 	public void testDroppingNonByeUserIn4PTourneyAddsBye() {
 		t.addPlayer("P1");
@@ -505,7 +452,7 @@ public class JUnit {
 		t.addPlayer("P3");
 		t.addPlayer("P4");
 		t.dropPlayer("P2");
-		assertEquals(4, t.size());
+		assertEquals(5, t.size());
 	}
 
 	@Test
@@ -606,7 +553,6 @@ public class JUnit {
 		assertEquals(4, t.getNumberOfRounds());
 	}
 
-	@Ignore
 	@Test
 	public void testRemovingUserDecrementsRequiredRounds() {
 		t.addBatch("P1,P2,P3,P4,P5,P6");
@@ -739,31 +685,22 @@ public class JUnit {
 				t.getResultsOfAllMatchesSoFar());
 	}
 
-	@Ignore
 	@Test
 	public void testDroppingPlayer_AddsBye_DroppingAnother_RemovesBye_SameRound() {
 		t.addBatch("p1,p2,p3,p4,p5,p6,p7,p8,p9,p0");
 		assertEquals(10, Tournament.players.size());
-		Player p0 = Tournament.findPlayerByName("p0");
-		Tournament.players.remove(p0);
-		Player p1 = Tournament.findPlayerByName("p1");
-		Tournament.players.remove(p1);
-		t.initialSeed(p0, p1);
-		t.generatePairings(0);
-		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		t.dropPlayer("p1");
-		assertEquals(10, Tournament.players.size());
+		assertEquals(11, Tournament.players.size());
+		assertEquals(10, Tournament.livePlayerCount());
 		t.dropPlayer("p0");
-		t.updateParticipantStats();
-		assertEquals(8, Tournament.players.size());
+		assertEquals(11, Tournament.players.size());
+		assertEquals(8, Tournament.livePlayerCount());
 	}
 
-	@Ignore
 	@Test
 	public void testDroppingPlayer_AddsBye_DroppingAnother_RemovesBye_NextRound() {
 		t.addBatch("p0,p1,p2,p3,p4,p5,p6,p7,p8,p9");
 		assertEquals(10, Tournament.players.size());
-
 		Player p0 = Tournament.findPlayerByName("p0");
 		Tournament.players.remove(p0);
 		Player p1 = Tournament.findPlayerByName("p1");
@@ -773,52 +710,38 @@ public class JUnit {
 		while (t.currentBattles.size() > 1) {
 			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		}
+		assertEquals(10, Tournament.livePlayerCount());
 		t.dropPlayer("p1");
-		assertEquals(10, Tournament.players.size());
+		assertEquals(11, Tournament.players.size());
+		assertEquals(10, Tournament.livePlayerCount());
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
-
 		t.updateParticipantStats();
 		t.sortRankings();
-
 		t.generatePairings(0);
 		while (t.currentBattles.size() > 1) {
 			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		}
 		t.dropPlayer("p0");
-		assertEquals(8, Tournament.players.size());
+		assertEquals(11, Tournament.players.size());
+		assertEquals(8, Tournament.livePlayerCount());
 	}
 
-	@Ignore
 	@Test
 	public void testSaveLoadTournament() {
-		Player p1 = new Player("P1");
-		Player p2 = new Player("P2");
-		Player p3 = new Player("P3");
-		Player p4 = new Player("P4");
-		t.addPlayer(p1);
-		t.addPlayer(p2);
-		t.addPlayer(p3);
-		t.addPlayer(p4);
-		t.setNumberOfRounds(3);
-		t.generatePairings(0);
-		t.activeMetadataFile = "test.tnt";
-		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
-		tntfm.saveTournament();
-		t.currentBattles.clear();
-		Tournament.players.clear();
+		t = new Tournament();
+		t.setGUI(new GUI(t));
 		try {
-			TntFileManager.loadTournament(t, t.activeMetadataFile);
-		} catch (IOException e) {
-		}
-		assertEquals(3, t.getNumberOfRounds());
-		assertEquals(4, Tournament.players.size());
-		assertEquals(1, t.currentBattles.size());
-		assertEquals(3, Tournament.players.get(0).getScore());
-		assertEquals(1, Tournament.players.get(0).getOpponentsList().size());
-		assertEquals(1, Tournament.players.get(0).getListOfVictories().size());
-		File file = new File("test.tnt");
-		if (file.exists()) {
-			file.delete();
+			TntFileManager.loadTournament(t, "testdata.tnt");
+			assertEquals(4, t.getNumberOfRounds());
+			assertEquals(8, Tournament.players.size());
+			tntfm.saveTournament();
+			TntFileManager.loadTournament(t, "testdata.tnt");
+			assertEquals(4, t.getNumberOfRounds());
+			assertEquals(8, Tournament.players.size());
+			Battle b = t.currentBattles.get(3);
+			assertEquals(7, b.getElo(b.getP2()));
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 	}
 
@@ -885,32 +808,6 @@ public class JUnit {
 		}
 
 		assertEquals(5, t.numberOfRounds);
-	}
-
-	@Test
-	public void testABattleContainsTargetPlayer() {
-		Player p1 = new Player("P1");
-		Player p2 = new Player("P2");
-		Player p3 = new Player("P3");
-		t.addPlayer(p1);
-		t.addPlayer(p2);
-		t.generatePairings(0);
-		Battle b = t.currentBattles.get(0);
-		assertEquals(true, b.contains(p1));
-		assertEquals(true, b.contains(p2));
-		assertEquals(false, b.contains(p3));
-	}
-
-	@Test
-	public void testABattleDoesntContainTargetPlayer() {
-		Player p1 = new Player("P1");
-		Player p2 = new Player("P2");
-		Player p3 = new Player("P3");
-		t.addPlayer(p1);
-		t.addPlayer(p2);
-		t.generatePairings(0);
-		Battle b = t.currentBattles.get(0);
-		assertEquals(false, b.contains(p3));
 	}
 
 	@Test
@@ -992,34 +889,32 @@ public class JUnit {
 		assertEquals("P1,P2,P3", t.playerList());
 	}
 
-	@Ignore
 	@Test
-	public void testReloadingTournamentDoesntAlterTournamentSize() {
-		t.activeMetadataFile = "test.tnt";
+	public void testActivePlayerSize() {
 		t.addBatch("P1,P2,P3,P4,P5,P6,P7,P8");
-		t.generatePairings(0);
-		assertEquals(4, t.currentBattles.size());
+		assertEquals(0, Tournament.dropped.size());
 		assertEquals(8, Tournament.players.size());
-		tntfm.saveTournament();
-		t = new Tournament();
-		try {
-			TntFileManager.loadTournament(t, "test.tnt");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		assertEquals(4, t.currentBattles.size());
-		assertEquals(8, Tournament.players.size());
-	}
+		assertEquals(8, Tournament.livePlayerCount());
 
-	@Ignore
-	public void testLoadingTournamentDoesntAlterTournamentSize() {
-		t = new Tournament();
-		try {
-			TntFileManager.loadTournament(t, "test.tnt");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		assertEquals(4, t.currentBattles.size());
-		assertEquals(8, Tournament.players.size());
+		t.dropPlayer("P8");
+		assertEquals(1, Tournament.dropped.size());
+		assertEquals(9, Tournament.players.size());
+		assertEquals(8, Tournament.livePlayerCount());
+
+		t.dropPlayer("P7");
+		assertEquals(3, Tournament.dropped.size());
+		assertEquals(9, Tournament.players.size());
+		assertEquals(6, Tournament.livePlayerCount());
+
+		t.dropPlayer("P6");
+		assertEquals(3, Tournament.dropped.size());
+		assertEquals(9, Tournament.players.size());
+		assertEquals(6, Tournament.livePlayerCount());
+
+		t.dropPlayer("P8");
+		assertEquals(3, Tournament.dropped.size());
+		assertEquals(9, Tournament.players.size());
+		assertEquals(6, Tournament.livePlayerCount());
+
 	}
 }
