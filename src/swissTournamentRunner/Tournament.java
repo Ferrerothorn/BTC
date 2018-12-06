@@ -12,6 +12,7 @@ import java.util.logging.FileHandler;
 public class Tournament {
 
 	public static ArrayList<Player> players = new ArrayList<>();
+	public static ArrayList<Player> dropped = new ArrayList<>();
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	TntFileManager tntfm = new TntFileManager(this);
@@ -71,7 +72,7 @@ public class Tournament {
 
 	public void postListOfConfirmedSignups() {
 		Collections.sort(players);
-		String post = "-=-=-Registered: " + activePlayerSize() + " players. -=-=-" + "\n";
+		String post = "-=-=-Registered: " + size() + " players. -=-=-" + "\n";
 		for (int i = 1; i <= players.size(); i++) {
 			post += "" + i + ") " + players.get(i - 1).getName() + "\n";
 		}
@@ -133,7 +134,7 @@ public class Tournament {
 	}
 
 	public void addBye() {
-		if (findPlayerByName("BYE") == null && activePlayerSize() % 2 == 1) {
+		if (findPlayerByName("BYE") == null && livePlayerCount() % 2 == 1) {
 			addPlayer("BYE");
 		}
 	}
@@ -549,14 +550,10 @@ public class Tournament {
 		addBye();
 	}
 
-	private int activePlayerSize() {
-		return players.size();
-	}
-
 	public void alterTopCut(String newSize) throws NumberFormatException {
 		try {
 			int tC = Integer.parseInt(newSize);
-			if (tC < activePlayerSize()) {
+			if (tC < size()) {
 				setTopCut(tC);
 				Utils.print("Top Cut size set to " + tC + ".\n");
 			} else {
@@ -845,6 +842,33 @@ public class Tournament {
 
 	public void setElo(String elo) {
 		this.elo = elo;
+	}
+
+	public void dropPlayer(String string) {
+		Player toDrop = findPlayerByName(string);
+		if(toDrop != null && !dropped.contains(toDrop)) {
+			dropped.add(findPlayerByName(string));
+			if (!players.contains(findPlayerByName("BYE"))) {
+				players.add(new Player("BYE"));
+			} else if (players.contains(findPlayerByName("BYE")) && !dropped.contains(findPlayerByName("BYE"))) {
+				dropped.add(findPlayerByName("BYE"));
+			} else if (players.contains(findPlayerByName("BYE")) && dropped.contains(findPlayerByName("BYE"))) {
+				dropped.remove(findPlayerByName("BYE"));
+			}
+		}
+		else {
+			print("Can't drop this player - do they exist?");
+		}
+	}
+
+	public static int livePlayerCount() {
+		return players.size() - dropped.size();
+	}
+
+	public void recalculateRounds() {
+		while (numberOfRounds > logBase2(livePlayerCount())) {
+			numberOfRounds--;
+		}
 	}
 
 }
