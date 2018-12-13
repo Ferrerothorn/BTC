@@ -802,6 +802,9 @@ public class Tournament {
 				roundNumber = 1;
 				numberOfRounds = logBase2(players.size());
 				topCutThreshold = 0;
+				for (int j = 0; j < players.size()/2; j++) {
+					currentBattles.add(new Battle(players.get(j), players.get(players.size()-(j+1))));
+				}
 				run();
 			} else {
 				GUI.postString("Thanks to everyone for taking part!");
