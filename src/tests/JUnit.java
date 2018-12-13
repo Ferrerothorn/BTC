@@ -21,9 +21,9 @@ public class JUnit {
 
 	@Before
 	public void setup() {
-		Tournament.players.clear();
+		t.getPlayers().clear();
 		t.currentBattles.clear();
-		Tournament.dropped.clear();
+		t.getDroppedPlayers().clear();
 		t.setAllParticipantsIn(true);
 		new GUI(t);
 	}
@@ -32,14 +32,14 @@ public class JUnit {
 	public void testAddPlayersToTournament() {
 		t.addPlayer("P1");
 		t.addPlayer("P2");
-		assertEquals(2, Tournament.players.size());
+		assertEquals(2, t.getPlayers().size());
 	}
 
 	@Test
 	public void testAddingOddNumberedListThenAddingSingleDoesntGiveTwoByes() {
 		t.addBatch("P1,P2,P3");
 		t.addPlayer("P4");
-		assertEquals(4, Tournament.players.size());
+		assertEquals(4, t.getPlayers().size());
 	}
 
 	@Test
@@ -108,10 +108,10 @@ public class JUnit {
 		b = t.currentBattles.remove(0);
 		Utils.handleBattleWinner(b, "0");
 		t.updateParticipantStats();
-		assertEquals(0, Tournament.findPlayerByName("P1").getScore());
-		assertEquals(3, Tournament.findPlayerByName("P2").getScore());
-		assertEquals(1, Tournament.findPlayerByName("P3").getScore());
-		assertEquals(1, Tournament.findPlayerByName("P4").getScore());
+		assertEquals(0, t.findPlayerByName("P1").getScore());
+		assertEquals(3, t.findPlayerByName("P2").getScore());
+		assertEquals(1, t.findPlayerByName("P3").getScore());
+		assertEquals(1, t.findPlayerByName("P4").getScore());
 	}
 
 	@Test
@@ -131,7 +131,7 @@ public class JUnit {
 		t.addPlayer(p1);
 		t.addBye();
 		p1.lastDocumentedPosition = 1;
-		assertEquals(-1, p1.compareTo(Tournament.players.get(1)));
+		assertEquals(-1, p1.compareTo(t.getPlayers().get(1)));
 	}
 
 	@Test
@@ -188,17 +188,19 @@ public class JUnit {
 		t.addPlayer(p3);
 		t.addPlayer(p4);
 		t.generatePairings(0);
+		assertEquals(2, t.getCurrentBattles().size());
 		t.dropPlayer("P4");
-		assertEquals(5, Tournament.players.size());
+		assertEquals(1, t.getCurrentBattles().size());
+		assertEquals(5, t.getPlayers().size());
 		assertEquals(3, t.getNumberOfRounds());
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		t.dropPlayer("P2");
-		assertEquals(5, Tournament.players.size());
+		assertEquals(0, t.getCurrentBattles().size());
+		assertEquals(5, t.getPlayers().size());
 		assertEquals(3, t.getNumberOfRounds());
-		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		t.dropPlayer("P4");
-		assertEquals(5, Tournament.players.size());
-		assertEquals(2, Tournament.livePlayerCount());
+		assertEquals(5, t.getPlayers().size());
+		assertEquals(2, t.livePlayerCount());
 		t.recalculateRounds();
 		assertEquals(1, t.getNumberOfRounds());
 	}
@@ -218,10 +220,10 @@ public class JUnit {
 		p3.lastDocumentedPosition = 1;
 		p4.lastDocumentedPosition = 1;
 		t.sortRankings();
-		assertEquals("P1", Tournament.players.get(0).getName());
-		assertEquals("P3", Tournament.players.get(1).getName());
-		assertEquals("P2", Tournament.players.get(2).getName());
-		assertEquals("P4", Tournament.players.get(3).getName());
+		assertEquals("P1", t.getPlayers().get(0).getName());
+		assertEquals("P3", t.getPlayers().get(1).getName());
+		assertEquals("P2", t.getPlayers().get(2).getName());
+		assertEquals("P4", t.getPlayers().get(3).getName());
 	}
 
 	@Test
@@ -459,8 +461,8 @@ public class JUnit {
 	public void testBatchAdd() {
 		String batchAdd = "P1,P2,P3,P4,P5,P6,P7,P8";
 		t.addBatch(batchAdd);
-		assertEquals(8, Tournament.players.size());
-		assertEquals("P1", Tournament.players.get(0).getName());
+		assertEquals(8, t.getPlayers().size());
+		assertEquals("P1", t.getPlayers().get(0).getName());
 	}
 
 	@Test
@@ -482,8 +484,8 @@ public class JUnit {
 		t.addPlayer("P2");
 		t.addPlayer("P3");
 		t.addBatch(" P4,P5 ,  P6   ,                      P7 ,	P8 	");
-		assertEquals(8, Tournament.players.size());
-		for (Player p : Tournament.players) {
+		assertEquals(8, t.getPlayers().size());
+		for (Player p : t.getPlayers()) {
 			assertEquals(2, p.getName().length());
 		}
 	}
@@ -666,7 +668,6 @@ public class JUnit {
 
 	@Test
 	public void testGetResultsOfAllMatchesSoFar_WinsAndTies() {
-
 		Player p1 = new Player("P1");
 		Player p3 = new Player("P3");
 		Player p2 = new Player("P2");
@@ -675,12 +676,10 @@ public class JUnit {
 		t.addPlayer(p2);
 		t.addPlayer(p3);
 		t.addPlayer(p4);
-
 		p1.beats(p2);
 		p2.beats(p3);
 		p3.tied(p4);
 		t.sortRankings();
-
 		assertEquals("P1 vs. P2 (P1 won)\nP2 vs. P3 (P2 won)\nP3 vs. P4 (Tied)\nP4 vs. P3 (Tied)\n",
 				t.getResultsOfAllMatchesSoFar());
 	}
@@ -688,32 +687,32 @@ public class JUnit {
 	@Test
 	public void testDroppingPlayer_AddsBye_DroppingAnother_RemovesBye_SameRound() {
 		t.addBatch("p1,p2,p3,p4,p5,p6,p7,p8,p9,p0");
-		assertEquals(10, Tournament.players.size());
+		assertEquals(10, t.getPlayers().size());
 		t.dropPlayer("p1");
-		assertEquals(11, Tournament.players.size());
-		assertEquals(10, Tournament.livePlayerCount());
+		assertEquals(11, t.getPlayers().size());
+		assertEquals(10, t.livePlayerCount());
 		t.dropPlayer("p0");
-		assertEquals(11, Tournament.players.size());
-		assertEquals(8, Tournament.livePlayerCount());
+		assertEquals(11, t.getPlayers().size());
+		assertEquals(8, t.livePlayerCount());
 	}
 
 	@Test
 	public void testDroppingPlayer_AddsBye_DroppingAnother_RemovesBye_NextRound() {
 		t.addBatch("p0,p1,p2,p3,p4,p5,p6,p7,p8,p9");
-		assertEquals(10, Tournament.players.size());
-		Player p0 = Tournament.findPlayerByName("p0");
-		Tournament.players.remove(p0);
-		Player p1 = Tournament.findPlayerByName("p1");
-		Tournament.players.remove(p1);
+		assertEquals(10, t.getPlayers().size());
+		Player p0 = t.findPlayerByName("p0");
+		t.getPlayers().remove(p0);
+		Player p1 = t.findPlayerByName("p1");
+		t.getPlayers().remove(p1);
 		t.initialSeed(p0, p1);
 		t.generatePairings(0);
 		while (t.currentBattles.size() > 1) {
 			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		}
-		assertEquals(10, Tournament.livePlayerCount());
+		assertEquals(10, t.livePlayerCount());
 		t.dropPlayer("p1");
-		assertEquals(11, Tournament.players.size());
-		assertEquals(10, Tournament.livePlayerCount());
+		assertEquals(11, t.getPlayers().size());
+		assertEquals(10, t.livePlayerCount());
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		t.updateParticipantStats();
 		t.sortRankings();
@@ -722,8 +721,8 @@ public class JUnit {
 			Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		}
 		t.dropPlayer("p0");
-		assertEquals(11, Tournament.players.size());
-		assertEquals(8, Tournament.livePlayerCount());
+		assertEquals(11, t.getPlayers().size());
+		assertEquals(8, t.livePlayerCount());
 	}
 
 	@Test
@@ -733,11 +732,11 @@ public class JUnit {
 		try {
 			TntFileManager.loadTournament(t, "testdata.tnt");
 			assertEquals(4, t.getNumberOfRounds());
-			assertEquals(8, Tournament.players.size());
+			assertEquals(8, t.getPlayers().size());
 			tntfm.saveTournament();
 			TntFileManager.loadTournament(t, "testdata.tnt");
 			assertEquals(4, t.getNumberOfRounds());
-			assertEquals(8, Tournament.players.size());
+			assertEquals(8, t.getPlayers().size());
 			Battle b = t.currentBattles.get(3);
 			assertEquals(7, b.getElo(b.getP2()));
 		} catch (IOException e1) {
@@ -828,23 +827,23 @@ public class JUnit {
 	@Test
 	public void testProcessPlayerNameInPlayerCapture() {
 		PlayerCreator pc = new PlayerCreator(t);
-		assertEquals(0, Tournament.players.size());
+		assertEquals(0, t.getPlayers().size());
 		pc.processPlayerName("A");
-		assertEquals(2, Tournament.players.size());
+		assertEquals(2, t.getPlayers().size());
 	}
 
 	@Test
 	public void testProcessPlayerName_no_DoesntAddPlayer() {
 		PlayerCreator pc = new PlayerCreator(t);
 		pc.processPlayerName("no");
-		assertEquals(0, Tournament.players.size());
+		assertEquals(0, t.getPlayers().size());
 	}
 
 	@Test
 	public void testProcessPlayerName_addBatch() {
 		PlayerCreator pc = new PlayerCreator(t);
 		pc.processPlayerName("A,B,C,D");
-		assertEquals(4, Tournament.players.size());
+		assertEquals(4, t.getPlayers().size());
 	}
 
 	@Test
@@ -853,13 +852,13 @@ public class JUnit {
 		pc.processPlayerName("A,B,C,D");
 		t.setUserSelection("1");
 		pc.processPlayerName("drop");
-		assertEquals(3, Tournament.players.size());
+		assertEquals(3, t.getPlayers().size());
 		t.setUserSelection("111111");
 		pc.processPlayerName("drop");
-		assertEquals(3, Tournament.players.size());
+		assertEquals(3, t.getPlayers().size());
 		t.setUserSelection("-111111");
 		pc.processPlayerName("drop");
-		assertEquals(3, Tournament.players.size());
+		assertEquals(3, t.getPlayers().size());
 	}
 
 	@Test
@@ -875,7 +874,7 @@ public class JUnit {
 		Utils.autocompleteRound(t.currentBattles);
 		t.setUserSelection("n");
 		t.postTourneyProcessing();
-		assertEquals(8, Tournament.players.size());
+		assertEquals(8, t.getPlayers().size());
 	}
 
 	@Test
@@ -892,29 +891,29 @@ public class JUnit {
 	@Test
 	public void testActivePlayerSize() {
 		t.addBatch("P1,P2,P3,P4,P5,P6,P7,P8");
-		assertEquals(0, Tournament.dropped.size());
-		assertEquals(8, Tournament.players.size());
-		assertEquals(8, Tournament.livePlayerCount());
+		assertEquals(0, t.getDroppedPlayers().size());
+		assertEquals(8, t.getPlayers().size());
+		assertEquals(8, t.livePlayerCount());
 
 		t.dropPlayer("P8");
-		assertEquals(1, Tournament.dropped.size());
-		assertEquals(9, Tournament.players.size());
-		assertEquals(8, Tournament.livePlayerCount());
+		assertEquals(1, t.getDroppedPlayers().size());
+		assertEquals(9, t.getPlayers().size());
+		assertEquals(8, t.livePlayerCount());
 
 		t.dropPlayer("P7");
-		assertEquals(3, Tournament.dropped.size());
-		assertEquals(9, Tournament.players.size());
-		assertEquals(6, Tournament.livePlayerCount());
+		assertEquals(3, t.getDroppedPlayers().size());
+		assertEquals(9, t.getPlayers().size());
+		assertEquals(6, t.livePlayerCount());
 
 		t.dropPlayer("P6");
-		assertEquals(3, Tournament.dropped.size());
-		assertEquals(9, Tournament.players.size());
-		assertEquals(6, Tournament.livePlayerCount());
+		assertEquals(3, t.getDroppedPlayers().size());
+		assertEquals(9, t.getPlayers().size());
+		assertEquals(6, t.livePlayerCount());
 
 		t.dropPlayer("P8");
-		assertEquals(3, Tournament.dropped.size());
-		assertEquals(9, Tournament.players.size());
-		assertEquals(6, Tournament.livePlayerCount());
+		assertEquals(3, t.getDroppedPlayers().size());
+		assertEquals(9, t.getPlayers().size());
+		assertEquals(6, t.livePlayerCount());
 
 	}
 }
