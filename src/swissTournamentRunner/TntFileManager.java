@@ -144,8 +144,8 @@ public class TntFileManager {
 
 	static Battle parseLineToBattle(String line) {
 		String[] currentCombatants = line.split(",");
-		Player p1 = Tournament.findPlayerByName(currentCombatants[0]);
-		Player p2 = Tournament.findPlayerByName(currentCombatants[1]);
+		Player p1 = t.findPlayerByName(currentCombatants[0]);
+		Player p2 = t.findPlayerByName(currentCombatants[1]);
 		Battle b = new Battle(p1, p2);
 		return b;
 	}
@@ -153,7 +153,7 @@ public class TntFileManager {
 	public static void addGamesToPlayerHistory(String line) {
 		try {
 			String[] information = line.split("_");
-			Player p = Tournament.findPlayerByName(information[0]);
+			Player p = t.findPlayerByName(information[0]);
 
 			String hasBeaten = information[1];
 			hasBeaten = hasBeaten.replaceAll("\\[", "");
@@ -161,7 +161,7 @@ public class TntFileManager {
 			String[] playersBeaten = hasBeaten.split(",");
 			for (String s : playersBeaten) {
 				if (s.length() > 0) {
-					p.addToListOfVictories(Tournament.findPlayerByName(Utils.trimWhitespace(s)));
+					p.addToListOfVictories(t.findPlayerByName(Utils.trimWhitespace(s)));
 				}
 			}
 
@@ -171,7 +171,7 @@ public class TntFileManager {
 			String[] playersPlayed = hasPlayed.split(",");
 			for (String s : playersPlayed) {
 				if (s.length() > 0) {
-					p.addToListOfPlayed(Tournament.findPlayerByName(Utils.trimWhitespace(s)));
+					p.addToListOfPlayed(t.findPlayerByName(Utils.trimWhitespace(s)));
 				}
 			}
 		} catch (Exception e) {
