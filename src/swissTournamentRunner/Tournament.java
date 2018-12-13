@@ -264,7 +264,8 @@ public class Tournament {
 
 			while (!opponentFound) {
 				Player temp = players.get(playerIndex);
-				if (!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1) && !dropped.contains(temp)) {
+				if (!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1)
+						&& !dropped.contains(temp)) {
 					temp = players.remove(playerIndex);
 					Battle b = new Battle(p1, temp);
 					targetBattleList.add(b);
@@ -867,13 +868,12 @@ public class Tournament {
 			} else if (players.contains(findPlayerByName("BYE")) && dropped.contains(findPlayerByName("BYE"))) {
 				dropped.remove(findPlayerByName("BYE"));
 			}
-		}
-		else {
-			print("Can't drop this player - do they exist?");
+		} else {
+			print("Can't drop this player - do they exist, and have you dropped them already?");
 		}
 	}
 
-	public static int livePlayerCount() {
+	public int livePlayerCount() {
 		return players.size() - dropped.size();
 	}
 
