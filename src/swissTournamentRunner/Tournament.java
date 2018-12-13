@@ -719,9 +719,9 @@ public class Tournament {
 	private Player fetchHardestDoneBy() {
 		Collections.sort(players);
 		Collections.reverse(players);
-		for (Player ps : players) {
-			if (ps.getOppWr() > 50) {
-				return ps;
+		for (Player p : players) {
+			if (p.getOppWr() > 50 && !dropped.contains(p)) {
+				return p;
 			}
 		}
 		return null;
@@ -729,9 +729,9 @@ public class Tournament {
 
 	private Player fetchBiggestMilker() {
 		Collections.sort(players);
-		for (Player ps : players) {
-			if (ps.getOppWr() < 50) {
-				return ps;
+		for (Player p : players) {
+			if (p.getOppWr() < 50 && !dropped.contains(p)) {
+				return p;
 			}
 		}
 		return null;
@@ -741,7 +741,7 @@ public class Tournament {
 		int highestSTB = 0;
 		Player topSTB = players.get(0);
 		for (Player p : players) {
-			if (p.getSTB() > highestSTB && !p.getName().equals("BYE")) {
+			if (p.getSTB() > highestSTB && !p.getName().equals("BYE") && !dropped.contains(p)) {
 				topSTB = p;
 				highestSTB = p.getSTB();
 			}
@@ -753,7 +753,7 @@ public class Tournament {
 		int highestOWR = 0;
 		Player hardest = null;
 		for (Player p : players) {
-			if (p.getOppWr() > highestOWR && !p.getName().equals("BYE")) {
+			if (p.getOppWr() > highestOWR && !p.getName().equals("BYE") && !dropped.contains(p)) {
 				hardest = p;
 				highestOWR = p.getOppWr();
 			}
