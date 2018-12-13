@@ -865,7 +865,7 @@ public class JUnit {
 	public void testTopCutOffersNewTourney() {
 		t.addBatch("1,2,3,4,5,6,7,8");
 		t.numberOfRounds = 3;
-		Tournament.topCutThreshold = 4;
+		t.setTopCutThreshold(4);
 		t.generatePairings(0);
 		Utils.autocompleteRound(t.currentBattles);
 		t.generatePairings(0);
