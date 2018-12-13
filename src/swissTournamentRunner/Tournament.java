@@ -599,7 +599,7 @@ public class Tournament {
 		return topCutThreshold;
 	}
 
-	public static void setTopCutThreshold(int topCutThreshold) {
+	public void setTopCutThreshold(int topCutThreshold) {
 		Tournament.topCutThreshold = topCutThreshold;
 	}
 
@@ -833,7 +833,7 @@ public class Tournament {
 		tntfm.saveTournament();
 	}
 
-	public static Player findPlayerByName(String s) {
+	public Player findPlayerByName(String s) {
 		for (Player p : players) {
 			if (p.getName().equals(s)) {
 				return p;
@@ -881,6 +881,10 @@ public class Tournament {
 		while (numberOfRounds > logBase2(livePlayerCount())) {
 			numberOfRounds--;
 		}
+	}
+
+	public ArrayList<Battle> getCurrentBattles() {
+		return currentBattles;
 	}
 
 }
