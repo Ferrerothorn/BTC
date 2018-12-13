@@ -1,7 +1,3 @@
 To do list:
 
->Alter pairings algorithm to ignore dropped players - buggy AF
-
->Read drop from file as we load
-
 >Add support for reporting games by player name
