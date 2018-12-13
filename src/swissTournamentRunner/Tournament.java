@@ -248,12 +248,20 @@ public class Tournament {
 		return true;
 	}
 
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+
+	public ArrayList<Player> getDroppedPlayers() {
+		return dropped;
+	}
+
 	public void pairThisGuyUp(Player p1, ArrayList<Battle> targetBattleList, int attempts) {
 
 		try {
 			boolean opponentFound = false;
 			int playerIndex = 0;
-			
+
 			while (!opponentFound) {
 				Player temp = players.get(playerIndex);
 				if (!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1) && !dropped.contains(temp)) {
