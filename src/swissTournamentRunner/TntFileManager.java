@@ -134,6 +134,12 @@ public class TntFileManager {
 					t.setElo("on");
 				}
 				break;
+			case "dropped":
+				String[] droppedNames = propertyPair[1].split(",");
+				for (String s: droppedNames) {
+					t.getDroppedPlayers().add(t.findPlayerByName(s));
+				}
+				break;
 			default:
 				break;
 			}
