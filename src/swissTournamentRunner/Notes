@@ -1,3 +1,5 @@
 To do list:
 
 >Add support for reporting games by player name
+>Thoroughly test dropPlayer.
+>Add support to report dropout games automatically
