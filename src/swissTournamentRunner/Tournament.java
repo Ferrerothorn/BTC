@@ -864,8 +864,16 @@ public class Tournament {
 
 	public void dropPlayer(String string) {
 		Player toDrop = findPlayerByName(string);
-		if(toDrop != null && !dropped.contains(toDrop)) {
-			dropped.add(findPlayerByName(string));
+		if (toDrop != null && !dropped.contains(toDrop)) {
+			dropped.add(toDrop);
+			Battle cancel = Utils.findBattleByPlayer(toDrop, currentBattles);
+			if (cancel != null) {
+				String reportWinFor = (string.equals(cancel.getP1().getName())) ? cancel.getP2().getName()
+						: cancel.getP1().getName();
+				reportBattleWinner(reportWinFor);
+				refreshScreen();
+				print(getCurrentBattles(currentBattles, roundString));
+			}
 			if (!players.contains(findPlayerByName("BYE"))) {
 				players.add(new Player("BYE"));
 			} else if (players.contains(findPlayerByName("BYE")) && !dropped.contains(findPlayerByName("BYE"))) {
