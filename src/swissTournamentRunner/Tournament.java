@@ -16,7 +16,7 @@ public class Tournament {
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	TntFileManager tntfm = new TntFileManager(this);
-	static String roundString;
+	String roundString;
 	private String userSelection = null;
 	public boolean noClicks = true;
 	public String elo = "off";
@@ -178,7 +178,7 @@ public class Tournament {
 		}
 	}
 
-	public static String generateInDepthRankings(ArrayList<Player> ps) {
+	public String generateInDepthRankings(ArrayList<Player> ps) {
 
 		int STBsum = 0;
 		for (Player p : players) {

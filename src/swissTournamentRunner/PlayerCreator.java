@@ -11,7 +11,7 @@ public class PlayerCreator {
 	public void capturePlayers() {
 		GUI.wipePane();
 		while (!t.allParticipantsIn) {
-			int playerNumbers = (Tournament.players.size() + (t.currentBattles.size() * 2));
+			int playerNumbers = (t.getPlayers().size() + (t.currentBattles.size() * 2));
 			if (t.findPlayerByName("BYE") != null) {
 				playerNumbers--;
 			}
@@ -19,7 +19,7 @@ public class PlayerCreator {
 			t.print("Enter the name of the next participant, or enter 'no' if done. ");
 			t.print("While registering players, enter 'drop' to remove a player before we begin, or enter 'seed' to begin the tournament while choosing [some] Round 1 pairings.");
 			t.print("Current Participants: " + playerNumbers + "  Rounds required: "
-					+ t.logBase2(Tournament.players.size()));
+					+ t.logBase2(t.getPlayers().size()));
 			t.print("");
 
 			t.waitForUserInput();
@@ -65,8 +65,8 @@ public class PlayerCreator {
 		int index = Integer.parseInt(dropMe);
 
 		index--;
-		if (index >= 0 && index < Tournament.players.size()) {
-			Player p = Tournament.players.remove(index);
+		if (index >= 0 && index < t.getPlayers().size()) {
+			Player p = t.getPlayers().remove(index);
 			t.print("Removed " + p.getName() + ".");
 		} else {
 			t.print("Player at index " + dropMe + 1 + " does not exist.");

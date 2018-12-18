@@ -58,7 +58,8 @@ public class GUI implements ActionListener {
 					t.elo = t.toggle(t.elo);
 					pairingsBox.setCaretPosition(0);
 					pairingsBox.setText("ELO switched " + t.elo + ".\n");
-					postString(t.getCurrentBattles(t.currentBattles, Tournament.roundString));
+
+					postString(t.getCurrentBattles(t.currentBattles, t.roundString));
 					t.save();
 				}
 			}
@@ -97,7 +98,7 @@ public class GUI implements ActionListener {
 				if (t.currentBattles.size() > 0) {
 					pairingsBox.setCaretPosition(0);
 					pairingsBox.setText(t.getResultsOfAllMatchesSoFar() + "\n");
-					postString(t.getCurrentBattles(t.currentBattles, Tournament.roundString));
+					postString(t.getCurrentBattles(t.currentBattles, t.roundString));
 				}
 			}
 		});
@@ -111,7 +112,7 @@ public class GUI implements ActionListener {
 					matchesOfButtonFrame.setSize(450, 150);
 					matchesOfButtonFrame.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : Tournament.players) {
+					for (Player p : t.getPlayers()) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
@@ -170,8 +171,8 @@ public class GUI implements ActionListener {
 					dropPlayersBox.setSize(450, 150);
 					dropPlayersBox.setLayout(new GridLayout());
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : Tournament.players) {
-						if (!Tournament.dropped.contains(p)) {
+					for (Player p : t.getPlayers()) {
+						if (!t.getDroppedPlayers().contains(p)) {
 							playerNames.add(p.getName());
 						}
 					}
@@ -205,7 +206,7 @@ public class GUI implements ActionListener {
 					nameEditor.setSize(400, 100);
 					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : Tournament.players) {
+					for (Player p : t.getPlayers()) {
 						playerNames.add(p.getName());
 					}
 					playerNames.remove("BYE");
@@ -230,8 +231,8 @@ public class GUI implements ActionListener {
 							String oldName = players.getSelectedItem().toString();
 							String newName = editedName.getText();
 							t.renamePlayer(oldName, newName);
-							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
-							resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
+							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+							resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
 							t.save();
 							nameEditor.dispose();
 						}
@@ -250,7 +251,7 @@ public class GUI implements ActionListener {
 					nameEditor.setSize(400, 100);
 					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : Tournament.players) {
+					for (Player p : t.getPlayers()) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
@@ -272,9 +273,8 @@ public class GUI implements ActionListener {
 							} else {
 								Boolean reopened = t.reopenBattle(p1, p2);
 								if (reopened) {
-									pairingsBox.setText(
-											t.getCurrentBattles(t.currentBattles, Tournament.roundString) + "\n");
-									resultsBox.setText(Tournament.generateInDepthRankings(Tournament.players) + "\n");
+									pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+									resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
 									postString("Game between " + p1.getName() + " and " + p2.getName() + " reopened.");
 								} else {
 									postString("Could not reopen game between " + p1.getName() + " and " + p2.getName()
@@ -307,7 +307,7 @@ public class GUI implements ActionListener {
 						}
 					});
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : Tournament.players) {
+					for (Player p : t.getPlayers()) {
 						playerNames.add(p.getName());
 					}
 					Collections.sort(playerNames);
@@ -329,8 +329,8 @@ public class GUI implements ActionListener {
 							if (!n1.equals(n2)) {
 								Player p1 = t.findPlayerByName(n1);
 								Player p2 = t.findPlayerByName(n2);
-								Tournament.players.remove(p1);
-								Tournament.players.remove(p2);
+								t.getPlayers().remove(p1);
+								t.getPlayers().remove(p2);
 								t.initialSeed(p1, p2);
 								seed1.removeItem(p1.getName());
 								seed1.removeItem(p2.getName());

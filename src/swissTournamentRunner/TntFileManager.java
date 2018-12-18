@@ -24,13 +24,13 @@ public class TntFileManager {
 			File file = new File(t.activeMetadataFile);
 
 			output += "PLAYERS:\n";
-			for (Player p : Tournament.players) {
+			for (Player p : t.getPlayers()) {
 				output += p.getName() + ",";
 			}
 			output = output.substring(0, output.length() - 1) + "\n";
 
 			output += "VICTORIES:\n";
-			for (Player p : Tournament.players) {
+			for (Player p : t.getPlayers()) {
 				output += p.getName() + "_" + p.getListOfNamesBeaten().toString() + "_"
 						+ p.getListOfNamesPlayed().toString() + "\n";
 			}
@@ -44,7 +44,7 @@ public class TntFileManager {
 			output += "topCut:" + t.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
 			String s = "";
-			for (Player p : Tournament.dropped) {
+			for (Player p : t.getDroppedPlayers()) {
 				s += p.getName();
 				s += ",";
 			}
@@ -65,20 +65,16 @@ public class TntFileManager {
 	}
 
 	public static void loadTournament(Tournament t, String fileName) throws IOException {
-		Tournament.players.clear();
+		t.getPlayers().clear();
 		t.currentBattles.clear();
-
 		t.gui.toolbar.remove(t.gui.startButton);
 		GUI.frame.repaint();
-
 		t.activeMetadataFile = fileName;
 		BufferedReader br = new BufferedReader(new FileReader(t.activeMetadataFile));
 		try {
 			line = br.readLine();
-
 			if (line.contains("PLAYERS")) {
 				line = br.readLine();
-
 				while (!line.contains("VICTORIES")) {
 					t.addBatch(line);
 					line = br.readLine();
@@ -125,7 +121,7 @@ public class TntFileManager {
 				break;
 			case "topcut":
 				int tC = Integer.parseInt(propertyPair[1]);
-				if (tC < Tournament.players.size()) {
+				if (tC < t.getPlayers().size()) {
 					t.setTopCut(tC);
 				}
 				break;
@@ -136,7 +132,7 @@ public class TntFileManager {
 				break;
 			case "dropped":
 				String[] droppedNames = propertyPair[1].split(",");
-				for (String s: droppedNames) {
+				for (String s : droppedNames) {
 					t.getDroppedPlayers().add(t.findPlayerByName(s));
 				}
 				break;
