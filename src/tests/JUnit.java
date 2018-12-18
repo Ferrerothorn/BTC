@@ -27,7 +27,28 @@ public class JUnit {
 		t.setAllParticipantsIn(true);
 		new GUI(t);
 	}
-
+	
+	@Test
+	public void test_alterTopCut() {
+		assertEquals(0, t.getTopCutThreshold());
+		t.addBatch("p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16");
+		t.setTopCutThreshold(4);
+		assertEquals(4, t.getTopCutThreshold());
+		t.setTopCutThreshold(20);
+		assertEquals(4, t.getTopCutThreshold());
+	}
+	
+	@Test
+	public void test_alterRoundNumbers() {
+		assertEquals(0, t.getNumberOfRounds());
+		t.alterRoundNumbers("3");
+		assertEquals(0, t.getNumberOfRounds());
+		t.addBatch("p1,p2,p3,p4,p5,p6,p7,p8");
+		assertEquals(3, t.getNumberOfRounds());
+		t.alterRoundNumbers("4");
+		assertEquals(4, t.getNumberOfRounds());
+	}
+	
 	@Test
 	public void testAddPlayersToTournament() {
 		t.addPlayer("P1");
