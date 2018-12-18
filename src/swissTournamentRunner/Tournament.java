@@ -596,12 +596,14 @@ public class Tournament {
 		return numberOfRounds;
 	}
 
-	public static int getTopCutThreshold() {
+	public int getTopCutThreshold() {
 		return topCutThreshold;
 	}
 
-	public void setTopCutThreshold(int topCutThreshold) {
-		Tournament.topCutThreshold = topCutThreshold;
+	public void setTopCutThreshold(int newThreshold) {
+		if(newThreshold <= players.size()) {
+		topCutThreshold = newThreshold;
+		}
 	}
 
 	public void alterRoundNumbers(String newMax) throws NumberFormatException {
