@@ -41,7 +41,7 @@ public class TntFileManager {
 			output += "PROPERTIES:\n";
 			output += "On Round:" + t.roundNumber + "\n";
 			output += "numberOfRounds:" + t.numberOfRounds + "\n";
-			output += "topCut:" + Tournament.getTopCutThreshold() + "\n";
+			output += "topCut:" + t.getTopCutThreshold() + "\n";
 			output += "ELO:" + t.getElo() + "\n";
 			String s = "";
 			for (Player p : Tournament.dropped) {
