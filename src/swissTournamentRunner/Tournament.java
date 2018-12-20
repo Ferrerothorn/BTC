@@ -2,12 +2,12 @@ package swissTournamentRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.logging.FileHandler;
-
-//Bugfix: adding players after start of tourney would glitch the participant numbers.
 
 public class Tournament {
 
@@ -333,7 +333,7 @@ public class Tournament {
 					adminTools(adminCommand);
 					break;
 				default:
-					int reportUpon = Integer.parseInt(input);
+					String reportUpon = input;
 					Battle b = fetchBattle(reportUpon, currentBattles);
 
 					currentBattles.remove(b);
@@ -407,13 +407,28 @@ public class Tournament {
 		}
 	}
 
-	private Battle fetchBattle(int reportUpon, ArrayList<Battle> cB) {
-		for (Battle b : cB) {
-			if (b.getTableNumber() == reportUpon) {
-				return b;
+	private Battle fetchBattle(String reportUpon, ArrayList<Battle> cB) {
+		if (isNumeric(reportUpon)) {
+			for (Battle b : cB) {
+				if (b.getTableNumber() == Integer.parseInt(reportUpon)) {
+					return b;
+				}
+			}
+		} else {
+			for (Battle b : cB) {
+				if (b.contains(reportUpon)) {
+					return b;
+				}
 			}
 		}
 		return null;
+	}
+
+	public static boolean isNumeric(String str) {
+		NumberFormat formatter = NumberFormat.getInstance();
+		ParsePosition pos = new ParsePosition(0);
+		formatter.parse(str, pos);
+		return str.length() == pos.getIndex();
 	}
 
 	public void assignTableNumbers(ArrayList<Battle> bIP) {
@@ -601,8 +616,8 @@ public class Tournament {
 	}
 
 	public void setTopCutThreshold(int newThreshold) {
-		if(newThreshold <= players.size()) {
-		topCutThreshold = newThreshold;
+		if (newThreshold <= players.size()) {
+			topCutThreshold = newThreshold;
 		}
 	}
 
@@ -778,7 +793,6 @@ public class Tournament {
 		}
 		names = names.substring(0, names.length() - 1);
 		return names;
-
 	}
 
 	public void postTourneyProcessing() {
@@ -798,14 +812,15 @@ public class Tournament {
 					topCut.add(players.get(i).getName());
 				}
 				players.clear();
+				dropped.clear();
 				for (String player : topCut) {
 					addPlayer(player);
 				}
 				roundNumber = 1;
 				numberOfRounds = logBase2(players.size());
 				topCutThreshold = 0;
-				for (int j = 0; j < players.size()/2; j++) {
-					currentBattles.add(new Battle(players.get(j), players.get(players.size()-(j+1))));
+				for (int j = 0; j < players.size() / 2; j++) {
+					currentBattles.add(new Battle(players.get(j), players.get(players.size() - (j + 1))));
 				}
 				run();
 			} else {
@@ -864,7 +879,7 @@ public class Tournament {
 
 	public void dropPlayer(String string) {
 		Player toDrop = findPlayerByName(string);
-		if (toDrop != null && !dropped.contains(toDrop)) {
+		if (toDrop != null && !dropped.contains(toDrop) && currentBattles.size() > 1) {
 			dropped.add(toDrop);
 			Battle cancel = Utils.findBattleByPlayer(toDrop, currentBattles);
 			if (cancel != null) {
@@ -882,7 +897,7 @@ public class Tournament {
 				dropped.remove(findPlayerByName("BYE"));
 			}
 		} else {
-			print("Can't drop this player - do they exist, and have you dropped them already?");
+			print("Can't drop this player. You can't drop a player in the last battle, or they may not exist/be dropped already.");
 		}
 	}
 

@@ -75,7 +75,7 @@ public class Battle implements Comparable<Battle> {
 		return Math.abs(getElo(p1) - getElo(p2));
 	}
 
-	public boolean contains(String name) {
-		return p1.getName().equals(name) || p2.getName().equals(name);
+	public boolean contains(String name) {	
+		return p1.getName().toLowerCase().contains(name) || p2.getName().toLowerCase().contains(name);
 	}
 }
