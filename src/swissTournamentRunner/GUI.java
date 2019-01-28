@@ -290,6 +290,36 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(reopenGameButton);
 
+		JButton findInRankings = new JButton("Find Ranking");
+		findInRankings.addActionListener(new ActionListener() {
+			@SuppressWarnings({ "rawtypes" })
+			public void actionPerformed(ActionEvent e) {
+				JFrame nameEditor = new JFrame("Find Position In Rankings");
+				nameEditor.setSize(400, 115);
+				nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
+				ArrayList<String> playerNames = new ArrayList<String>();
+				for (Player p : t.getPlayers()) {
+					playerNames.add(p.getName());
+				}
+				Collections.sort(playerNames);
+				String[] ps = playerNames.toArray(new String[playerNames.size()]);
+				JComboBox players = new JComboBox(ps);
+				JButton submitEditName = new JButton("Submit");
+				nameEditor.add(players, "span 2, wrap");
+				nameEditor.add(submitEditName);
+				nameEditor.setVisible(true);
+				submitEditName.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						Player p1 = t.findPlayerByName(players.getSelectedItem().toString());
+						t.print(p1.getName() + " is currently #" + p1.getPositionInRankings() + " in the rankings.\n");
+						t.save();
+					}
+				});
+			}
+		});
+		toolbar.add(findInRankings);
+
 		startButton = new JButton("START");
 		startButton.addActionListener(new ActionListener() {
 			@SuppressWarnings({ "rawtypes" })
