@@ -390,6 +390,8 @@ public class Tournament {
 	public void refreshScreen() {
 		GUI.wipePane();
 		updateParticipantStats();
+		Collections.shuffle(players);
+		sortRankings();
 		printRankings(generateInDepthRankings(players));
 		getCurrentBattles(currentBattles, roundString);
 		print();
