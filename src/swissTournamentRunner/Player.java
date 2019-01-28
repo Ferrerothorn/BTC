@@ -54,7 +54,7 @@ public class Player implements Comparable<Player> {
 		int people = 0;
 		for (Player p : previousRounds) {
 			for (Player q : p.previousRounds) {
-				if (this != q) {
+				if (this != q && p != q && this != p) {
 					opponentOpponentWinRate += (double) q.victories.size() / q.previousRounds.size();
 					people++;
 				}
