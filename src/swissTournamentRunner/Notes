@@ -1,4 +1,4 @@
 To do list:
 
->Add support for reporting games by player name
->Thoroughly test dropPlayer.
+>Work out bug when we drop a player in the last match open.
+>Add support for reporting scores.
