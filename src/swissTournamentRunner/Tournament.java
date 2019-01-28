@@ -28,6 +28,8 @@ public class Tournament {
 	public int x_elimination = 99999;
 	public String activeMetadataFile = "TournamentInProgress.tnt";
 	public static FileHandler fh;
+	public int predictionsMade = 0;
+	public int correctPredictions = 0;
 
 	public void signUpPlayers() {
 		if (activeMetadataFile.equals("TournamentInProgress.tnt")) {
@@ -346,6 +348,15 @@ public class Tournament {
 					if (!((b.getP1().getName().equals("BYE") || (b.getP2().getName().equals("BYE"))))) {
 						waitForUserInput();
 						String winner = readInput();
+
+						if (!b.getP1().getName().equals("BYE") && !b.getP2().getName().equals("BYE")
+								&& ((winner.equals("1") && b.getElo(b.getP1()) > 50)
+										|| (winner.equals("2") && b.getElo(b.getP2()) > 50))) {
+							correctPredictions++;
+						}
+						if (b.getElo(b.getP1()) != 50) {
+							predictionsMade++;
+						}
 						if (winner.equals("1") || winner.equals("2") || winner.equals("0")) {
 							Utils.handleBattleWinner(b, winner);
 						} else {
@@ -727,6 +738,8 @@ public class Tournament {
 			output += p3.getName()
 					+ " can thank their lucky stars for being generally paired down the most considering their win rate.\n";
 			output += "Commiserations to " + p4.getName() + " for being paired up unusually often.\n";
+			output += "Of the " + predictionsMade + " match result predictions made, " + correctPredictions
+					+ " were correct.\n";
 		} catch (IndexOutOfBoundsException e) {
 			System.out.println("Exception thrown: Tried to access unavailable player.");
 		}
@@ -913,6 +926,14 @@ public class Tournament {
 
 	public ArrayList<Battle> getCurrentBattles() {
 		return currentBattles;
+	}
+
+	public int getPredictionsMade() {
+		return predictionsMade;
+	}
+
+	public int getCorrectPredictions() {
+		return correctPredictions;
 	}
 
 }
