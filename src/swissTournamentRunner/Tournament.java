@@ -762,7 +762,7 @@ public class Tournament {
 	private Player fetchBiggestMilker() {
 		Collections.sort(players);
 		for (Player p : players) {
-			if (p.getOppWr() < 50 && !dropped.contains(p)) {
+			if (p.getOppWr() < 50 && !dropped.contains(p) && !p.getName().equals("BYE")) {
 				return p;
 			}
 		}
