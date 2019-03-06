@@ -93,6 +93,7 @@ public class Tournament {
 	}
 
 	public String getCurrentBattles(ArrayList<Battle> battles, String roundString) {
+		updateParticipantStats();
 		int longestPlayerNameLength = 0;
 		String battlesString = roundString + "\n";
 
