@@ -214,7 +214,9 @@ public class Tournament {
 							+ Utils.rpad("TB: " + pTB + "                         ", 8) + "   "
 							+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  "
 							+ Utils.rpad("Opp Opp WR: " + pOOWR + "  ", 18) + "  "
-							+ Utils.rpad("STB: " + ps.get(i - 1).oppositionTBSum, 9) + '\n';
+							+ Utils.rpad("STB: " + ps.get(i - 1).oppositionTBSum, 9) + "  "
+							+ Utils.rpad("Win Pattern: " + ps.get(i - 1).winPattern, 24) + "  "
+							+ '\n';
 				}
 			}
 			participantString += "==Rankings - Qualifiers==" + "\n";
@@ -236,7 +238,9 @@ public class Tournament {
 						+ Utils.rpad("TB: " + pTB + "                         ", 8) + "   "
 						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "    "
 						+ Utils.rpad("Opp Opp WR: " + pOOWR + "                         ", 16) + "  "
-						+ Utils.rpad("STB: " + ps.get(j - 1).oppositionTBSum, 9) + '\n';
+						+ Utils.rpad("STB: " + ps.get(j - 1).oppositionTBSum, 9) 
+						+ Utils.rpad("Win Pattern: " + ps.get(j - 1).winPattern, 24) + "  "
+						+ '\n';
 			}
 		}
 		return participantString;

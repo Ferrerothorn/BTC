@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Player implements Comparable<Player> {
 
 	String name;
+	String winPattern;
 	int score = 0;
 	int tb = 0;
 	int oppWr = 0;
@@ -30,6 +31,21 @@ public class Player implements Comparable<Player> {
 		for (int i = 0; i < players.size(); i++) {
 			if (this == players.get(i)) {
 				lastDocumentedPosition = i + 1;
+			}
+		}
+	}
+
+	public void updateWinPattern() {
+		winPattern = "";
+		for (Player p : previousRounds) {
+			if (victories.contains(p)) {
+				winPattern += "W";
+			} else {
+				if (!p.victories.contains(this)) {
+					winPattern += "T";
+				} else {
+					winPattern += "L";
+				}
 			}
 		}
 	}
@@ -114,7 +130,7 @@ public class Player implements Comparable<Player> {
 	public int getTB() {
 		return tb;
 	}
-	
+
 	public int getSTB() {
 		return oppositionTBSum;
 	}
@@ -218,6 +234,7 @@ public class Player implements Comparable<Player> {
 		recalculateOppWr();
 		recalculateOppOppWr();
 		recalculateOppositionTBSum();
+		updateWinPattern();
 	}
 
 }
