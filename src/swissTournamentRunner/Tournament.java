@@ -158,6 +158,7 @@ public class Tournament {
 	public void generatePairings(int attempts) {
 		if (currentBattles.size() == 0 || activeGamesWereSeeded(currentBattles)) {
 
+			Collections.reverse(players);
 			while (livePlayerCount() > 0 && attempts <= 100) {
 				Player p1 = players.remove(0);
 				if (!dropped.contains(p1)) {
@@ -203,6 +204,7 @@ public class Tournament {
 				if (!ps.get(i - 1).getName().equals("BYE")) {
 
 					String pScore = Integer.toString(ps.get(i - 1).getScore());
+					String pETB = Integer.toString(ps.get(i - 1).getETB());
 					String pTB = Integer.toString(ps.get(i - 1).getTB());
 					String pOWR = Integer.toString(ps.get(i - 1).getOppWr()) + "%";
 					String pOOWR = Integer.toString(ps.get(i - 1).getOppOppWr()) + "%";
@@ -211,12 +213,12 @@ public class Tournament {
 							"" + i + ") " + ps.get(i - 1).getName() + "                         ",
 							longestPlayerNameLength + 7)
 							+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
+							+ Utils.rpad("ETB: " + pETB + "                         ", 8) + "   "
 							+ Utils.rpad("TB: " + pTB + "                         ", 8) + "   "
 							+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  "
 							+ Utils.rpad("Opp Opp WR: " + pOOWR + "  ", 18) + "  "
 							+ Utils.rpad("STB: " + ps.get(i - 1).oppositionTBSum, 9) + "  "
-							+ Utils.rpad("Win Pattern: " + ps.get(i - 1).winPattern, 24) + "  "
-							+ '\n';
+							+ Utils.rpad("Win Pattern: " + ps.get(i - 1).winPattern, 24) + "  " + '\n';
 				}
 			}
 			participantString += "==Rankings - Qualifiers==" + "\n";
@@ -228,6 +230,7 @@ public class Tournament {
 			if (!ps.get(j - 1).getName().equals("BYE")) {
 
 				String pScore = Integer.toString(ps.get(j - 1).getScore());
+				String pETB = Integer.toString(ps.get(j - 1).getETB());
 				String pTB = Integer.toString(ps.get(j - 1).getTB());
 				String pOWR = Integer.toString(ps.get(j - 1).getOppWr()) + "%";
 				String pOOWR = Integer.toString(ps.get(j - 1).getOppOppWr()) + "%";
@@ -235,12 +238,12 @@ public class Tournament {
 				participantString += Utils.rpad("" + j + ") " + ps.get(j - 1).getName() + "                         ",
 						longestPlayerNameLength + 7) + "   "
 						+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
+						+ Utils.rpad("ETB: " + pETB + "                         ", 8) + "   "
 						+ Utils.rpad("TB: " + pTB + "                         ", 8) + "   "
 						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "    "
 						+ Utils.rpad("Opp Opp WR: " + pOOWR + "                         ", 16) + "  "
-						+ Utils.rpad("STB: " + ps.get(j - 1).oppositionTBSum, 9) 
-						+ Utils.rpad("Win Pattern: " + ps.get(j - 1).winPattern, 24) + "  "
-						+ '\n';
+						+ Utils.rpad("STB: " + ps.get(j - 1).oppositionTBSum, 9)
+						+ Utils.rpad("Win Pattern: " + ps.get(j - 1).winPattern, 24) + "  " + '\n';
 			}
 		}
 		return participantString;

@@ -14,6 +14,7 @@ public class Player implements Comparable<Player> {
 	public int lastDocumentedPosition = 0;
 	public ArrayList<Player> previousRounds = new ArrayList<>();
 	ArrayList<Player> victories = new ArrayList<>();
+	private int etb;
 
 	public Player(String string) {
 		name = string;
@@ -100,6 +101,10 @@ public class Player implements Comparable<Player> {
 			return -1;
 		} else if (this.score < p.getScore()) {
 			return 1;
+		} else if (this.etb > p.getETB()) {
+			return -1;
+		} else if (this.etb < p.getETB()) {
+			return 1;
 		} else if (this.tb > p.getTB()) {
 			return -1;
 		} else if (this.tb < p.getTB()) {
@@ -118,6 +123,10 @@ public class Player implements Comparable<Player> {
 			return 1;
 		}
 		return 0;
+	}
+
+	int getETB() {
+		return etb;
 	}
 
 	public void recalculateOppositionTBSum() {
@@ -170,6 +179,15 @@ public class Player implements Comparable<Player> {
 		return victories;
 	}
 
+	public void recalculateETB() {
+		etb = 0;
+		for (Player p : victories) {
+			if (p.getScore() >= this.score) {
+				etb++;
+			}
+		}
+	}
+	
 	public void recalculateTB() {
 		tb = 0;
 		for (Player p : victories) {
@@ -199,7 +217,7 @@ public class Player implements Comparable<Player> {
 		score = (3 * victories.size());
 		for (Player p : previousRounds) {
 			if (!victories.contains(p) && !p.victories.contains(this) && p.previousRounds.contains(this)) {
-				score++;
+				score+=0;
 			}
 		}
 	}
@@ -230,6 +248,7 @@ public class Player implements Comparable<Player> {
 
 	public void updateParticipantStats() {
 		recalculateScore();
+		recalculateETB();
 		recalculateTB();
 		recalculateOppWr();
 		recalculateOppOppWr();
