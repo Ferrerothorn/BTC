@@ -117,7 +117,6 @@ public class GUI implements ActionListener {
 					}
 					Collections.sort(playerNames);
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					@SuppressWarnings({ "rawtypes" })
 					JComboBox players = new JComboBox(ps);
 					JButton submitGetMatches = new JButton("Submit");
 					matchesOfButtonFrame.add(players, "span 3,wrap");
@@ -164,7 +163,6 @@ public class GUI implements ActionListener {
 
 		JButton dropPlayersButton = new JButton("Drop Player");
 		dropPlayersButton.addActionListener(new ActionListener() {
-			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() > 0) {
 					JFrame dropPlayersBox = new JFrame("Drop Player");
@@ -212,7 +210,6 @@ public class GUI implements ActionListener {
 					playerNames.remove("BYE");
 					Collections.sort(playerNames);
 					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					@SuppressWarnings({ "rawtypes" })
 					JComboBox players = new JComboBox(ps);
 					JTextField editedName = new JTextField("Enter new name here.");
 					JButton submitEditName = new JButton("Submit");
@@ -244,7 +241,6 @@ public class GUI implements ActionListener {
 
 		JButton reopenGameButton = new JButton("Reopen Game");
 		reopenGameButton.addActionListener(new ActionListener() {
-			@SuppressWarnings({ "rawtypes" })
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() > 0) {
 					JFrame nameEditor = new JFrame("Reopen Game");
@@ -292,7 +288,6 @@ public class GUI implements ActionListener {
 
 		JButton findInRankings = new JButton("Find Ranking");
 		findInRankings.addActionListener(new ActionListener() {
-			@SuppressWarnings({ "rawtypes" })
 			public void actionPerformed(ActionEvent e) {
 				JFrame nameEditor = new JFrame("Find Position In Rankings");
 				nameEditor.setSize(400, 115);
@@ -322,7 +317,6 @@ public class GUI implements ActionListener {
 
 		startButton = new JButton("START");
 		startButton.addActionListener(new ActionListener() {
-			@SuppressWarnings({ "rawtypes" })
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() == 0) {
 					JFrame seedPanel = new JFrame("Initial Seed");
