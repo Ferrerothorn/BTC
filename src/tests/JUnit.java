@@ -104,23 +104,6 @@ public class JUnit {
 	}
 
 	@Test
-	public void testRecalculateTBs() {
-		Player p1 = new Player("P1");
-		Player p2 = new Player("P2");
-		Player p3 = new Player("P3");
-		t.addPlayer(p1);
-		t.addPlayer(p2);
-		t.addPlayer(p3);
-		p1.beats(p2);
-		p2.beats(p3);
-		p3.beats(p1);
-		t.updateParticipantStats();
-		assertEquals(1, p1.getTB());
-		assertEquals(1, p2.getTB());
-		assertEquals(1, p3.getTB());
-	}
-
-	@Test
 	public void testHandleBattleWinner_On3_AddsTie() {
 		t.addBatch("P1,P2,P3,P4");
 		t.generatePairings(0);
@@ -936,5 +919,34 @@ public class JUnit {
 		assertEquals(9, t.getPlayers().size());
 		assertEquals(6, t.livePlayerCount());
 
+	}
+	
+	@Test
+	public void testDamageTiebreakersSortCorrectly() {
+		Player p1 = new Player("P1");
+		Player p2 = new Player("P2");
+		Player p3 = new Player("P3");
+		Player p4 = new Player("P4");
+		t.addPlayer(p1);
+		t.addPlayer(p2);
+		t.addPlayer(p3);
+		t.addPlayer(p4);
+		p1.lastDocumentedPosition = 1;
+		p2.lastDocumentedPosition = 2;
+		p3.lastDocumentedPosition = 3;
+		p4.lastDocumentedPosition = 4;
+		p1.beats(p4);
+		p2.beats(p3);
+		p1.dealtDamageTo("P4", 3);
+		p2.dealtDamageTo("P3", 1);
+		p3.tookDamageFrom("P2", 1);
+		p4.tookDamageFrom("P1", 3);
+		t.updateParticipantStats();
+		t.sortRankings();
+		assertEquals("P1", Tournament.players.get(0).getName());
+		assertEquals("P2", Tournament.players.get(1).getName());
+		assertEquals("P3", Tournament.players.get(2).getName());
+		assertEquals("P4", Tournament.players.get(3).getName());
+		
 	}
 }
