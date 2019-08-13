@@ -17,8 +17,8 @@ public class RunTourney {
 	}
 
 	private static void showCredits() {
-		GUI.postString("Welcome to B-T-C, the Swiss Tournament Bracket Organiser!");
-		GUI.postString("(Spring 2019 Edition - Made by Steve Dolman)");
+		GUI.postString("Welcome to FFTCG BTC, the Final Fantasy TCG Swiss Tournament Bracket Organiser!");
+		GUI.postString("(Summer 2019 Edition - Made by Steve Dolman)");
 		GUI.postString("Shoutout to Sera-Jane Cooley, Rachel Dolman, and Darren Macey for help in testing and debug!");
 	}
 }
