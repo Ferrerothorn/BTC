@@ -16,8 +16,9 @@ public class PlayerCreator {
 				playerNumbers--;
 			}
 
-			t.print("Enter the name of the next participant, or enter 'no' if done. ");
-			t.print("While registering players, enter 'drop' to remove a player before we begin, or enter 'seed' to begin the tournament while choosing [some] Round 1 pairings.");
+			t.print("Enter the name of the next participant, or participants separated by commas. ");
+			t.print("While registering players, you can enter 'drop' to remove a player before beginning.");
+			t.print("Click the 'start' button to begin - you can optionally seed Round 1 pairings there too.");
 			t.print("Current Participants: " + playerNumbers + "  Rounds required: "
 					+ t.logBase2(t.getPlayers().size()));
 			t.print("");
@@ -33,7 +34,7 @@ public class PlayerCreator {
 		try {
 			switch (input.toLowerCase()) {
 			case "drop":
-				t.print("Enter the player number (shown below) of the player(s) you'd like to remove.");
+				t.print("Enter the player number (as shown below) of the player you'd like to remove.");
 				t.waitForUserInput();
 				String dropMe = t.readInput();
 				dropPlayerByIndex(dropMe);
@@ -50,24 +51,21 @@ public class PlayerCreator {
 			}
 		} catch (NumberFormatException nfe) {
 			t.print("Illegal input - that's not a usable player index.");
-			t.print("Do you want to seed another pair?");
-			t.waitForUserInput();
-			String confirmInitialSeedingDone = t.readInput();
-			if (confirmInitialSeedingDone.toLowerCase().charAt(0) == 'y') {
-				processPlayerName("seed");
-			} else {
-				processPlayerName("no");
-			}
 		}
 	}
 
 	private void dropPlayerByIndex(String dropMe) {
 		int index = Integer.parseInt(dropMe);
-
 		index--;
 		if (index >= 0 && index < t.getPlayers().size()) {
-			Player p = t.getPlayers().remove(index);
-			t.print("Removed " + p.getName() + ".");
+			if (t.getPlayers().get(index).getName().equals("BYE")) {
+				t.print("You can't drop the Bye. Either remove a real player to remove it, or add another player to overwrite it.");
+			} else {
+				Player p = t.getPlayers().remove(index);
+				t.getPlayers().remove(t.findPlayerByName("BYE"));
+				t.print("Removed " + p.getName() + ".");
+
+			}
 		} else {
 			t.print("Player at index " + dropMe + 1 + " does not exist.");
 		}
