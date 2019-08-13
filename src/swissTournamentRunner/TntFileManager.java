@@ -45,6 +45,7 @@ public class TntFileManager {
 			output += "ELO:" + t.getElo() + "\n";
 			output += "predictionsMade:" + t.getPredictionsMade() + "\n";
 			output += "correctPredictions:" + t.getCorrectPredictions() + "\n";
+			output += "damageDealtAndTaken:" + t.listAllDamageInCompletedGames() + "\n";
 			String s = "";
 			for (Player p : t.getDroppedPlayers()) {
 				s += p.getName();
@@ -143,6 +144,20 @@ public class TntFileManager {
 				break;
 			case "predictionsmade":
 				t.predictionsMade = Integer.parseInt(propertyPair[1]);
+				break;
+			case "damagedealtandtaken":
+				String[] listOfAllCompletedGames = propertyPair[1].split("/");
+				for(String s : listOfAllCompletedGames) {
+					String[] playersAndDamage = s.split(";");
+					String[] players = playersAndDamage[0].split(",");
+					String[] damage = playersAndDamage[1].split(",");
+					Player p1 = t.findPlayerByName(players[0]);
+					Player p2 = t.findPlayerByName(players[1]);
+					Battle b = new Battle(p1, p2);
+					b.p1DealtDamage = Integer.parseInt(damage[0]);
+					b.p2DealtDamage = Integer.parseInt(damage[1]);
+					t.completedBattles.add(b);
+				}				
 				break;
 			default:
 				break;
