@@ -243,48 +243,127 @@ public class GUI implements ActionListener {
 		reopenGameButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() > 0) {
-					JFrame nameEditor = new JFrame("Reopen Game");
-					nameEditor.setSize(400, 100);
-					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
+					JFrame reopenGameEditor = new JFrame("Reopen Game");
+					reopenGameEditor.setSize(400, 100);
+					reopenGameEditor.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.getPlayers()) {
-						playerNames.add(p.getName());
+					for (Battle b : t.completedBattles) {
+						playerNames.add(b.getP1().getName() + " vs. " + b.getP2().getName());
 					}
 					Collections.sort(playerNames);
-					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					JComboBox p1s = new JComboBox(ps);
-					JComboBox p2s = new JComboBox(ps);
+					String[] games = playerNames.toArray(new String[playerNames.size()]);
+					JComboBox listOfGames = new JComboBox(games);
 					JButton submitEditName = new JButton("Submit");
-					nameEditor.add(p1s, "span 2");
-					nameEditor.add(p2s, "span 2, wrap");
-					nameEditor.add(submitEditName);
-					nameEditor.setVisible(true);
+					reopenGameEditor.add(listOfGames, "span 4");
+					reopenGameEditor.add(submitEditName);
+					reopenGameEditor.setVisible(true);
 					submitEditName.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							Player p1 = t.findPlayerByName(p1s.getSelectedItem().toString());
-							Player p2 = t.findPlayerByName(p2s.getSelectedItem().toString());
-							if (p1.getName().equals(p2.getName())) {
-								postString("A player can't possibly have played themself.\n");
-							} else {
-								Boolean reopened = t.reopenBattle(p1, p2);
-								if (reopened) {
+							String s = listOfGames.getSelectedItem().toString();
+							String[] combatants = s.split(" vs. ");
+							Player p1 = t.findPlayerByName(combatants[0]);
+							Player p2 = t.findPlayerByName(combatants[1]);
+
+							for (Battle b : t.completedBattles) {
+								if (b.getP1().getName().equals(combatants[0])
+										&& b.getP2().getName().equals(combatants[1])) {
+									b.p1DealtDamage = 0;
+									b.p2DealtDamage = 0;
+									t.reopenBattle(p1, p2);
+									t.completedBattles.remove(b);
+									t.updateParticipantStats();
 									pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
 									resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
 									postString("Game between " + p1.getName() + " and " + p2.getName() + " reopened.");
-								} else {
-									postString("Could not reopen game between " + p1.getName() + " and " + p2.getName()
-											+ ". Did it actually occur?");
+									t.save();
+									reopenGameEditor.dispose();
+									break;
 								}
 							}
-							t.save();
-							nameEditor.dispose();
 						}
 					});
 				}
 			}
 		});
 		toolbar.add(reopenGameButton);
+
+		JButton seedPairingButton = new JButton("Seed Pairing(s)");
+		seedPairingButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+					JFrame seedEditor = new JFrame("Manually Adjust Pairing");
+					seedEditor.setSize(400, 100);
+					seedEditor.setLayout(new MigLayout("", "[grow,fill]"));
+					ArrayList<String> ongoingMatchNames = new ArrayList<String>();
+					for (Battle b : t.currentBattles) {
+						ongoingMatchNames.add(b.getP1().getName() + " vs. " + b.getP2().getName());
+					}
+					Collections.sort(ongoingMatchNames);
+					String[] games = ongoingMatchNames.toArray(new String[ongoingMatchNames.size()]);
+					JComboBox listOfGames = new JComboBox(games);
+					JButton submitSeed = new JButton("Submit");
+
+					ArrayList<String> playerNames = new ArrayList<String>();
+					for (Battle b : t.currentBattles) {
+						playerNames.add(b.getP1().getName());
+						playerNames.add(b.getP2().getName());
+					}
+					Collections.sort(playerNames);
+
+					String[] ps = playerNames.toArray(new String[playerNames.size()]);
+					JComboBox player1 = new JComboBox(ps);
+					JComboBox player2 = new JComboBox(ps);
+					seedEditor.add(listOfGames, "span 2");
+					seedEditor.add(player1, "span 1");
+					seedEditor.add(player2, "span 1");
+					seedEditor.add(submitSeed);
+					seedEditor.setVisible(true);
+
+					submitSeed.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String p1name = player1.getSelectedItem().toString();
+							String p2name = player2.getSelectedItem().toString();
+
+							Player p1 = t.findPlayerByName(p1name);
+							Player p2 = t.findPlayerByName(p2name);
+
+							Battle p1Battle = t.findBattleByName(p1name);
+							Battle p2Battle = t.findBattleByName(p2name);
+
+							if (p1Battle.getP1().equals(p1)) {
+								if (p2Battle.getP1().equals(p2)) {
+									Player temp = p1;
+									p1Battle.setPlayer("1", p2);
+									p2Battle.setPlayer("1", temp);
+								} else {
+									Player temp = p1;
+									p1Battle.setPlayer("1", p2);
+									p2Battle.setPlayer("2", temp);
+								}
+							}
+							if (p1Battle.getP2().equals(p1)) {
+								if (p2Battle.getP1().equals(p2)) {
+									Player temp = p1;
+									p1Battle.setPlayer("2", p2);
+									p2Battle.setPlayer("1", temp);
+								} else {
+									Player temp = p1;
+									p1Battle.setPlayer("2", p2);
+									p2Battle.setPlayer("2", temp);
+								}
+							}
+							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+							pairingsBox.setCaretPosition(0);
+							resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+							seedEditor.dispose();
+						}
+					});
+				}
+			}
+		});
+		toolbar.add(seedPairingButton);
 
 		JButton findInRankings = new JButton("Find Ranking");
 		findInRankings.addActionListener(new ActionListener() {
