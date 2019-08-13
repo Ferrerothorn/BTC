@@ -15,6 +15,7 @@ public class Tournament {
 	public static ArrayList<Player> dropped = new ArrayList<>();
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
+	public ArrayList<Battle> completedBattles = new ArrayList<>();
 	TntFileManager tntfm = new TntFileManager(this);
 	String roundString;
 	private String userSelection = null;
@@ -147,7 +148,7 @@ public class Tournament {
 
 	public void updateParticipantStats() {
 		for (Player p : players) {
-			p.updateParticipantStats();
+			p.updateParticipantStats(completedBattles);
 		}
 		sortRankings();
 		for (Player p : players) {
@@ -157,8 +158,6 @@ public class Tournament {
 
 	public void generatePairings(int attempts) {
 		if (currentBattles.size() == 0 || activeGamesWereSeeded(currentBattles)) {
-
-			Collections.reverse(players);
 			while (livePlayerCount() > 0 && attempts <= 100) {
 				Player p1 = players.remove(0);
 				if (!dropped.contains(p1)) {
@@ -184,11 +183,6 @@ public class Tournament {
 
 	public String generateInDepthRankings(ArrayList<Player> ps) {
 
-		int STBsum = 0;
-		for (Player p : players) {
-			STBsum += p.oppositionTBSum;
-		}
-
 		String participantString = "";
 		int longestPlayerNameLength = 0;
 
@@ -199,50 +193,44 @@ public class Tournament {
 		}
 
 		if (topCutThreshold != 0) {
-			participantString += "===Rankings - Top Cut===" + STBsum + "\n";
+			participantString += "===Rankings - Top Cut===\n";
 			for (int i = 1; i <= topCutThreshold; i++) {
 				if (!ps.get(i - 1).getName().equals("BYE")) {
 
 					String pScore = Integer.toString(ps.get(i - 1).getScore());
-					String pETB = Integer.toString(ps.get(i - 1).getETB());
-					String pTB = Integer.toString(ps.get(i - 1).getTB());
 					String pOWR = Integer.toString(ps.get(i - 1).getOppWr()) + "%";
-					String pOOWR = Integer.toString(ps.get(i - 1).getOppOppWr()) + "%";
+					String dealt = Integer.toString(ps.get(i - 1).damageDealt);
+					String received = Integer.toString(ps.get(i - 1).damageReceived);
 
 					participantString += Utils.rpad(
 							"" + i + ") " + ps.get(i - 1).getName() + "                         ",
 							longestPlayerNameLength + 7)
 							+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
-							+ Utils.rpad("ETB: " + pETB + "                         ", 8) + "   "
-							+ Utils.rpad("TB: " + pTB + "                         ", 8) + "   "
 							+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  "
-							+ Utils.rpad("Opp Opp WR: " + pOOWR + "  ", 18) + "  "
-							+ Utils.rpad("STB: " + ps.get(i - 1).oppositionTBSum, 9) + "  "
+							+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
+							+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
 							+ Utils.rpad("Win Pattern: " + ps.get(i - 1).winPattern, 24) + "  " + '\n';
 				}
 			}
 			participantString += "==Rankings - Qualifiers==" + "\n";
 		} else {
-			participantString += "-=-=-=-Rankings-=-=-=-" + STBsum + '\n';
+			participantString += "===Rankings===\n";
 		}
 
 		for (int j = topCutThreshold + 1; j <= ps.size(); j++) {
 			if (!ps.get(j - 1).getName().equals("BYE")) {
 
 				String pScore = Integer.toString(ps.get(j - 1).getScore());
-				String pETB = Integer.toString(ps.get(j - 1).getETB());
-				String pTB = Integer.toString(ps.get(j - 1).getTB());
 				String pOWR = Integer.toString(ps.get(j - 1).getOppWr()) + "%";
-				String pOOWR = Integer.toString(ps.get(j - 1).getOppOppWr()) + "%";
+				String dealt = Integer.toString(ps.get(j - 1).damageDealt);
+				String received = Integer.toString(ps.get(j - 1).damageReceived);
 
 				participantString += Utils.rpad("" + j + ") " + ps.get(j - 1).getName() + "                         ",
 						longestPlayerNameLength + 7) + "   "
 						+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
-						+ Utils.rpad("ETB: " + pETB + "                         ", 8) + "   "
-						+ Utils.rpad("TB: " + pTB + "                         ", 8) + "   "
 						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "    "
-						+ Utils.rpad("Opp Opp WR: " + pOOWR + "                         ", 16) + "  "
-						+ Utils.rpad("STB: " + ps.get(j - 1).oppositionTBSum, 9)
+						+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
+						+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
 						+ Utils.rpad("Win Pattern: " + ps.get(j - 1).winPattern, 24) + "  " + '\n';
 			}
 		}
@@ -325,17 +313,16 @@ public class Tournament {
 
 		while (currentBattles.size() > 0 && allParticipantsIn) {
 			updateRoundString();
+			GUI.wipePane();
 			print("Enter a table number to report a score for the game.");
+			print();
 
 			try {
 				print(getCurrentBattles(currentBattles, roundString));
-				GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
-
+				GUI.pairingsBox.setCaretPosition(0);
 				waitForUserInput();
 				String input = readInput();
-
 				switch (input) {
-
 				case "admintools":
 					print("Admin functions enabled.");
 					waitForUserInput();
@@ -346,8 +333,6 @@ public class Tournament {
 					String reportUpon = input;
 					Battle b = fetchBattle(reportUpon, currentBattles);
 
-					currentBattles.remove(b);
-
 					print("And who won in " + b.getP1().getName() + " vs. " + b.getP2().getName() + "?");
 					print("1) " + b.getP1().getName() + " (" + b.getElo(b.getP1()) + "% predicted win rate)");
 					print("2) " + b.getP2().getName() + " (" + b.getElo(b.getP2()) + "% predicted win rate)");
@@ -357,6 +342,15 @@ public class Tournament {
 						waitForUserInput();
 						String winner = readInput();
 
+						print("How much damage did " + b.getP1().getName() + " deal?");
+						waitForUserInput();
+						int p1dd = Integer.parseInt(readInput());
+						print("How much damage did " + b.getP2().getName() + " deal?");
+						waitForUserInput();
+						int p2dd = Integer.parseInt(readInput());
+						b.p1DealtDamage = p1dd;
+						b.p2DealtDamage = p2dd;
+
 						if (!b.getP1().getName().equals("BYE") && !b.getP2().getName().equals("BYE")
 								&& ((winner.equals("1") && b.getElo(b.getP1()) > 50)
 										|| (winner.equals("2") && b.getElo(b.getP2()) > 50))) {
@@ -365,22 +359,42 @@ public class Tournament {
 						if (b.getElo(b.getP1()) != 50) {
 							predictionsMade++;
 						}
-						if (winner.equals("1") || winner.equals("2") || winner.equals("0")) {
-							Utils.handleBattleWinner(b, winner);
-						} else {
-							currentBattles.add(b);
+						switch (winner) {
+						case "1":
+							currentBattles.remove(b);
+							Utils.handleBattleWinner(b, "1");
+							completedBattles.add(b);
+							break;
+						case "2":
+							currentBattles.remove(b);
+							Utils.handleBattleWinner(b, "2");
+							completedBattles.add(b);
+							break;
+						case "0":
+							currentBattles.remove(b);
+							Utils.handleBattleWinner(b, "0");
+							completedBattles.add(b);
+							break;
+						default:
+							break;
 						}
 					} else {
 						if (b.getP1().getName().equals("BYE")) {
 							b.getP2().beats(b.getP1());
+							completedBattles.add(b);
+							currentBattles.remove(b);
 							b = null;
 						} else if (b.getP2().getName().equals("BYE")) {
 							b.getP1().beats(b.getP2());
+							completedBattles.add(b);
+							currentBattles.remove(b);
 							b = null;
 						}
 					}
+					sortRankings();
 					refreshScreen();
 					break;
+
 				}
 			} catch (Exception e) {
 				print("Illegal input.");
@@ -697,18 +711,9 @@ public class Tournament {
 
 	public String getResultsOfAllMatchesSoFar() {
 		String results = "";
-		for (Player p : players) {
-			for (Player iBeat : p.getListOfVictories()) {
-				results += p.getName() + " vs. " + iBeat.getName() + " (" + p.getName() + " won)\n";
-			}
-		}
-		for (Player p : players) {
-			for (Player didWeTie : p.getOpponentsList()) {
-				if (!(didWeTie.getListOfVictories().contains(p) || p.getListOfVictories().contains(didWeTie))
-						&& p.getOpponentsList().contains(didWeTie) && didWeTie.getOpponentsList().contains(p)) {
-					results += p.getName() + " vs. " + didWeTie.getName() + " (Tied)\n";
-				}
-			}
+		for (Battle b : completedBattles) {
+			results += b.getP1().getName() + " [" + b.getP1Damage() + " - " + b.getP2Damage() + "] "
+					+ b.getP2().getName() + "\n";
 		}
 		return results;
 	}
@@ -736,15 +741,12 @@ public class Tournament {
 		String output = "";
 		try {
 			Player p1 = fetchHardestFoughtPlayer();
-			Player p2 = fetchHighestSTBPlayer();
 			Player p3 = fetchBiggestMilker();
 			Player p4 = fetchHardestDoneBy();
 
 			Collections.sort(players);
 			output += "Congratulations to " + players.get(0).getName() + " on winning this tournament!\n";
 			output += "Props to " + p1.getName() + " for enduring the toughest range of opponents.\n";
-			output += "Shoutout to " + p2.getName()
-					+ " for generally playing against opponents on top of their peer group.\n";
 			output += p3.getName()
 					+ " can thank their lucky stars for being generally paired down the most considering their win rate.\n";
 			output += "Commiserations to " + p4.getName() + " for being paired up unusually often.\n";
@@ -775,18 +777,6 @@ public class Tournament {
 			}
 		}
 		return null;
-	}
-
-	private Player fetchHighestSTBPlayer() {
-		int highestSTB = 0;
-		Player topSTB = players.get(0);
-		for (Player p : players) {
-			if (p.getSTB() > highestSTB && !p.getName().equals("BYE") && !dropped.contains(p)) {
-				topSTB = p;
-				highestSTB = p.getSTB();
-			}
-		}
-		return topSTB;
 	}
 
 	private Player fetchHardestFoughtPlayer() {
@@ -886,6 +876,15 @@ public class Tournament {
 		return null;
 	}
 
+	public Battle findBattleByName(String s) {
+		for (Battle b : currentBattles) {
+			if (b.getP1().getName().equals(s) || b.getP2().getName().equals(s)) {
+				return b;
+			}
+		}
+		return null;
+	}
+
 	public void initialSeed(Player p1, Player p2) {
 		Battle b = new Battle(p1, p2);
 		b.wasSeeded = true;
@@ -946,4 +945,15 @@ public class Tournament {
 		return correctPredictions;
 	}
 
+	public String listAllDamageInCompletedGames() {
+		String result = "";
+		for (Battle b : completedBattles) {
+			result += b.toString();
+		}
+		if (result.length() > 0) {
+			return result.substring(0, result.length() - 1);
+		}
+		return result;
+
+	}
 }
