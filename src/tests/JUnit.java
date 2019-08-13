@@ -656,21 +656,6 @@ public class JUnit {
 	}
 
 	@Test
-	public void testGetResultsOfAllMatchesSoFar_NoTies() {
-		Player p1 = new Player("P1");
-		Player p3 = new Player("P3");
-		Player p2 = new Player("P2");
-		t.addPlayer(p1);
-		t.addPlayer(p2);
-		t.addPlayer(p3);
-
-		p2.beats(p3);
-		p1.beats(p2);
-
-		assertEquals("P1 vs. P2 (P1 won)\nP2 vs. P3 (P2 won)\n", t.getResultsOfAllMatchesSoFar());
-	}
-
-	@Test
 	public void testGetResultsOfAllMatchesSoFar_WinsAndTies() {
 		Player p1 = new Player("P1");
 		Player p3 = new Player("P3");
@@ -742,7 +727,7 @@ public class JUnit {
 			assertEquals(4, t.getNumberOfRounds());
 			assertEquals(8, t.getPlayers().size());
 			Battle b = t.currentBattles.get(3);
-			assertEquals(7, b.getElo(b.getP2()));
+			assertEquals(50, b.getElo(b.getP2()));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -937,10 +922,8 @@ public class JUnit {
 		p4.lastDocumentedPosition = 4;
 		p1.beats(p4);
 		p2.beats(p3);
-		p1.dealtDamageTo("P4", 3);
-		p2.dealtDamageTo("P3", 1);
-		p3.tookDamageFrom("P2", 1);
-		p4.tookDamageFrom("P1", 3);
+		t.completedBattles.add(new Battle(p1, p4, 3, 0));
+		t.completedBattles.add(new Battle(p2, p3, 1, 0));
 		t.updateParticipantStats();
 		t.sortRankings();
 		assertEquals("P1", Tournament.players.get(0).getName());
