@@ -394,6 +394,162 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(findInRankings);
 
+		JButton reportGameButton = new JButton("Report Win");
+		reportGameButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+
+					JFrame reportGameWindow = new JFrame("Report Win (tick box next to winner)");
+					reportGameWindow.setSize(560, 130);
+					reportGameWindow.setLayout(new MigLayout("", "[grow,fill]"));
+
+					ArrayList<String> currentBattles = new ArrayList<String>();
+					for (Battle b : t.currentBattles) {
+						currentBattles.add(b.getP1().getName() + " vs. " + b.getP2().getName());
+					}
+					String[] games = currentBattles.toArray(new String[currentBattles.size()]);
+
+					JLabel p1Label = new JLabel("Winner?");
+					JLabel p1Dam = new JLabel("Dam. dealt");
+					JLabel blank = new JLabel("Game to report");
+					JLabel p2Dam = new JLabel("Dam. dealt");
+					JLabel p2Label = new JLabel("Winner?");
+
+					JCheckBox lhsPlayer = new JCheckBox("");
+					lhsPlayer.setSelected(false);
+					JComboBox lhsPlayerDealtDamage = new JComboBox(
+							new String[] { "0", "1", "2", "3", "4", "5", "6", "7", });
+					JComboBox listOfGames = new JComboBox(games);
+					JComboBox rhsPlayerDealtDamage = new JComboBox(
+							new String[] { "0", "1", "2", "3", "4", "5", "6", "7", });
+					JCheckBox rhsPlayer = new JCheckBox("");
+					rhsPlayer.setSelected(false);
+
+					JButton submitResults = new JButton("Submit");
+
+					reportGameWindow.add(p1Label);
+					reportGameWindow.add(p1Dam);
+					reportGameWindow.add(blank, "span 3");
+					reportGameWindow.add(p2Dam);
+					reportGameWindow.add(p2Label, "wrap");
+
+					reportGameWindow.add(lhsPlayer);
+					reportGameWindow.add(lhsPlayerDealtDamage);
+					reportGameWindow.add(listOfGames, "span 3");
+					reportGameWindow.add(rhsPlayerDealtDamage);
+					reportGameWindow.add(rhsPlayer, "wrap");
+					reportGameWindow.add(submitResults, "span");
+
+					reportGameWindow.setVisible(true);
+
+					submitResults.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String[] combatants = listOfGames.getSelectedItem().toString().split(" vs. ");
+							Battle b = t.findBattleByName(combatants[0]);
+
+							t.currentBattles.remove(b);
+
+							if (b.getP1().getName().equals("BYE")) {
+								b.getP2().beats(b.getP1());
+								t.completedBattles.add(b);
+								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+								resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+								pairingsBox.setCaretPosition(0);
+								resultsBox.setCaretPosition(0);
+								reportGameWindow.dispose();
+							} else if (b.getP2().getName().equals("BYE")) {
+								b.getP1().beats(b.getP2());
+								t.completedBattles.add(b);
+								pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+								resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+								pairingsBox.setCaretPosition(0);
+								resultsBox.setCaretPosition(0);
+								reportGameWindow.dispose();
+							} else {
+								Boolean isDraw = (lhsPlayer.isSelected() == rhsPlayer.isSelected());
+								if (isDraw) {
+									Utils.handleBattleWinner(b, "0");
+									b.setP1Damage(Integer.parseInt(lhsPlayerDealtDamage.getSelectedItem().toString()));
+									b.setP2Damage(Integer.parseInt(rhsPlayerDealtDamage.getSelectedItem().toString()));
+									t.completedBattles.add(b);
+									pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+									resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+									pairingsBox.setCaretPosition(0);
+									resultsBox.setCaretPosition(0);
+									reportGameWindow.dispose();
+								} else if (lhsPlayer.isSelected()) {
+									Utils.handleBattleWinner(b, "1");
+									b.setP1Damage(Integer.parseInt(lhsPlayerDealtDamage.getSelectedItem().toString()));
+									b.setP2Damage(Integer.parseInt(rhsPlayerDealtDamage.getSelectedItem().toString()));
+									t.completedBattles.add(b);
+									pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+									resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+									pairingsBox.setCaretPosition(0);
+									resultsBox.setCaretPosition(0);
+									reportGameWindow.dispose();
+								} else if (rhsPlayer.isSelected()) {
+									Utils.handleBattleWinner(b, "2");
+									b.setP1Damage(Integer.parseInt(lhsPlayerDealtDamage.getSelectedItem().toString()));
+									b.setP2Damage(Integer.parseInt(rhsPlayerDealtDamage.getSelectedItem().toString()));
+									t.completedBattles.add(b);
+									pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+									resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+									pairingsBox.setCaretPosition(0);
+									resultsBox.setCaretPosition(0);
+									reportGameWindow.dispose();
+								}
+							}
+							if (t.currentBattles.size() == 0) {
+								t.setUserSelection("k");
+							}
+							t.save();
+						}
+					});
+
+				}
+			}
+		});
+		toolbar.add(reportGameButton);
+
+		JButton reportGamesButton = new JButton("Report Wins (Multiple)");
+		reportGamesButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+
+					JFrame reportGamesWindow = new JFrame("Report Wins (tick boxes next to each winner)");
+					reportGamesWindow.setExtendedState(JFrame.MAXIMIZED_BOTH);
+					reportGamesWindow.setLayout(new MigLayout("", "[grow,fill]"));
+
+					for (Battle b : t.currentBattles) {
+						// BattlePanel bP = new BattlePanel(b);
+						// reportGamesWindow.add(bP, "wrap, span");
+						reportGamesWindow.add(new JLabel("" + b.getP1().getName()), "wrap, span");
+					}
+					JButton submitResults = new JButton("Submit");
+					reportGamesWindow.add(submitResults, "span");
+					reportGamesWindow.setVisible(true);
+
+					submitResults.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							for (Component bP : reportGamesWindow.getComponents()) {
+								processBattle(bP);
+							}
+						}
+
+						private void processBattle(Component bP) {
+							if (bP instanceof BattlePanel) {
+
+							}
+						}
+					});
+
+				}
+			}
+		});
+		toolbar.add(reportGamesButton);
+
 		startButton = new JButton("START");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
