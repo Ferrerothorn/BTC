@@ -397,7 +397,7 @@ public class Tournament {
 
 				}
 			} catch (Exception e) {
-				print("Illegal input.");
+				print("Specified table number does not exist.");
 				pollForResults();
 			}
 			GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
