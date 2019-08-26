@@ -108,8 +108,8 @@ public class GUI implements ActionListener {
 		matchesOfButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() > 0) {
-					JFrame matchesOfButtonFrame = new JFrame("Return Player's Matches");
-					matchesOfButtonFrame.setSize(450, 150);
+					JFrame matchesOfButtonFrame = new JFrame("Show results for specified player's reported matches");
+					matchesOfButtonFrame.setSize(550, 150);
 					matchesOfButtonFrame.setLayout(new MigLayout("", "[grow,fill]"));
 					ArrayList<String> playerNames = new ArrayList<String>();
 					for (Player p : t.getPlayers()) {
@@ -140,9 +140,9 @@ public class GUI implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if (t.currentBattles.size() > 0) {
 					JFrame addPlayersBox = new JFrame("Add Player(s)");
-					addPlayersBox.setSize(700, 400);
+					addPlayersBox.setSize(700, 150);
 					addPlayersBox.setLayout(new GridLayout());
-					JTextField input = new JTextField("Enter comma-separated player list here.");
+					JTextField input = new JTextField("Enter new player name here.");
 					JButton submitButton = new JButton("Submit");
 					addPlayersBox.add(input);
 					addPlayersBox.add(submitButton);
