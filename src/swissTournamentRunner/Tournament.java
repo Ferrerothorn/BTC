@@ -72,6 +72,40 @@ public class Tournament {
 		addBye();
 	}
 
+	public void addLatePlayer(String p1) {
+		if (doesPlayerExist(p1) && dropped.contains(findPlayerByName(p1))) {
+			dropped.remove(findPlayerByName(p1));
+			if (!dropped.contains(findPlayerByName("BYE"))) {
+				dropped.add(findPlayerByName("BYE"));
+			}
+		}
+
+		if (doesPlayerExist("BYE") && !doesPlayerExist(p1)) {
+			players.add(new Player(p1));
+			if (dropped.contains(findPlayerByName("BYE"))) {
+				dropped.remove(findPlayerByName("BYE"));
+			} else {
+				dropPlayer("BYE");
+			}
+			currentBattles.add(new Battle(findPlayerByName(p1), findPlayerByName("BYE")));
+			GUI.pairingsBox.setText(getCurrentBattles(currentBattles, roundString));
+		} else if (!doesPlayerExist(p1)) {
+			if (p1.length() > 0) {
+				players.add(new Player(p1));
+				players.add(new Player("BYE"));
+				currentBattles.add(new Battle(findPlayerByName(p1), findPlayerByName("BYE")));
+				GUI.pairingsBox.setText(getCurrentBattles(currentBattles, roundString));
+			}
+		}
+		while (numberOfRounds < (logBase2(players.size()))) {
+			numberOfRounds++;
+		}
+		if (!allParticipantsIn) {
+			postListOfConfirmedSignups();
+		}
+		addBye();
+	}
+
 	public void postListOfConfirmedSignups() {
 		Collections.sort(players);
 		String post = "-=-=-Registered: " + size() + " players. -=-=-" + "\n";
@@ -112,10 +146,10 @@ public class Tournament {
 		}
 
 		for (Battle b : battles) {
-			String playerOneString = b.getP1().getName() + " (" + b.getP1().getPositionInRankings()
-					+ ")                          ";
-			String playerTwoString = b.getP2().getName() + " (" + b.getP2().getPositionInRankings()
-					+ ")                          ";
+			String playerOneString = b.getP1().getName() + " (" + b.getP1().getScore()
+					+ " pts)                          ";
+			String playerTwoString = b.getP2().getName() + " (" + b.getP2().getScore()
+					+ " pts)                          ";
 
 			String battleString = Utils.rpad("Table " + b.getTableNumber() + ") ", 11);
 			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    ";
@@ -345,9 +379,15 @@ public class Tournament {
 						print("How much damage did " + b.getP1().getName() + " deal?");
 						waitForUserInput();
 						int p1dd = Integer.parseInt(readInput());
+						if (p1dd > 7) {
+							p1dd = 7;
+						}
 						print("How much damage did " + b.getP2().getName() + " deal?");
 						waitForUserInput();
 						int p2dd = Integer.parseInt(readInput());
+						if (p2dd > 7) {
+							p2dd = 7;
+						}
 						b.p1DealtDamage = p1dd;
 						b.p2DealtDamage = p2dd;
 
@@ -583,11 +623,7 @@ public class Tournament {
 
 	public void addBatch(String playerList) {
 		String[] names = playerList.split(",");
-		ArrayList<String> newPlayerNames = new ArrayList<>();
 		for (String s : names) {
-			newPlayerNames.add(s);
-		}
-		for (String s : newPlayerNames) {
 			addPlayer(Utils.trimWhitespace(s));
 			postListOfConfirmedSignups();
 		}
@@ -903,19 +939,12 @@ public class Tournament {
 		Player toDrop = findPlayerByName(string);
 		if (toDrop != null && !dropped.contains(toDrop) && currentBattles.size() > 1) {
 			dropped.add(toDrop);
-			Battle cancel = Utils.findBattleByPlayer(toDrop, currentBattles);
-			if (cancel != null) {
-				String reportWinFor = (string.equals(cancel.getP1().getName())) ? cancel.getP2().getName()
-						: cancel.getP1().getName();
-				reportBattleWinner(reportWinFor);
-				refreshScreen();
-				print(getCurrentBattles(currentBattles, roundString));
-			}
 			if (!players.contains(findPlayerByName("BYE"))) {
 				players.add(new Player("BYE"));
 			} else if (players.contains(findPlayerByName("BYE")) && !dropped.contains(findPlayerByName("BYE"))) {
 				dropped.add(findPlayerByName("BYE"));
-			} else if (players.contains(findPlayerByName("BYE")) && dropped.contains(findPlayerByName("BYE"))) {
+			} else if (!string.equals("BYE") && players.contains(findPlayerByName("BYE"))
+					&& dropped.contains(findPlayerByName("BYE"))) {
 				dropped.remove(findPlayerByName("BYE"));
 			}
 		} else {
