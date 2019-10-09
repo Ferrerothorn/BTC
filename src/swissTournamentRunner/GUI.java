@@ -370,9 +370,8 @@ public class GUI implements ActionListener {
 								}
 							}
 							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-							pairingsBox.setCaretPosition(0);
 							resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
-							seedEditor.dispose();
+							t.save();
 						}
 					});
 				}
