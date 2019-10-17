@@ -12,7 +12,6 @@ public class RunTourney {
 		showCredits();
 		tourney.signUpPlayers();
 		tourney.allParticipantsIn = true;
-		tourney.save();
 		tourney.run();
 	}
 

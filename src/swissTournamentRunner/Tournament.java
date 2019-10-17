@@ -990,4 +990,13 @@ public class Tournament {
 		return result;
 
 	}
+
+	public void addBatchFromFile(String line) {
+		String[] names = line.split(",");
+		for (String s : names) {
+			Player p = new Player(Utils.trimWhitespace(s));
+			players.add(p);
+			postListOfConfirmedSignups();
+		}
+	}
 }
