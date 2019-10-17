@@ -36,7 +36,7 @@ public class TntFileManager {
 			}
 			output += "GAMES:\n";
 			for (Battle b : t.currentBattles) {
-				output += b.getP1().getName() + "," + b.getP2().getName() + "\n";
+				output += b.getP1().getName() + "," + b.getP2().getName()+ "," + b.getTableNumber() + "\n";
 			}
 			output += "PROPERTIES:\n";
 			output += "On Round:" + t.roundNumber + "\n";
@@ -79,7 +79,7 @@ public class TntFileManager {
 			if (line.contains("PLAYERS")) {
 				line = br.readLine();
 				while (!line.contains("VICTORIES")) {
-					t.addBatch(line);
+					t.addBatchFromFile(line);
 					line = br.readLine();
 					t.addBye();
 				}
@@ -93,13 +93,12 @@ public class TntFileManager {
 					t.currentBattles.add(parseLineToBattle(line));
 					line = br.readLine();
 				}
-				t.assignTableNumbers(t.currentBattles);
+				//t.assignTableNumbers(t.currentBattles);
 				line = br.readLine();
 				while (line != null) {
 					parseProperties(line);
 					line = br.readLine();
 				}
-				t.assignTableNumbers(t.currentBattles);
 			}
 		} catch (IOException e) {
 			GUI.postString("Error reading supplied file, starting at line: \"" + line + "\"");
@@ -153,9 +152,7 @@ public class TntFileManager {
 					String[] damage = playersAndDamage[1].split(",");
 					Player p1 = t.findPlayerByName(players[0]);
 					Player p2 = t.findPlayerByName(players[1]);
-					Battle b = new Battle(p1, p2);
-					b.p1DealtDamage = Integer.parseInt(damage[0]);
-					b.p2DealtDamage = Integer.parseInt(damage[1]);
+					Battle b = new Battle(p1, p2, Integer.parseInt(damage[0]), Integer.parseInt(damage[1]));
 					t.completedBattles.add(b);
 				}				
 				break;
@@ -171,7 +168,9 @@ public class TntFileManager {
 		String[] currentCombatants = line.split(",");
 		Player p1 = t.findPlayerByName(currentCombatants[0]);
 		Player p2 = t.findPlayerByName(currentCombatants[1]);
+		String tableNumber = currentCombatants[2];
 		Battle b = new Battle(p1, p2);
+		b.setTableNumber(Integer.parseInt(tableNumber));
 		return b;
 	}
 

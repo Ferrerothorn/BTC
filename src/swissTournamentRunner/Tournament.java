@@ -212,6 +212,11 @@ public class Tournament {
 				players.add(b.getP1());
 				players.add(b.getP2());
 			}
+			int index = 0;
+			for (Battle b : currentBattles) {
+				b.setTableNumber(index+1);
+				index++;
+			}
 		}
 	}
 
@@ -343,7 +348,7 @@ public class Tournament {
 	}
 
 	public void pollForResults() {
-		assignTableNumbers(currentBattles);
+//		assignTableNumbers(currentBattles);
 
 		while (currentBattles.size() > 0 && allParticipantsIn) {
 			updateRoundString();
@@ -604,7 +609,7 @@ public class Tournament {
 				}
 			}
 		}
-		assignTableNumbers(currentBattles);
+//		assignTableNumbers(currentBattles);
 	}
 
 	private boolean activeBattleExists(ArrayList<Battle> battles, Player p, Player q) {
