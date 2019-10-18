@@ -56,9 +56,7 @@ public class Tournament {
 	}
 
 	public void addPlayer(String p1) {
-		if (doesPlayerExist("BYE") && !doesPlayerExist(p1)) {
-			renamePlayer("BYE", p1);
-		} else if (!doesPlayerExist(p1)) {
+		if (!doesPlayerExist(p1)) {
 			if (p1.length() > 0) {
 				players.add(new Player(p1));
 			}
@@ -69,7 +67,6 @@ public class Tournament {
 		if (!allParticipantsIn) {
 			postListOfConfirmedSignups();
 		}
-		addBye();
 	}
 
 	public void addLatePlayer(String p1) {
