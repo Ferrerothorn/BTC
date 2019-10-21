@@ -348,8 +348,6 @@ public class Tournament {
 	}
 
 	public void pollForResults() {
-//		assignTableNumbers(currentBattles);
-
 		while (currentBattles.size() > 0 && allParticipantsIn) {
 			updateRoundString();
 			GUI.wipePane();
@@ -609,7 +607,6 @@ public class Tournament {
 				}
 			}
 		}
-//		assignTableNumbers(currentBattles);
 	}
 
 	private boolean activeBattleExists(ArrayList<Battle> battles, Player p, Player q) {

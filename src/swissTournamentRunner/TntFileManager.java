@@ -36,7 +36,7 @@ public class TntFileManager {
 			}
 			output += "GAMES:\n";
 			for (Battle b : t.currentBattles) {
-				output += b.getP1().getName() + "," + b.getP2().getName()+ "," + b.getTableNumber() + "\n";
+				output += b.getP1().getName() + "," + b.getP2().getName() + "," + b.getTableNumber() + "\n";
 			}
 			output += "PROPERTIES:\n";
 			output += "On Round:" + t.roundNumber + "\n";
@@ -93,7 +93,6 @@ public class TntFileManager {
 					t.currentBattles.add(parseLineToBattle(line));
 					line = br.readLine();
 				}
-				//t.assignTableNumbers(t.currentBattles);
 				line = br.readLine();
 				while (line != null) {
 					parseProperties(line);
@@ -146,7 +145,7 @@ public class TntFileManager {
 				break;
 			case "damagedealtandtaken":
 				String[] listOfAllCompletedGames = propertyPair[1].split("/");
-				for(String s : listOfAllCompletedGames) {
+				for (String s : listOfAllCompletedGames) {
 					String[] playersAndDamage = s.split(";");
 					String[] players = playersAndDamage[0].split(",");
 					String[] damage = playersAndDamage[1].split(",");
@@ -154,7 +153,7 @@ public class TntFileManager {
 					Player p2 = t.findPlayerByName(players[1]);
 					Battle b = new Battle(p1, p2, Integer.parseInt(damage[0]), Integer.parseInt(damage[1]));
 					t.completedBattles.add(b);
-				}				
+				}
 				break;
 			default:
 				break;
