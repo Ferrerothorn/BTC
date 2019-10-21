@@ -873,6 +873,8 @@ public class Tournament {
 				for (int j = 0; j < players.size() / 2; j++) {
 					currentBattles.add(new Battle(players.get(j), players.get(players.size() - (j + 1))));
 				}
+				assignTableNumbers(currentBattles);
+				completedBattles.clear();
 				run();
 			} else {
 				GUI.postString("Thanks to everyone for taking part!");
