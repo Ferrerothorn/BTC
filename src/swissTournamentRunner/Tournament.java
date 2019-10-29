@@ -211,7 +211,7 @@ public class Tournament {
 			}
 			int index = 0;
 			for (Battle b : currentBattles) {
-				b.setTableNumber(index+1);
+				b.setTableNumber(index + 1);
 				index++;
 			}
 		}
@@ -228,24 +228,31 @@ public class Tournament {
 			}
 		}
 
+		ArrayList<Player> temp = new ArrayList<>();
+		temp.addAll(ps);
+
+		for (Player p : dropped) {
+			temp.remove(p);
+		}
+
 		if (topCutThreshold != 0) {
 			participantString += "===Rankings - Top Cut===\n";
 			for (int i = 1; i <= topCutThreshold; i++) {
-				if (!ps.get(i - 1).getName().equals("BYE")) {
+				if (!temp.get(i - 1).getName().equals("BYE")) {
 
-					String pScore = Integer.toString(ps.get(i - 1).getScore());
-					String pOWR = Integer.toString(ps.get(i - 1).getOppWr()) + "%";
-					String dealt = Integer.toString(ps.get(i - 1).damageDealt);
-					String received = Integer.toString(ps.get(i - 1).damageReceived);
+					String pScore = Integer.toString(temp.get(i - 1).getScore());
+					String pOWR = Integer.toString(temp.get(i - 1).getOppWr()) + "%";
+					String dealt = Integer.toString(temp.get(i - 1).damageDealt);
+					String received = Integer.toString(temp.get(i - 1).damageReceived);
 
 					participantString += Utils.rpad(
-							"" + i + ") " + ps.get(i - 1).getName() + "                         ",
-							longestPlayerNameLength + 7)
+							"" + i + ") " + temp.get(i - 1).getName() + "                         ",
+							longestPlayerNameLength + 7) + "   "
 							+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
 							+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  "
 							+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
 							+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
-							+ Utils.rpad("Win Pattern: " + ps.get(i - 1).winPattern, 24) + "  " + '\n';
+							+ Utils.rpad("Win Pattern: " + temp.get(i - 1).winPattern, 24) + "  " + '\n';
 				}
 			}
 			participantString += "==Rankings - Qualifiers==" + "\n";
@@ -253,21 +260,21 @@ public class Tournament {
 			participantString += "===Rankings===\n";
 		}
 
-		for (int j = topCutThreshold + 1; j <= ps.size(); j++) {
-			if (!ps.get(j - 1).getName().equals("BYE")) {
+		for (int j = topCutThreshold + 1; j <= temp.size(); j++) {
+			if (!temp.get(j - 1).getName().equals("BYE")) {
 
-				String pScore = Integer.toString(ps.get(j - 1).getScore());
-				String pOWR = Integer.toString(ps.get(j - 1).getOppWr()) + "%";
-				String dealt = Integer.toString(ps.get(j - 1).damageDealt);
-				String received = Integer.toString(ps.get(j - 1).damageReceived);
+				String pScore = Integer.toString(temp.get(j - 1).getScore());
+				String pOWR = Integer.toString(temp.get(j - 1).getOppWr()) + "%";
+				String dealt = Integer.toString(temp.get(j - 1).damageDealt);
+				String received = Integer.toString(temp.get(j - 1).damageReceived);
 
-				participantString += Utils.rpad("" + j + ") " + ps.get(j - 1).getName() + "                         ",
+				participantString += Utils.rpad("" + j + ") " + temp.get(j - 1).getName() + "                         ",
 						longestPlayerNameLength + 7) + "   "
 						+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
 						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "    "
 						+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
 						+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
-						+ Utils.rpad("Win Pattern: " + ps.get(j - 1).winPattern, 24) + "  " + '\n';
+						+ Utils.rpad("Win Pattern: " + temp.get(j - 1).winPattern, 24) + "  " + '\n';
 			}
 		}
 		return participantString;
@@ -345,8 +352,6 @@ public class Tournament {
 	}
 
 	public void pollForResults() {
-//		assignTableNumbers(currentBattles);
-
 		while (currentBattles.size() > 0 && allParticipantsIn) {
 			updateRoundString();
 			GUI.wipePane();
@@ -606,7 +611,6 @@ public class Tournament {
 				}
 			}
 		}
-//		assignTableNumbers(currentBattles);
 	}
 
 	private boolean activeBattleExists(ArrayList<Battle> battles, Player p, Player q) {
@@ -873,6 +877,8 @@ public class Tournament {
 				for (int j = 0; j < players.size() / 2; j++) {
 					currentBattles.add(new Battle(players.get(j), players.get(players.size() - (j + 1))));
 				}
+				assignTableNumbers(currentBattles);
+				completedBattles.clear();
 				run();
 			} else {
 				GUI.postString("Thanks to everyone for taking part!");
