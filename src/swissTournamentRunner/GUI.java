@@ -283,8 +283,8 @@ public class GUI implements ActionListener {
 							for (Battle b : t.completedBattles) {
 								if (b.getP1().getName().equals(combatants[0])
 										&& b.getP2().getName().equals(combatants[1])) {
-									b.p1DealtDamage = 0;
-									b.p2DealtDamage = 0;
+									b.setP1DealtDamage(0);
+									b.setP2DealtDamage(0);
 									t.reopenBattle(p1, p2);
 									t.completedBattles.remove(b);
 									t.updateParticipantStats();

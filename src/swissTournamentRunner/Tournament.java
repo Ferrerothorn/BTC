@@ -242,8 +242,8 @@ public class Tournament {
 
 					String pScore = Integer.toString(temp.get(i - 1).getScore());
 					String pOWR = Integer.toString(temp.get(i - 1).getOppWr()) + "%";
-					String dealt = Integer.toString(temp.get(i - 1).damageDealt);
-					String received = Integer.toString(temp.get(i - 1).damageReceived);
+					String dealt = Integer.toString(temp.get(i - 1).getDamageDealt());
+					String received = Integer.toString(temp.get(i - 1).getDamageReceived());
 
 					participantString += Utils.rpad(
 							"" + i + ") " + temp.get(i - 1).getName() + "                         ",
@@ -252,7 +252,7 @@ public class Tournament {
 							+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  "
 							+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
 							+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
-							+ Utils.rpad("Win Pattern: " + temp.get(i - 1).winPattern, 24) + "  " + '\n';
+							+ Utils.rpad("Win Pattern: " + temp.get(i - 1).getWinPattern(), 24) + "  " + '\n';
 				}
 			}
 			participantString += "==Rankings - Qualifiers==" + "\n";
@@ -265,8 +265,8 @@ public class Tournament {
 
 				String pScore = Integer.toString(temp.get(j - 1).getScore());
 				String pOWR = Integer.toString(temp.get(j - 1).getOppWr()) + "%";
-				String dealt = Integer.toString(temp.get(j - 1).damageDealt);
-				String received = Integer.toString(temp.get(j - 1).damageReceived);
+				String dealt = Integer.toString(temp.get(j - 1).getDamageDealt());
+				String received = Integer.toString(temp.get(j - 1).getDamageReceived());
 
 				participantString += Utils.rpad("" + j + ") " + temp.get(j - 1).getName() + "                         ",
 						longestPlayerNameLength + 7) + "   "
@@ -274,7 +274,7 @@ public class Tournament {
 						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "    "
 						+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
 						+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
-						+ Utils.rpad("Win Pattern: " + temp.get(j - 1).winPattern, 24) + "  " + '\n';
+						+ Utils.rpad("Win Pattern: " + temp.get(j - 1).getWinPattern(), 24) + "  " + '\n';
 			}
 		}
 		return participantString;
@@ -395,8 +395,8 @@ public class Tournament {
 						if (p2dd > 7) {
 							p2dd = 7;
 						}
-						b.p1DealtDamage = p1dd;
-						b.p2DealtDamage = p2dd;
+						b.setP1DealtDamage(p1dd);
+						b.setP2DealtDamage(p2dd);
 
 						if (!b.getP1().getName().equals("BYE") && !b.getP2().getName().equals("BYE")
 								&& ((winner.equals("1") && b.getElo(b.getP1()) > 50)

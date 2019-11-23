@@ -13,8 +13,8 @@ public class TntFileManager {
 	static Tournament t;
 	static String line;
 
-	public TntFileManager(Tournament tourney) {
-		t = tourney;
+	public TntFileManager(Tournament tournament) {
+		t = tournament;
 	}
 
 	public void saveTournament() {
