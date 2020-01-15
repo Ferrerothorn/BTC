@@ -608,10 +608,14 @@ public class Tournament {
 		this.setNumberOfRounds(1);
 		this.roundNumber = 1;
 
+		int index  = 1;
 		for (Player p : players) {
 			for (Player q : players) {
 				if (p != q && !activeBattleExists(currentBattles, p, q)) {
-					currentBattles.add(new Battle(p, q));
+					Battle b = new Battle(p, q);
+					b.setTableNumber(index);
+					index++;
+					currentBattles.add(b);
 				}
 			}
 		}
