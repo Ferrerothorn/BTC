@@ -20,6 +20,7 @@ public class Tournament {
 	String roundString;
 	private String userSelection = null;
 	public boolean noClicks = true;
+	public boolean doubleElimination = false;
 	public String elo = "off";
 	boolean allParticipantsIn = false;
 	public static int topCutThreshold = 0;
@@ -555,6 +556,9 @@ public class Tournament {
 			sortRankings();
 			GUI.postResultsString(generateInDepthRankings(players));
 			break;
+		case "de":
+			doubleElimination = true;
+			break;
 		case "roundrobin":
 			generateRRpairings();
 			break;
@@ -900,6 +904,7 @@ public class Tournament {
 			sortRankings();
 			GUI.postResultsString(generateInDepthRankings(players));
 			pollForResults();
+			
 			roundNumber++;
 		}
 		save();
