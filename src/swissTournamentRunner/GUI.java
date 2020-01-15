@@ -2,10 +2,24 @@ package swissTournamentRunner;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.Copies;
+import javax.print.attribute.standard.MediaSize;
+import javax.print.attribute.standard.Sides;
 import javax.swing.*;
 import net.miginfocom.swing.MigLayout;
 
@@ -537,7 +551,17 @@ public class GUI implements ActionListener {
 			}
 		});
 		toolbar.add(reportGameButton);
-
+		
+		JButton printPairingsButton = new JButton("Print Pairings");
+		printPairingsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+					printFile(t.getCurrentBattles(t.currentBattles, t.roundString));
+				}
+			}
+		});
+		toolbar.add(printPairingsButton);
+		
 		startButton = new JButton("START");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -641,5 +665,23 @@ public class GUI implements ActionListener {
 
 	public static void printRankings(String generateInDepthRankings) {
 		postResultsString(generateInDepthRankings);
+	}
+
+	public static void printFile(String pairingsString) {
+		InputStream textStream = new ByteArrayInputStream(pairingsString.getBytes(StandardCharsets.UTF_8));
+		DocFlavor myFormat = DocFlavor.INPUT_STREAM.TEXT_PLAIN_US_ASCII;
+		Doc myDoc = new SimpleDoc(textStream, myFormat, null);
+		PrintRequestAttributeSet attributeSet = new HashPrintRequestAttributeSet();
+		attributeSet.add(new Copies(1));
+		attributeSet.add(MediaSize.ISO.A4);
+		attributeSet.add(Sides.DUPLEX);
+		PrintService[] services = PrintServiceLookup.lookupPrintServices(myFormat, attributeSet);
+		if (services.length > 0) {
+			DocPrintJob job = services[0].createPrintJob();
+			try {
+				job.print(myDoc, attributeSet);
+			} catch (PrintException pe) {
+			}
+		}
 	}
 }
