@@ -32,6 +32,7 @@ public class GUI implements ActionListener {
 	public static JTextArea resultsBox;
 	public static JFrame frame = new JFrame("BTC");
 	public JToolBar toolbar;
+	public JButton repairButton;
 	public JButton startButton;
 
 	public GUI(Tournament t) {
@@ -551,7 +552,7 @@ public class GUI implements ActionListener {
 			}
 		});
 		toolbar.add(reportGameButton);
-		
+
 		JButton printPairingsButton = new JButton("Print Pairings");
 		printPairingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -561,7 +562,45 @@ public class GUI implements ActionListener {
 			}
 		});
 		toolbar.add(printPairingsButton);
-		
+
+		repairButton = new JButton("Re-pair Round");
+		repairButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (t.currentBattles.size() > 0) {
+					JFrame repairPanel = new JFrame("Re-Pair Round?");
+					repairPanel.setSize(400, 130);
+					repairPanel.setLayout(new MigLayout("", "[grow,fill]"));
+					repairPanel.addWindowListener(new WindowAdapter() {
+						@Override
+						public void windowClosing(WindowEvent e) {
+						}
+					});
+					ArrayList<String> playerNames = new ArrayList<String>();
+					for (Player p : t.getPlayers()) {
+						playerNames.add(p.getName());
+					}
+					Collections.sort(playerNames);
+					JButton repair = new JButton("This is a destructive operation. Are you sure?");
+					repairPanel.add(repair);
+					repairPanel.setVisible(true);
+
+					repair.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent arg0) {
+							t.currentBattles.clear();
+							t.sortRankings();
+							repairPanel.dispose();
+							t.generatePairings(0);
+							t.refreshScreen();
+							t.print(t.getCurrentBattles(t.currentBattles, t.roundString));
+							t.save();
+						}
+					});
+				}
+			}
+		});
+		toolbar.add(repairButton);
+
 		startButton = new JButton("START");
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
