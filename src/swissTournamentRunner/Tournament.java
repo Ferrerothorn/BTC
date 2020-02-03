@@ -410,11 +410,17 @@ public class Tournament {
 						switch (winner) {
 						case "1":
 							currentBattles.remove(b);
+							if (activeMetadataFile.contains("topCut")) {
+								eliminatePlayer(b.getP2());
+							}
 							Utils.handleBattleWinner(b, "1");
 							completedBattles.add(b);
 							break;
 						case "2":
 							currentBattles.remove(b);
+							if (activeMetadataFile.contains("topCut")) {
+								eliminatePlayer(b.getP1());
+							}
 							Utils.handleBattleWinner(b, "2");
 							completedBattles.add(b);
 							break;
@@ -608,7 +614,7 @@ public class Tournament {
 		this.setNumberOfRounds(1);
 		this.roundNumber = 1;
 
-		int index  = 1;
+		int index = 1;
 		for (Player p : players) {
 			for (Player q : players) {
 				if (p != q && !activeBattleExists(currentBattles, p, q)) {
@@ -908,7 +914,7 @@ public class Tournament {
 			sortRankings();
 			GUI.postResultsString(generateInDepthRankings(players));
 			pollForResults();
-			
+
 			roundNumber++;
 		}
 		save();
@@ -950,6 +956,10 @@ public class Tournament {
 
 	public void setElo(String elo) {
 		this.elo = elo;
+	}
+
+	public void eliminatePlayer(Player p) {
+		dropped.add(p);
 	}
 
 	public void dropPlayer(String string) {
