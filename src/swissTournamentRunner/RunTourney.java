@@ -17,7 +17,7 @@ public class RunTourney {
 
 	private static void showCredits() {
 		GUI.postString("Welcome to FFTCG BTC, the Final Fantasy TCG Swiss Tournament Bracket Organiser!");
-		GUI.postString("(Autumn 2019 Edition - Made by Steve Dolman)");
+		GUI.postString("(February 2020 Edition - Made by Steve Dolman)");
 		GUI.postString("Shoutout to Tokyo Toys Glasgow, Slice and Dice Nottingham, and Nerd Shak Wigan for help in testing and debug!");
 	}
 }
