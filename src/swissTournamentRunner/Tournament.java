@@ -383,19 +383,37 @@ public class Tournament {
 					if (!((b.getP1().getName().equals("BYE") || (b.getP2().getName().equals("BYE"))))) {
 						waitForUserInput();
 						String winner = readInput();
+						int p1dd;
+						int p2dd;
 
-						print("How much damage did " + b.getP1().getName() + " deal?");
-						waitForUserInput();
-						int p1dd = Integer.parseInt(readInput());
-						if (p1dd > 7) {
-							p1dd = 7;
+						if (winner.equals("2")) {
+							print("How much damage did " + b.getP2().getName() + " deal?");
+							waitForUserInput();
+							p2dd = Integer.parseInt(readInput());
+							if (p2dd > 7) {
+								p2dd = 7;
+							}
+							print("How much damage did " + b.getP1().getName() + " deal?");
+							waitForUserInput();
+							p1dd = Integer.parseInt(readInput());
+							if (p1dd > 7) {
+								p1dd = 7;
+							}
+						} else {
+							print("How much damage did " + b.getP1().getName() + " deal?");
+							waitForUserInput();
+							p1dd = Integer.parseInt(readInput());
+							if (p1dd > 7) {
+								p1dd = 7;
+							}
+							print("How much damage did " + b.getP2().getName() + " deal?");
+							waitForUserInput();
+							p2dd = Integer.parseInt(readInput());
+							if (p2dd > 7) {
+								p2dd = 7;
+							}
 						}
-						print("How much damage did " + b.getP2().getName() + " deal?");
-						waitForUserInput();
-						int p2dd = Integer.parseInt(readInput());
-						if (p2dd > 7) {
-							p2dd = 7;
-						}
+
 						b.setP1DealtDamage(p1dd);
 						b.setP2DealtDamage(p2dd);
 
