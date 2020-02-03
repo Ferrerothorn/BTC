@@ -27,7 +27,7 @@ public class JUnit {
 		t.setAllParticipantsIn(true);
 		new GUI(t);
 	}
-	
+
 	@Test
 	public void test_alterTopCut() {
 		assertEquals(0, t.getTopCutThreshold());
@@ -37,7 +37,7 @@ public class JUnit {
 		t.setTopCutThreshold(20);
 		assertEquals(4, t.getTopCutThreshold());
 	}
-	
+
 	@Test
 	public void test_alterRoundNumbers() {
 		assertEquals(0, t.getNumberOfRounds());
@@ -48,7 +48,7 @@ public class JUnit {
 		t.alterRoundNumbers("4");
 		assertEquals(4, t.getNumberOfRounds());
 	}
-	
+
 	@Test
 	public void testAddPlayersToTournament() {
 		t.addPlayer("P1");
@@ -193,18 +193,20 @@ public class JUnit {
 		t.addPlayer(p4);
 		t.generatePairings(0);
 		assertEquals(2, t.getCurrentBattles().size());
+		assertEquals(4, t.livePlayerCount());
 		t.dropPlayer("P4");
-		assertEquals(1, t.getCurrentBattles().size());
+		assertEquals(4, t.livePlayerCount());
+		assertEquals(2, t.getCurrentBattles().size());
 		assertEquals(5, t.getPlayers().size());
 		assertEquals(3, t.getNumberOfRounds());
 		Utils.handleBattleWinner(t.currentBattles.remove(0), "1");
 		t.dropPlayer("P2");
-		assertEquals(0, t.getCurrentBattles().size());
+		assertEquals(2, t.livePlayerCount());
+		assertEquals(1, t.getCurrentBattles().size());
 		assertEquals(5, t.getPlayers().size());
 		assertEquals(3, t.getNumberOfRounds());
 		t.dropPlayer("P4");
 		assertEquals(5, t.getPlayers().size());
-		assertEquals(2, t.livePlayerCount());
 		t.recalculateRounds();
 		assertEquals(1, t.getNumberOfRounds());
 	}
@@ -874,7 +876,17 @@ public class JUnit {
 		t.addPlayer(p1);
 		t.addPlayer(p2);
 		t.addPlayer(p3);
-		assertEquals("P1,P2,P3", t.playerList());
+		assertEquals("P1,P2,P3", playerList(t));
+	}
+
+	public String playerList(Tournament t) {
+		String names = "";
+		for (Player p : t.players) {
+			names += p.getName();
+			names += ",";
+		}
+		names = names.substring(0, names.length() - 1);
+		return names;
 	}
 
 	@Test
@@ -905,7 +917,7 @@ public class JUnit {
 		assertEquals(6, t.livePlayerCount());
 
 	}
-	
+
 	@Test
 	public void testDamageTiebreakersSortCorrectly() {
 		Player p1 = new Player("P1");
@@ -930,6 +942,6 @@ public class JUnit {
 		assertEquals("P2", Tournament.players.get(1).getName());
 		assertEquals("P3", Tournament.players.get(2).getName());
 		assertEquals("P4", Tournament.players.get(3).getName());
-		
+
 	}
 }
