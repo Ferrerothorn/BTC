@@ -5,23 +5,38 @@ import java.util.ArrayList;
 public class Player implements Comparable<Player> {
 
 	String name;
-	private String winPattern;
-	int score = 0;
-	int oppWr = 0;
+	int cubeScore = 0;
+	int swissScore = 0;
+	int overallScore = 0;
+
+	int cubeOWR = 0;
+	int swissOWR = 0;
+	int overallOWR = 0;
+
+	int swissRounds = 0;
+
+	int podNumber;
+
 	private int damageDealt = 0;
 	private int damageReceived = 0;
 	public int lastDocumentedPosition = 0;
 	public ArrayList<Player> previousRounds = new ArrayList<>();
 	ArrayList<Player> victories = new ArrayList<>();
 
-	public Player(String string) {
-		name = string;
+	public Player(String myName, int myScore, int myOWR, int pod) {
+		name = myName;
+		swissScore = myScore;
+		swissOWR = myOWR;
+		podNumber = pod;
 	}
 
-	public Player(String myName, int myScore, int myTb, int myOppWr, int myOppOppWr) {
+	public Player(String myName, int myScore, int myOWR, int myDamDealt, int myDamReceived, int pod) {
 		name = myName;
-		score = myScore;
-		oppWr = myOppWr;
+		swissScore = myScore;
+		swissOWR = myOWR;
+		damageDealt = myDamDealt;
+		damageReceived = myDamReceived;
+		podNumber = pod;
 	}
 
 	public void updatePositionInRankings(ArrayList<Player> players) {
@@ -32,39 +47,27 @@ public class Player implements Comparable<Player> {
 		}
 	}
 
-	public void updateWinPattern() {
-		setWinPattern("");
-		for (Player p : previousRounds) {
-			if (victories.contains(p)) {
-				setWinPattern(getWinPattern() + "W");
-			} else {
-				if (!p.victories.contains(this)) {
-					setWinPattern(getWinPattern() + "T");
-				} else {
-					setWinPattern(getWinPattern() + "L");
-				}
-			}
-		}
-	}
-
 	public void recalculateOppWr() {
 		Double opponentWinRate = 0.0;
-		int people = 0;
+		int roundsThisPlayerHasCompleted = 0;
 		for (Player p : previousRounds) {
 			opponentWinRate += (double) p.victories.size() / p.previousRounds.size();
-			people++;
+			roundsThisPlayerHasCompleted++;
 		}
-		if (people != 0) {
+		if (roundsThisPlayerHasCompleted != 0) {
 			opponentWinRate /= previousRounds.size();
 			opponentWinRate *= 100;
 		}
-		oppWr = opponentWinRate.intValue();
-
+		cubeOWR = opponentWinRate.intValue()/3;
+		
+		overallOWR = 0;
+		overallOWR += cubeOWR;
+		int swissPortion = swissOWR/3;
+		overallOWR += swissPortion;
 	}
 
 	@Override
 	public int compareTo(Player p) {
-
 		if (this.lastDocumentedPosition == 0 && p.lastDocumentedPosition == 0) {
 			if (this.name.compareTo(p.name) < 0) {
 				return -1;
@@ -74,13 +77,13 @@ public class Player implements Comparable<Player> {
 			return 1;
 		} else if (p.getName().equals("BYE")) {
 			return -1;
-		} else if (this.score > p.getScore()) {
+		} else if (this.getScore() > p.getScore()) {
 			return -1;
-		} else if (this.score < p.getScore()) {
+		} else if (this.getScore() < p.getScore()) {
 			return 1;
-		} else if (this.oppWr > p.getOppWr()) {
+		} else if (this.overallOWR > p.getOppWr()) {
 			return -1;
-		} else if (this.oppWr < p.getOppWr()) {
+		} else if (this.overallOWR < p.getOppWr()) {
 			return 1;
 		} else if (this.getDamageDealt() > p.getDamageDealt()) {
 			return -1;
@@ -95,7 +98,7 @@ public class Player implements Comparable<Player> {
 	}
 
 	public int getScore() {
-		return score;
+		return (cubeScore + swissScore) * 3;
 	}
 
 	public String getName() {
@@ -130,7 +133,7 @@ public class Player implements Comparable<Player> {
 	}
 
 	public int getOppWr() {
-		return oppWr;
+		return overallOWR;
 	}
 
 	public int getPositionInRankings() {
@@ -142,7 +145,8 @@ public class Player implements Comparable<Player> {
 	}
 
 	public void recalculateScore() {
-		score = (3 * victories.size());
+		cubeScore = victories.size();
+		overallScore = ((swissScore + cubeScore) * 3);
 	}
 
 	public ArrayList<String> getListOfNamesPlayed() {
@@ -174,7 +178,6 @@ public class Player implements Comparable<Player> {
 		recalculateOppWr();
 		setDamageDealt(totalDamageDealt(bs));
 		setDamageReceived(totalDamageReceived(bs));
-		updateWinPattern();
 	}
 
 	public int totalDamageDealt(ArrayList<Battle> bs) {
@@ -203,14 +206,6 @@ public class Player implements Comparable<Player> {
 		return total;
 	}
 
-	public String getWinPattern() {
-		return winPattern;
-	}
-
-	public void setWinPattern(String winPattern) {
-		this.winPattern = winPattern;
-	}
-
 	public int getDamageReceived() {
 		return damageReceived;
 	}
@@ -225,6 +220,10 @@ public class Player implements Comparable<Player> {
 
 	public void setDamageDealt(int damageDealt) {
 		this.damageDealt = damageDealt;
+	}
+
+	public Object getPod() {
+		return podNumber;
 	}
 
 }

@@ -8,29 +8,7 @@ public class PlayerCreator {
 		t = tourney;
 	}
 
-	public void capturePlayers() {
-		GUI.wipePane();
-		while (!t.allParticipantsIn) {
-			int playerNumbers = (t.getPlayers().size() + (t.currentBattles.size() * 2));
-			if (t.findPlayerByName("BYE") != null) {
-				playerNumbers--;
-			}
-
-			t.print("Enter the name of the next participant, or participants separated by commas. ");
-			t.print("While registering players, you can enter 'drop' to remove a player before beginning.");
-			t.print("Click the 'start' button to begin - you can optionally seed Round 1 pairings there too.");
-			t.print("Current Participants: " + playerNumbers + "  Rounds required: "
-					+ t.logBase2(t.getPlayers().size()));
-			t.print("");
-
-			t.waitForUserInput();
-			String input = t.readInput();
-			processPlayerName(input);
-		}
-		t.addBye();
-	}
-
-	public void processPlayerName(String input) throws NumberFormatException {
+	public void processPlayer(String input, int score, int OWR) throws NumberFormatException {
 		try {
 			switch (input.toLowerCase()) {
 			case "drop":
@@ -39,15 +17,8 @@ public class PlayerCreator {
 				String dropMe = t.readInput();
 				dropPlayerByIndex(dropMe);
 				break;
-			case "no":
-				break;
 			default:
-				if (input.contains(",")) {
-					t.addBatch(input);
-				} else {
-					t.addPlayer(input);
-				}
-				break;
+				
 			}
 		} catch (NumberFormatException nfe) {
 			t.print("Illegal input - that's not a usable player index.");

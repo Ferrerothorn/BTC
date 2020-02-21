@@ -1,107 +1,80 @@
 package swissTournamentRunner;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
-import java.util.logging.FileHandler;
 
 public class Tournament {
 
 	public static ArrayList<Player> players = new ArrayList<>();
-	public static ArrayList<Player> dropped = new ArrayList<>();
 	public ArrayList<Battle> currentBattles = new ArrayList<>();
 	public ArrayList<Battle> totallyKosherPairings = new ArrayList<>();
 	public ArrayList<Battle> completedBattles = new ArrayList<>();
-	TntFileManager tntfm = new TntFileManager(this);
-	String roundString;
 	private String userSelection = null;
 	public boolean noClicks = true;
-	public boolean doubleElimination = false;
-	public String elo = "off";
 	boolean allParticipantsIn = false;
-	public static int topCutThreshold = 0;
-	public int numberOfRounds;
+	public static int topCutThreshold = 8;
+	public int numberOfSwissRounds;
+	public int numberOfDraftRounds;
 	public int roundNumber = 1;
+	public String roundString = "===Round " + roundNumber + "/3===";
 	public GUI gui;
-	public int x_elimination = 99999;
-	public String activeMetadataFile = "TournamentInProgress.tnt";
-	public static FileHandler fh;
 	public int predictionsMade = 0;
 	public int correctPredictions = 0;
 
 	public void signUpPlayers() {
-		if (activeMetadataFile.equals("TournamentInProgress.tnt")) {
-			print("Enter the name of this tournament.");
+
+		print("How many Swiss rounds did this tournament consist of?");
+		waitForUserInput();
+		numberOfSwissRounds = Integer.parseInt(readInput());
+
+		while (players.size() < 32) {
+			print("Enter the name of the next participant, their number of wins, and their Opponent's win rate, separated by colons.");
+			print("For example:  Steve Dolman:7:55");
+			print("While registering players, you can enter 'drop' to remove a player before beginning.");
+			print("");
 			waitForUserInput();
-			activeMetadataFile = readInput();
-			if (!activeMetadataFile.contains(".tnt")) {
-				activeMetadataFile += ".tnt";
-			}
-		}
-		File file = new File(activeMetadataFile);
-		if (file.exists()) {
-			try {
-				TntFileManager.loadTournament(this, activeMetadataFile);
-				refreshScreen();
-			} catch (IOException e) {
-				GUI.postString("Error reading supplied file.");
-			}
-		} else {
-			PlayerCreator playerCreator = new PlayerCreator(this);
-			playerCreator.capturePlayers();
-		}
-	}
+			String input = readInput();
 
-	public void addPlayer(String p1) {
-		if (!doesPlayerExist(p1)) {
-			if (p1.length() > 0) {
-				players.add(new Player(p1));
-			}
-		}
-		while (numberOfRounds < (logBase2(players.size()))) {
-			numberOfRounds++;
-		}
-		if (!allParticipantsIn) {
-			postListOfConfirmedSignups();
-		}
-	}
-
-	public void addLatePlayer(String p1) {
-		if (doesPlayerExist(p1) && dropped.contains(findPlayerByName(p1))) {
-			dropped.remove(findPlayerByName(p1));
-			if (!dropped.contains(findPlayerByName("BYE"))) {
-				dropped.add(findPlayerByName("BYE"));
-			}
-		}
-
-		if (doesPlayerExist("BYE") && !doesPlayerExist(p1)) {
-			players.add(new Player(p1));
-			if (dropped.contains(findPlayerByName("BYE"))) {
-				dropped.remove(findPlayerByName("BYE"));
+			if (input.contains(",")) {
+				String[] multiplePlayers = input.split(",");
+				for (String p : multiplePlayers) {
+					registerPlayer(p);
+				}
 			} else {
-				dropPlayer("BYE");
-			}
-			currentBattles.add(new Battle(findPlayerByName(p1), findPlayerByName("BYE")));
-			GUI.pairingsBox.setText(getCurrentBattles(currentBattles, roundString));
-		} else if (!doesPlayerExist(p1)) {
-			if (p1.length() > 0) {
-				players.add(new Player(p1));
-				players.add(new Player("BYE"));
-				currentBattles.add(new Battle(findPlayerByName(p1), findPlayerByName("BYE")));
-				GUI.pairingsBox.setText(getCurrentBattles(currentBattles, roundString));
+				registerPlayer(input);
 			}
 		}
-		while (numberOfRounds < (logBase2(players.size()))) {
-			numberOfRounds++;
+	}
+
+//	Hunter Nance:6:69,D.j. Brock:6:67,Peter Sherratt:6:59,Paul Fallon:6:57,William Lo:6:51,Brian Bylicki:5:61,Joshua Twindley:5:61,Emmanuel Onate:5:59,Colin Kauflin:5:57,James Stevenson:5:57,Sam Tuell:5:57,Gaia Filippini:5:53,Marco Greco:5:51,Mohammad Zaiem Ahmad:5:48,Bryan Lue:5:46,Victor Kristansen:4:71,Iris Gerard:4:61,James Ramsden:4:59,Chris Foulds:4:59,Pabz Avestruz III:4:57,Chantelle Emmerton:4:57,Albert Monk:4:57,David Nunez:4:55,Brandon Arruda:4:55,Digger Darckwing:4:55,Braydon Towers:4:51,Raffaele Limatola:4:46,Jimmy Nguyen:4:46,Andrea Piserchia:4:46,Joel Halvars:4:46,Bailey James:4:46,V.d. Mahp:4:46 
+	private void registerPlayer(String input) {
+		if (input.contains(":")) {
+			String[] playerInfo = input.split(":");
+			int pod = 0;
+			if (getPlayers().size() < 8) {
+				pod = 1;
+			} else if (getPlayers().size() < 16) {
+				pod = 2;
+			} else if (getPlayers().size() < 24) {
+				pod = 3;
+			} else {
+				pod = 4;
+			}
+
+			try {
+				Player p = new Player(playerInfo[0], Integer.parseInt(playerInfo[1]), Integer.parseInt(playerInfo[2]),
+						pod);
+				p.swissRounds = numberOfSwissRounds;
+				players.add(p);
+				print("Player '" + playerInfo[0] + "' added.");
+				GUI.addResultsString("" + getPlayers().size() + ") " + playerInfo[0]);
+				print();
+			} catch (Exception e) {
+				print("Format incorrect. Try again!");
+			}
 		}
-		if (!allParticipantsIn) {
-			postListOfConfirmedSignups();
-		}
-		addBye();
 	}
 
 	public void postListOfConfirmedSignups() {
@@ -139,10 +112,6 @@ public class Tournament {
 			}
 		}
 
-		if (getElo().equals("on")) {
-			Collections.sort(currentBattles);
-		}
-
 		for (Battle b : battles) {
 			String playerOneString = b.getP1().getName() + " (" + b.getP1().getScore()
 					+ " pts)                          ";
@@ -152,9 +121,6 @@ public class Tournament {
 			String battleString = Utils.rpad("Table " + b.getTableNumber() + ") ", 11);
 			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    ";
 			battleString += Utils.rpad(playerTwoString + "       ", longestPlayerNameLength + 8);
-			if (getElo().equals("on")) {
-				battleString += "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
-			}
 			battlesString += battleString + "\n";
 		}
 		return battlesString;
@@ -169,8 +135,9 @@ public class Tournament {
 	}
 
 	public void addBye() {
-		if (findPlayerByName("BYE") == null && livePlayerCount() % 2 == 1) {
-			addPlayer("BYE");
+		if (findPlayerByName("BYE") == null) {
+			PlayerCreator pc = new PlayerCreator(this);
+			pc.processPlayer("BYE", 0, 0);
 		}
 	}
 
@@ -190,31 +157,27 @@ public class Tournament {
 
 	public void generatePairings(int attempts) {
 		if (currentBattles.size() == 0 || activeGamesWereSeeded(currentBattles)) {
-			while (livePlayerCount() > 0 && attempts <= 100) {
+			while (attempts <= 100 && players.size() > 0) {
 				Player p1 = players.remove(0);
-				if (!dropped.contains(p1)) {
-					pairThisGuyUp(p1, currentBattles, attempts);
-				} else {
-					players.add(p1);
-				}
+				pairThisGuyUp(p1, currentBattles, attempts);
 			}
+		}
 
-			currentBattles.addAll(totallyKosherPairings);
-			totallyKosherPairings.clear();
+		currentBattles.addAll(totallyKosherPairings);
+		totallyKosherPairings.clear();
 
-			if (attempts > 100) {
-				abort();
-				Utils.print(generateInDepthRankings(players));
-			}
-			for (Battle b : currentBattles) {
-				players.add(b.getP1());
-				players.add(b.getP2());
-			}
-			int index = 0;
-			for (Battle b : currentBattles) {
-				b.setTableNumber(index + 1);
-				index++;
-			}
+		if (attempts > 100) {
+			abort();
+			Utils.print(generateInDepthRankings(players));
+		}
+		for (Battle b : currentBattles) {
+			players.add(b.getP1());
+			players.add(b.getP2());
+		}
+		int index = 0;
+		for (Battle b : currentBattles) {
+			b.setTableNumber(index + 1);
+			index++;
 		}
 	}
 
@@ -232,34 +195,23 @@ public class Tournament {
 		ArrayList<Player> temp = new ArrayList<>();
 		temp.addAll(ps);
 
-		for (Player p : dropped) {
-			temp.remove(p);
-		}
+		participantString += "===Rankings - Top Cut===\n";
+		for (int i = 1; i <= topCutThreshold; i++) {
+			if (!temp.get(i - 1).getName().equals("BYE")) {
 
-		if (topCutThreshold != 0) {
-			participantString += "===Rankings - Top Cut===\n";
-			for (int i = 1; i <= topCutThreshold; i++) {
-				if (!temp.get(i - 1).getName().equals("BYE")) {
+				String pScore = Integer.toString(temp.get(i - 1).getScore());
+				String pOWR = Integer.toString(temp.get(i - 1).getOppWr()) + "%";
+				String dealt = Integer.toString(temp.get(i - 1).getDamageDealt());
+				String received = Integer.toString(temp.get(i - 1).getDamageReceived());
 
-					String pScore = Integer.toString(temp.get(i - 1).getScore());
-					String pOWR = Integer.toString(temp.get(i - 1).getOppWr()) + "%";
-					String dealt = Integer.toString(temp.get(i - 1).getDamageDealt());
-					String received = Integer.toString(temp.get(i - 1).getDamageReceived());
-
-					participantString += Utils.rpad(
-							"" + i + ") " + temp.get(i - 1).getName() + "                         ",
-							longestPlayerNameLength + 7) + "   "
-							+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
-							+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  "
-							+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
-							+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
-							+ Utils.rpad("Win Pattern: " + temp.get(i - 1).getWinPattern(), 24) + "  " + '\n';
-				}
+				participantString += Utils.rpad("" + i + ") " + temp.get(i - 1).getName() + "                         ",
+						longestPlayerNameLength + 7) + "   "
+						+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
+						+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  " + Utils.rpad(("Dealt: " + dealt + "  "), 14)
+						+ "  " + Utils.rpad(("Received: " + received + "  "), 14) + "  \n";
 			}
-			participantString += "==Rankings - Qualifiers==" + "\n";
-		} else {
-			participantString += "===Rankings===\n";
 		}
+		participantString += "==Rankings - Qualifiers==" + "\n";
 
 		for (int j = topCutThreshold + 1; j <= temp.size(); j++) {
 			if (!temp.get(j - 1).getName().equals("BYE")) {
@@ -274,8 +226,7 @@ public class Tournament {
 						+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
 						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "    "
 						+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
-						+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
-						+ Utils.rpad("Win Pattern: " + temp.get(j - 1).getWinPattern(), 24) + "  " + '\n';
+						+ Utils.rpad(("Received: " + received + "  "), 14) + "  \n";
 			}
 		}
 		return participantString;
@@ -294,10 +245,6 @@ public class Tournament {
 		return players;
 	}
 
-	public ArrayList<Player> getDroppedPlayers() {
-		return dropped;
-	}
-
 	public void pairThisGuyUp(Player p1, ArrayList<Battle> targetBattleList, int attempts) {
 
 		try {
@@ -307,7 +254,7 @@ public class Tournament {
 			while (!opponentFound) {
 				Player temp = players.get(playerIndex);
 				if (!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1)
-						&& !dropped.contains(temp)) {
+						&& temp.getPod() == p1.getPod()) {
 					temp = players.remove(playerIndex);
 					Battle b = new Battle(p1, temp);
 					targetBattleList.add(b);
@@ -354,30 +301,23 @@ public class Tournament {
 
 	public void pollForResults() {
 		while (currentBattles.size() > 0 && allParticipantsIn) {
-			updateRoundString();
 			GUI.wipePane();
 			print("Enter a table number to report a score for the game.");
 			print();
 
 			try {
-				print(getCurrentBattles(currentBattles, roundString));
+				print(getCurrentBattles(currentBattles, "===Round " + roundNumber + "/3==="));
 				GUI.pairingsBox.setCaretPosition(0);
 				waitForUserInput();
 				String input = readInput();
 				switch (input) {
-				case "admintools":
-					print("Admin functions enabled.");
-					waitForUserInput();
-					String adminCommand = readInput();
-					adminTools(adminCommand);
-					break;
 				default:
 					String reportUpon = input;
 					Battle b = fetchBattle(reportUpon, currentBattles);
 
 					print("And who won in " + b.getP1().getName() + " vs. " + b.getP2().getName() + "?");
-					print("1) " + b.getP1().getName() + " (" + b.getElo(b.getP1()) + "% predicted win rate)");
-					print("2) " + b.getP2().getName() + " (" + b.getElo(b.getP2()) + "% predicted win rate)");
+					print("1) " + b.getP1().getName());
+					print("2) " + b.getP2().getName());
 					print("0) Tied.");
 
 					if (!((b.getP1().getName().equals("BYE") || (b.getP2().getName().equals("BYE"))))) {
@@ -390,55 +330,41 @@ public class Tournament {
 							print("How much damage did " + b.getP2().getName() + " deal?");
 							waitForUserInput();
 							p2dd = Integer.parseInt(readInput());
-							if (p2dd > 7) {
-								p2dd = 7;
+							if (p2dd > 6) {
+								p2dd = 6;
 							}
 							print("How much damage did " + b.getP1().getName() + " deal?");
 							waitForUserInput();
 							p1dd = Integer.parseInt(readInput());
-							if (p1dd > 7) {
-								p1dd = 7;
+							if (p1dd > 6) {
+								p1dd = 6;
 							}
 						} else {
 							print("How much damage did " + b.getP1().getName() + " deal?");
 							waitForUserInput();
 							p1dd = Integer.parseInt(readInput());
-							if (p1dd > 7) {
-								p1dd = 7;
+							if (p1dd > 6) {
+								p1dd = 6;
 							}
 							print("How much damage did " + b.getP2().getName() + " deal?");
 							waitForUserInput();
 							p2dd = Integer.parseInt(readInput());
-							if (p2dd > 7) {
-								p2dd = 7;
+							if (p2dd > 6) {
+								p2dd = 6;
 							}
 						}
 
 						b.setP1DealtDamage(p1dd);
 						b.setP2DealtDamage(p2dd);
 
-						if (!b.getP1().getName().equals("BYE") && !b.getP2().getName().equals("BYE")
-								&& ((winner.equals("1") && b.getElo(b.getP1()) > 50)
-										|| (winner.equals("2") && b.getElo(b.getP2()) > 50))) {
-							correctPredictions++;
-						}
-						if (b.getElo(b.getP1()) != 50) {
-							predictionsMade++;
-						}
 						switch (winner) {
 						case "1":
 							currentBattles.remove(b);
-							if (activeMetadataFile.contains("topCut")) {
-								eliminatePlayer(b.getP2());
-							}
 							Utils.handleBattleWinner(b, "1");
 							completedBattles.add(b);
 							break;
 						case "2":
 							currentBattles.remove(b);
-							if (activeMetadataFile.contains("topCut")) {
-								eliminatePlayer(b.getP1());
-							}
 							Utils.handleBattleWinner(b, "2");
 							completedBattles.add(b);
 							break;
@@ -473,12 +399,7 @@ public class Tournament {
 				pollForResults();
 			}
 			GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
-			save();
 		}
-	}
-
-	private void updateRoundString() {
-		roundString = ("-=-=-=-ROUND " + roundNumber + "/" + numberOfRounds + "-=-=-=-");
 	}
 
 	public void refreshScreen() {
@@ -487,7 +408,7 @@ public class Tournament {
 		Collections.shuffle(players);
 		sortRankings();
 		printRankings(generateInDepthRankings(players));
-		getCurrentBattles(currentBattles, roundString);
+		getCurrentBattles(currentBattles, "===Round " + roundNumber + "/3===");
 		print();
 		print();
 	}
@@ -566,37 +487,6 @@ public class Tournament {
 		this.userSelection = userSelection;
 	}
 
-	public void adminTools(String string) {
-		switch (string.toLowerCase()) {
-		case "acr":
-			while (currentBattles.size() > 0) {
-				Battle b = currentBattles.remove(0);
-				Random r = new Random();
-				int win = r.nextInt(2);
-				win++;
-				Utils.handleBattleWinner(b, Integer.toString(win));
-			}
-			updateParticipantStats();
-			sortRankings();
-			GUI.postResultsString(generateInDepthRankings(players));
-			break;
-		case "de":
-			doubleElimination = true;
-			break;
-		case "roundrobin":
-			generateRRpairings();
-			break;
-		case "killall -9":
-			currentBattles.clear();
-			players.clear();
-			break;
-		default:
-			print("Invalid admin command. Returning to tournament...\n");
-			break;
-		}
-		GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
-	}
-
 	public String toggle(String onOrOff) {
 		if (onOrOff.equals("on")) {
 			return "off";
@@ -622,52 +512,6 @@ public class Tournament {
 		GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
 	}
 
-	private void generateRRpairings() {
-		currentBattles.clear();
-		for (Player p : players) {
-			p.getOpponentsList().clear();
-			p.getListOfVictories().clear();
-		}
-		players.remove(findPlayerByName("BYE"));
-		this.setNumberOfRounds(1);
-		this.roundNumber = 1;
-
-		int index = 1;
-		for (Player p : players) {
-			for (Player q : players) {
-				if (p != q && !activeBattleExists(currentBattles, p, q)) {
-					Battle b = new Battle(p, q);
-					b.setTableNumber(index);
-					index++;
-					currentBattles.add(b);
-				}
-			}
-		}
-	}
-
-	private boolean activeBattleExists(ArrayList<Battle> battles, Player p, Player q) {
-		boolean exists = false;
-		for (Battle b : battles) {
-			if ((b.getP1().equals(p) && b.getP2().equals(q)) || (b.getP1().equals(q) && b.getP2().equals(p))) {
-				exists = true;
-			}
-		}
-		return exists;
-	}
-
-	void setTopCut(int parseInt) {
-		topCutThreshold = parseInt;
-	}
-
-	public void addBatch(String playerList) {
-		String[] names = playerList.split(",");
-		for (String s : names) {
-			addPlayer(Utils.trimWhitespace(s));
-			postListOfConfirmedSignups();
-		}
-		addBye();
-	}
-
 	public void renamePlayer(String playerToRename, String newName) {
 		for (Player p : players) {
 			if (p.getName().equals(playerToRename)) {
@@ -687,63 +531,12 @@ public class Tournament {
 		addBye();
 	}
 
-	public void alterTopCut(String newSize) throws NumberFormatException {
-		try {
-			int tC = Integer.parseInt(newSize);
-			if (tC < size()) {
-				setTopCut(tC);
-				Utils.print("Top Cut size set to " + tC + ".\n");
-			} else {
-				print("Invalid - suggested top cut size is too large.");
-				print("Size must be a less than the number of players.");
-			}
-		} catch (NumberFormatException e) {
-			print("Invalid input - top cut size must be a number.");
-			print("Size must be a less than the number of players.");
-			print("Alternatively, enter '0' to remove the Top Cut.\n");
-		}
-	}
-
 	public int size() {
 		return players.size();
 	}
 
 	public void addPlayer(Player p) {
 		players.add(p);
-	}
-
-	public void setNumberOfRounds(int newNumberOfRounds) {
-		numberOfRounds = newNumberOfRounds;
-	}
-
-	public int getNumberOfRounds() {
-		return numberOfRounds;
-	}
-
-	public int getTopCutThreshold() {
-		return topCutThreshold;
-	}
-
-	public void setTopCutThreshold(int newThreshold) {
-		if (newThreshold <= players.size()) {
-			topCutThreshold = newThreshold;
-		}
-	}
-
-	public void alterRoundNumbers(String newMax) throws NumberFormatException {
-		try {
-			int newNumOfRounds = Integer.parseInt(newMax);
-			if (newNumOfRounds < players.size() && newNumOfRounds >= logBase2(players.size())) {
-				setNumberOfRounds(newNumOfRounds);
-				print("Number of rounds updated to " + getNumberOfRounds() + ".");
-				updateRoundString();
-			} else {
-				print("Invalid number of rounds for a Swiss tournament.");
-				print("We need to have less rounds than the number of players, and at least logBase2(number of players).");
-			}
-		} catch (NumberFormatException e) {
-			print("Illegal input - try submitting a number of rounds as a number.");
-		}
 	}
 
 	public Boolean reopenBattle(Player p1, Player p2) {
@@ -811,60 +604,6 @@ public class Tournament {
 		}
 	}
 
-	public String postTournamentAwards() throws IndexOutOfBoundsException {
-		String output = "";
-		try {
-			Player p1 = fetchHardestFoughtPlayer();
-			Player p3 = fetchBiggestMilker();
-			Player p4 = fetchHardestDoneBy();
-
-			Collections.sort(players);
-			output += "Congratulations to " + players.get(0).getName() + " on winning this tournament!\n";
-			output += "Props to " + p1.getName() + " for enduring the toughest range of opponents.\n";
-			output += p3.getName()
-					+ " can thank their lucky stars for being generally paired down the most considering their win rate.\n";
-			output += "Commiserations to " + p4.getName() + " for being paired up unusually often.\n";
-			output += "Of the " + predictionsMade + " match result predictions made, " + correctPredictions
-					+ " were correct.\n";
-		} catch (IndexOutOfBoundsException e) {
-			System.out.println("Exception thrown: Tried to access unavailable player.");
-		}
-		return output;
-	}
-
-	private Player fetchHardestDoneBy() {
-		Collections.sort(players);
-		Collections.reverse(players);
-		for (Player p : players) {
-			if (p.getOppWr() > 50 && !dropped.contains(p)) {
-				return p;
-			}
-		}
-		return null;
-	}
-
-	private Player fetchBiggestMilker() {
-		Collections.sort(players);
-		for (Player p : players) {
-			if (p.getOppWr() < 50 && !dropped.contains(p) && !p.getName().equals("BYE")) {
-				return p;
-			}
-		}
-		return null;
-	}
-
-	private Player fetchHardestFoughtPlayer() {
-		int highestOWR = 0;
-		Player hardest = null;
-		for (Player p : players) {
-			if (p.getOppWr() > highestOWR && !p.getName().equals("BYE") && !dropped.contains(p)) {
-				hardest = p;
-				highestOWR = p.getOppWr();
-			}
-		}
-		return hardest;
-	}
-
 	public String readInput() {
 		String uS = userSelection;
 		userSelection = null;
@@ -886,40 +625,12 @@ public class Tournament {
 		GUI.postString("FINAL STANDINGS");
 		updateParticipantStats();
 		GUI.postString(generateInDepthRankings(players));
-		GUI.postString(postTournamentAwards());
 
-		if (topCutThreshold > 1) {
-			GUI.postString("Should we progress to the top cut of " + topCutThreshold + "? (y/n)");
-			waitForUserInput();
-			String input = readInput();
-			if (input.toLowerCase().charAt(0) == 'y') {
-				activeMetadataFile = activeMetadataFile.replace(".", "-topCut.");
-				ArrayList<String> topCut = new ArrayList<String>();
-				for (int i = 0; i < topCutThreshold; i++) {
-					topCut.add(players.get(i).getName());
-				}
-				players.clear();
-				dropped.clear();
-				for (String player : topCut) {
-					addPlayer(player);
-				}
-				roundNumber = 1;
-				numberOfRounds = logBase2(players.size());
-				topCutThreshold = 0;
-				for (int j = 0; j < players.size() / 2; j++) {
-					currentBattles.add(new Battle(players.get(j), players.get(players.size() - (j + 1))));
-				}
-				assignTableNumbers(currentBattles);
-				completedBattles.clear();
-				run();
-			} else {
-				GUI.postString("Thanks to everyone for taking part!");
-			}
-		}
+		GUI.postString("Thanks to everyone for taking part!");
 	}
 
 	public void run() {
-		while (roundNumber <= getNumberOfRounds() && players.size() > 1) {
+		while (roundNumber <= 3 && players.size() > 1) {
 			Collections.shuffle(players);
 			GUI.wipePane();
 			updateParticipantStats();
@@ -928,20 +639,14 @@ public class Tournament {
 				shufflePlayers();
 			}
 			generatePairings(0);
-			save();
 			sortRankings();
 			GUI.postResultsString(generateInDepthRankings(players));
 			pollForResults();
 
 			roundNumber++;
 		}
-		save();
 		GUI.wipePane();
 		postTourneyProcessing();
-	}
-
-	void save() {
-		tntfm.saveTournament();
 	}
 
 	public Player findPlayerByName(String s) {
@@ -968,45 +673,6 @@ public class Tournament {
 		currentBattles.add(b);
 	}
 
-	public String getElo() {
-		return elo;
-	}
-
-	public void setElo(String elo) {
-		this.elo = elo;
-	}
-
-	public void eliminatePlayer(Player p) {
-		dropped.add(p);
-	}
-
-	public void dropPlayer(String string) {
-		Player toDrop = findPlayerByName(string);
-		if (toDrop != null && !dropped.contains(toDrop) && currentBattles.size() > 1) {
-			dropped.add(toDrop);
-			if (!players.contains(findPlayerByName("BYE"))) {
-				players.add(new Player("BYE"));
-			} else if (players.contains(findPlayerByName("BYE")) && !dropped.contains(findPlayerByName("BYE"))) {
-				dropped.add(findPlayerByName("BYE"));
-			} else if (!string.equals("BYE") && players.contains(findPlayerByName("BYE"))
-					&& dropped.contains(findPlayerByName("BYE"))) {
-				dropped.remove(findPlayerByName("BYE"));
-			}
-		} else {
-			print("Can't drop this player. You can't drop a player in the last battle, or they may not exist/be dropped already.");
-		}
-	}
-
-	public int livePlayerCount() {
-		return players.size() - dropped.size();
-	}
-
-	public void recalculateRounds() {
-		while (numberOfRounds > logBase2(livePlayerCount())) {
-			numberOfRounds--;
-		}
-	}
-
 	public ArrayList<Battle> getCurrentBattles() {
 		return currentBattles;
 	}
@@ -1028,15 +694,5 @@ public class Tournament {
 			return result.substring(0, result.length() - 1);
 		}
 		return result;
-
-	}
-
-	public void addBatchFromFile(String line) {
-		String[] names = line.split(",");
-		for (String s : names) {
-			Player p = new Player(Utils.trimWhitespace(s));
-			players.add(p);
-			postListOfConfirmedSignups();
-		}
 	}
 }

@@ -2,24 +2,8 @@ package swissTournamentRunner;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
-import javax.print.PrintException;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
-import javax.print.SimpleDoc;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.Copies;
-import javax.print.attribute.standard.MediaSize;
-import javax.print.attribute.standard.Sides;
 import javax.swing.*;
 import net.miginfocom.swing.MigLayout;
 
@@ -41,85 +25,6 @@ public class GUI implements ActionListener {
 		frame.setLayout(new MigLayout("wrap ", "[grow,fill]"));
 
 		toolbar = new JToolBar("Admin Tools");
-
-		JButton addRoundButton = new JButton("Edit # of Rounds");
-		addRoundButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame addRoundBox = new JFrame("New Round Number");
-					addRoundBox.setSize(500, 100);
-					addRoundBox.setLayout(new GridLayout());
-					JTextField input = new JTextField("Enter new round number here.");
-					JButton addRoundButton = new JButton("Submit");
-					addRoundBox.add(input);
-					addRoundBox.add(addRoundButton);
-					addRoundBox.setVisible(true);
-					addRoundButton.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String newMax = input.getText();
-							t.alterRoundNumbers(newMax);
-							t.save();
-							addRoundBox.dispose();
-						}
-					});
-				}
-			}
-		});
-		toolbar.add(addRoundButton);
-
-		JButton eloButton = new JButton("ELO");
-		eloButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					t.elo = t.toggle(t.elo);
-					pairingsBox.setCaretPosition(0);
-					pairingsBox.setText("ELO switched " + t.elo + ".\n");
-
-					postString(t.getCurrentBattles(t.currentBattles, t.roundString));
-					t.save();
-				}
-			}
-		});
-		toolbar.add(eloButton);
-
-		JButton randomPlayerButton = new JButton("Random Player");
-		randomPlayerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (Tournament.players.size() > 0) {
-					Random r = new Random();
-					int rand = r.nextInt(Tournament.players.size());
-					postString(Tournament.players.get(rand).getName() + " chosen for prize draw.");
-				}
-			}
-		});
-		toolbar.add(randomPlayerButton);
-
-		JButton topCutButton = new JButton("Top Cut");
-		topCutButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame topCutBox = new JFrame("New Top Cut Size");
-					topCutBox.setSize(500, 100);
-					topCutBox.setLayout(new GridLayout());
-					JTextField input = new JTextField("Enter desired Top Cut size here.");
-					JButton submitButton = new JButton("Submit");
-					topCutBox.add(input);
-					topCutBox.add(submitButton);
-					topCutBox.setVisible(true);
-					submitButton.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String newTCsize = input.getText();
-							t.alterTopCut(newTCsize);
-							t.save();
-							topCutBox.dispose();
-						}
-					});
-				}
-			}
-		});
-		toolbar.add(topCutButton);
 
 		JButton matches = new JButton("All Matches");
 		matches.addActionListener(new ActionListener() {
@@ -156,75 +61,12 @@ public class GUI implements ActionListener {
 						public void actionPerformed(ActionEvent e) {
 							String selected = players.getSelectedItem().toString();
 							t.printHistory(t.findPlayerByName(selected));
-							t.save();
 						}
 					});
 				}
 			}
 		});
 		toolbar.add(matchesOfButton);
-
-		JButton addPlayersButton = new JButton("Add Players");
-		addPlayersButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame addPlayersBox = new JFrame("Add Player(s)");
-					addPlayersBox.setSize(700, 150);
-					addPlayersBox.setLayout(new GridLayout());
-					JTextField input = new JTextField("Enter new player's name here.");
-					JButton submitButton = new JButton("Submit");
-					addPlayersBox.add(input);
-					addPlayersBox.add(submitButton);
-					addPlayersBox.setVisible(true);
-					submitButton.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String newPlayer = input.getText();
-							t.addLatePlayer(newPlayer);
-							t.save();
-							addPlayersBox.dispose();
-						}
-					});
-				}
-			}
-		});
-		toolbar.add(addPlayersButton);
-
-		JButton dropPlayersButton = new JButton("Drop Player");
-		dropPlayersButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame dropPlayersBox = new JFrame("Drop Player");
-					dropPlayersBox.setSize(450, 130);
-					dropPlayersBox.setLayout(new GridLayout());
-					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.getPlayers()) {
-						if (!t.getDroppedPlayers().contains(p)) {
-							playerNames.add(p.getName());
-						}
-					}
-					Collections.sort(playerNames);
-					playerNames.remove("BYE");
-					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					JComboBox input = new JComboBox(ps);
-					JButton dropSubmitButton = new JButton("Submit");
-					dropPlayersBox.add(input);
-					dropPlayersBox.add(dropSubmitButton);
-					dropPlayersBox.setVisible(true);
-					dropSubmitButton.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String dropPlayer = input.getSelectedItem().toString();
-							tourney.dropPlayer(dropPlayer);
-							t.save();
-							dropPlayersBox.dispose();
-							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-						}
-					});
-				}
-			}
-		});
-		toolbar.add(dropPlayersButton);
 
 		JButton editNameButton = new JButton("Edit Name");
 		editNameButton.addActionListener(new ActionListener() {
@@ -260,7 +102,6 @@ public class GUI implements ActionListener {
 							t.renamePlayer(oldName, newName);
 							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
 							resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
-							t.save();
 							nameEditor.dispose();
 						}
 					});
@@ -306,7 +147,6 @@ public class GUI implements ActionListener {
 									pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
 									resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
 									postString("Game between " + p1.getName() + " and " + p2.getName() + " reopened.");
-									t.save();
 									reopenGameEditor.dispose();
 									break;
 								}
@@ -386,42 +226,12 @@ public class GUI implements ActionListener {
 							}
 							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
 							resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
-							t.save();
 						}
 					});
 				}
 			}
 		});
 		toolbar.add(seedPairingButton);
-
-		JButton findInRankings = new JButton("Find Ranking");
-		findInRankings.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFrame nameEditor = new JFrame("Find Position In Rankings");
-				nameEditor.setSize(400, 115);
-				nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
-				ArrayList<String> playerNames = new ArrayList<String>();
-				for (Player p : t.getPlayers()) {
-					playerNames.add(p.getName());
-				}
-				Collections.sort(playerNames);
-				String[] ps = playerNames.toArray(new String[playerNames.size()]);
-				JComboBox players = new JComboBox(ps);
-				JButton submitEditName = new JButton("Submit");
-				nameEditor.add(players, "span 2, wrap");
-				nameEditor.add(submitEditName);
-				nameEditor.setVisible(true);
-				submitEditName.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						Player p1 = t.findPlayerByName(players.getSelectedItem().toString());
-						t.print(p1.getName() + " is currently #" + p1.getPositionInRankings() + " in the rankings.\n");
-						t.save();
-					}
-				});
-			}
-		});
-		toolbar.add(findInRankings);
 
 		JButton reportGameButton = new JButton("Report Win");
 		reportGameButton.addActionListener(new ActionListener() {
@@ -446,11 +256,9 @@ public class GUI implements ActionListener {
 
 					JCheckBox lhsPlayer = new JCheckBox("");
 					lhsPlayer.setSelected(false);
-					JComboBox lhsPlayerDealtDamage = new JComboBox(
-							new String[] { "0", "1", "2", "3", "4", "5", "6", "7", });
+					JComboBox lhsPlayerDealtDamage = new JComboBox(new String[] { "0", "1", "2", "3", "4", "5", "6" });
 					JComboBox listOfGames = new JComboBox(games);
-					JComboBox rhsPlayerDealtDamage = new JComboBox(
-							new String[] { "0", "1", "2", "3", "4", "5", "6", "7", });
+					JComboBox rhsPlayerDealtDamage = new JComboBox(new String[] { "0", "1", "2", "3", "4", "5", "6" });
 					JCheckBox rhsPlayer = new JCheckBox("");
 					rhsPlayer.setSelected(false);
 
@@ -543,7 +351,6 @@ public class GUI implements ActionListener {
 								if (t.currentBattles.size() == 0) {
 									t.setUserSelection("k");
 								}
-								t.save();
 							}
 						}
 					});
@@ -552,16 +359,6 @@ public class GUI implements ActionListener {
 			}
 		});
 		toolbar.add(reportGameButton);
-
-		JButton printPairingsButton = new JButton("Print Pairings");
-		printPairingsButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					printFile(t.getCurrentBattles(t.currentBattles, t.roundString));
-				}
-			}
-		});
-		toolbar.add(printPairingsButton);
 
 		repairButton = new JButton("Re-pair Round");
 		repairButton.addActionListener(new ActionListener() {
@@ -593,7 +390,6 @@ public class GUI implements ActionListener {
 							t.generatePairings(0);
 							t.refreshScreen();
 							t.print(t.getCurrentBattles(t.currentBattles, t.roundString));
-							t.save();
 						}
 					});
 				}
@@ -696,6 +492,10 @@ public class GUI implements ActionListener {
 		resultsBox.append(s + newline);
 		resultsBox.setCaretPosition(0);
 	}
+	
+	public static void addResultsString(String s) {
+		resultsBox.append(s + newline);
+	}
 
 	public static void wipePane() {
 		pairingsBox.setText("");
@@ -706,21 +506,4 @@ public class GUI implements ActionListener {
 		postResultsString(generateInDepthRankings);
 	}
 
-	public static void printFile(String pairingsString) {
-		InputStream textStream = new ByteArrayInputStream(pairingsString.getBytes(StandardCharsets.UTF_8));
-		DocFlavor myFormat = DocFlavor.INPUT_STREAM.TEXT_PLAIN_US_ASCII;
-		Doc myDoc = new SimpleDoc(textStream, myFormat, null);
-		PrintRequestAttributeSet attributeSet = new HashPrintRequestAttributeSet();
-		attributeSet.add(new Copies(1));
-		attributeSet.add(MediaSize.ISO.A4);
-		attributeSet.add(Sides.DUPLEX);
-		PrintService[] services = PrintServiceLookup.lookupPrintServices(myFormat, attributeSet);
-		if (services.length > 0) {
-			DocPrintJob job = services[0].createPrintJob();
-			try {
-				job.print(myDoc, attributeSet);
-			} catch (PrintException pe) {
-			}
-		}
-	}
 }

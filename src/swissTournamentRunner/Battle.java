@@ -1,25 +1,14 @@
 package swissTournamentRunner;
 
-public class Battle implements Comparable<Battle> {
+public class Battle {
 
 	Player p1;
 	Player p2;
 	int tableNumber;
+	int podNumber;
 	public boolean wasSeeded = false;
 	private int p1DealtDamage = 0;
 	private int p2DealtDamage = 0;
-
-	public int getP1Damage() {
-		return getP1DealtDamage();
-	}
-
-	public int getP2Damage() {
-		return getP2DealtDamage();
-	}
-
-	public String toString() {
-		return p1.getName() + "," + p2.getName() + ";" + getP1DealtDamage() + "," + getP2DealtDamage() + "/";
-	}
 
 	public Battle(Player myP1, Player myP2) {
 		p1 = myP1;
@@ -63,26 +52,26 @@ public class Battle implements Comparable<Battle> {
 		}
 		return false;
 	}
+	
+	public int getPodNumber() {
+		return podNumber;
+	}
 
-	public int getElo(Player p) {
-		Player opponent = otherPlayer(p);
-		if (p.getName().equals("BYE")) {
-			return 0;
-		}
-		if (opponent.getName().equals("BYE")) {
-			return 100;
-		}
-		float ourEloScore = (p.getOppWr() * p.getScore()) + 1;
-		float theirEloScore = (opponent.getOppWr() * opponent.getScore()) + 1;
-		float ourElo = 1;
-		double power = (theirEloScore - ourEloScore) / 400;
-		power = Math.pow(10, power);
-		ourElo += power;
-		ourElo = 1 / ourElo;
-		ourElo *= 100;
-		ourElo = Math.round(ourElo);
+	public void setPodNumber(int podNumber) {
+		this.podNumber = podNumber;
+	}
 
-		return (int) ourElo;
+	
+	public int getP1Damage() {
+		return getP1DealtDamage();
+	}
+
+	public int getP2Damage() {
+		return getP2DealtDamage();
+	}
+
+	public String toString() {
+		return p1.getName() + "," + p2.getName() + ";" + getP1DealtDamage() + "," + getP2DealtDamage() + "/";
 	}
 
 	public Player otherPlayer(Player p) {
@@ -90,18 +79,6 @@ public class Battle implements Comparable<Battle> {
 			return p2;
 		}
 		return p1;
-	}
-
-	@Override
-	public int compareTo(Battle compareTo) {
-		if (this.shoeInFactor() >= compareTo.shoeInFactor()) {
-			return -1;
-		}
-		return 1;
-	}
-
-	private int shoeInFactor() {
-		return Math.abs(getElo(p1) - getElo(p2));
 	}
 
 	public boolean contains(String name) {
