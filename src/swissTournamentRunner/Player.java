@@ -48,18 +48,19 @@ public class Player implements Comparable<Player> {
 	}
 
 	public void recalculateOppWr() {
-		Double opponentWinRate = 0.0;
-		int people = 0;
+		int maxWinsPossible = 0;
 		for (Player p : previousRounds) {
-			opponentWinRate += (double) p.victories.size() / p.previousRounds.size();
-			people++;
+			maxWinsPossible += p.getListOfNamesPlayed().size();
 		}
-		if (people != 0) {
-			opponentWinRate /= previousRounds.size();
-			opponentWinRate *= 100;
+		int winsActuallyAttained = 0;
+		for (Player p : previousRounds) {
+			winsActuallyAttained += p.getListOfNamesBeaten().size();
 		}
-		oppWr = opponentWinRate.intValue();
-
+		if (maxWinsPossible > 0) {
+			oppWr = (100 * winsActuallyAttained) / maxWinsPossible;
+		} else {
+			oppWr = 0;
+		}
 	}
 
 	@Override
