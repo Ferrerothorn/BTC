@@ -23,10 +23,11 @@ public class Player implements Comparable<Player> {
 	public ArrayList<Player> previousRounds = new ArrayList<>();
 	ArrayList<Player> victories = new ArrayList<>();
 
-	public Player(String myName, int myScore, int myOWR, int pod) {
+	public Player(String myName, int myScore, int myOWR, int pod, int swissRds) {
 		name = myName;
-		swissScore = myScore;
-		swissOWR = myOWR;
+		swissScore = myScore;		
+		swissOWR = ((myOWR*swissRds)/100);
+		swissRounds = swissRds;
 		podNumber = pod;
 	}
 
@@ -60,10 +61,10 @@ public class Player implements Comparable<Player> {
 		}
 		cubeOWR = opponentWinRate.intValue()/3;
 		
-		overallOWR = 0;
-		overallOWR += cubeOWR;
-		int swissPortion = swissOWR/3;
-		overallOWR += swissPortion;
+		overallOWR = swissOWR;
+		int temp = ((cubeOWR*3)/100);
+		overallOWR += temp;
+		overallOWR *= 10;
 	}
 
 	@Override
