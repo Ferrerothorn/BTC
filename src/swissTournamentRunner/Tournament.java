@@ -55,7 +55,17 @@ public class Tournament {
 		}
 	}
 
-	// Hunter Nance:6:69,D.j. Brock:6:67,Peter Sherratt:6:59,Paul Fallon:6:57,William Lo:6:51,Brian Bylicki:5:61,Joshua Twindley:5:61,Emmanuel Onate:5:59,Colin Kauflin:5:57,James Stevenson:5:57,Sam Tuell:5:57,Gaia Filippini:5:53,Marco Greco:5:51,Mohammad Zaiem Ahmad:5:48,Bryan Lue:5:46,Victor Kristansen:4:71,Iris Gerard:4:61,James Ramsden:4:59,Chris Foulds:4:59,Pabz Avestruz III:4:57,Chantelle Emmerton:4:57,Albert Monk:4:57,David Nunez:4:55,Brandon Arruda:4:55,Digger Darckwing:4:55,Braydon Towers:4:51,Raffaele Limatola:4:46,Jimmy Nguyen:4:46,Andrea Piserchia:4:46,Joel Halvars:4:46,Bailey James:4:46,V.d. Mahp:4:46
+	// Hunter Nance:18:69,D.j. Brock:18:67,Peter Sherratt:18:59,Paul
+	// Fallon:18:57,William Lo:18:51,Brian Bylicki:15:61,Joshua
+	// Twindley:15:61,Emmanuel Onate:15:59,Colin Kauflin:15:57,James
+	// Stevenson:15:57,Sam Tuell:15:57,Gaia Filippini:15:53,Marco
+	// Greco:15:51,Mohammad Zaiem Ahmad:15:48,Bryan Lue:15:46,Victor
+	// Kristansen:12:71,Iris Gerard:12:61,James Ramsden:12:59,Chris
+	// Foulds:12:59,Pabz Avestruz III:12:57,Chantelle Emmerton:12:57,Albert
+	// Monk:12:57,David Nunez:12:55,Brandon Arruda:12:55,Digger
+	// Darckwing:12:55,Braydon Towers:12:51,Raffaele Limatola:12:46,Jimmy
+	// Nguyen:12:46,Andrea Piserchia:12:46,Joel Halvars:12:46,Bailey
+	// James:12:46,V.d. Mahp:12:46
 	private void registerPlayer(String input) {
 		if (input.contains(":")) {
 			String[] playerInfo = input.split(":");
@@ -125,8 +135,8 @@ public class Tournament {
 					+ " pts)                          ";
 
 			String battleString = Utils.rpad("Table " + b.getTableNumber() + ") ", 11);
-			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    ";
-			battleString += Utils.rpad(playerTwoString + "       ", longestPlayerNameLength + 8);
+			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 14) + "vs.    ";
+			battleString += Utils.rpad(playerTwoString + "       ", longestPlayerNameLength + 10);
 			battlesString += battleString + "\n";
 		}
 		return battlesString;
@@ -206,15 +216,19 @@ public class Tournament {
 			if (!temp.get(i - 1).getName().equals("BYE")) {
 
 				String pScore = Integer.toString(temp.get(i - 1).getScore());
-				String pOWR = Integer.toString(temp.get(i - 1).getOppWr()) + "%";
+				String pOWR = Double.toString(temp.get(i - 1).getOppWr());
+				if (pOWR.length() > 5) {
+					pOWR = pOWR.substring(0, 4);
+				}
 				String dealt = Integer.toString(temp.get(i - 1).getDamageDealt());
 				String received = Integer.toString(temp.get(i - 1).getDamageReceived());
 
 				participantString += Utils.rpad("" + i + ") " + temp.get(i - 1).getName() + "                         ",
 						longestPlayerNameLength + 7) + "   "
 						+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
-						+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  " + Utils.rpad(("Dealt: " + dealt + "  "), 14)
-						+ "  " + Utils.rpad(("Received: " + received + "  "), 14) + "  \n";
+						+ Utils.rpad(("Opp WR: " + pOWR + "%   "), 14) + "  "
+						+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
+						+ Utils.rpad(("Received: " + received + "  "), 14) + "  \n";
 			}
 		}
 		participantString += "==Rankings - Qualifiers==" + "\n";
@@ -223,14 +237,17 @@ public class Tournament {
 			if (!temp.get(j - 1).getName().equals("BYE")) {
 
 				String pScore = Integer.toString(temp.get(j - 1).getScore());
-				String pOWR = Integer.toString(temp.get(j - 1).getOppWr()) + "%";
+				String pOWR = Double.toString(temp.get(j - 1).getOppWr());
+				if (pOWR.length() > 5) {
+					pOWR = pOWR.substring(0, 4);
+				}
 				String dealt = Integer.toString(temp.get(j - 1).getDamageDealt());
 				String received = Integer.toString(temp.get(j - 1).getDamageReceived());
 
 				participantString += Utils.rpad("" + j + ") " + temp.get(j - 1).getName() + "                         ",
 						longestPlayerNameLength + 7) + "   "
 						+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
-						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "    "
+						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "%    "
 						+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
 						+ Utils.rpad(("Received: " + received + "  "), 14) + "  \n";
 			}

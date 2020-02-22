@@ -11,10 +11,9 @@ public class Player implements Comparable<Player> {
 
 	int cubeOWR = 0;
 	int swissOWR = 0;
-	int overallOWR = 0;
+	double overallOWR = 0;
 
 	int swissRounds = 0;
-
 	int podNumber;
 
 	private int damageDealt = 0;
@@ -25,8 +24,8 @@ public class Player implements Comparable<Player> {
 
 	public Player(String myName, int myScore, int myOWR, int pod, int swissRds) {
 		name = myName;
-		swissScore = myScore;		
-		swissOWR = ((myOWR*swissRds)/100);
+		swissScore = myScore;
+		swissOWR = myOWR;
 		swissRounds = swissRds;
 		podNumber = pod;
 	}
@@ -49,22 +48,42 @@ public class Player implements Comparable<Player> {
 	}
 
 	public void recalculateOppWr() {
-		Double opponentWinRate = 0.0;
-		int roundsThisPlayerHasCompleted = 0;
+		int maxWinsPossible = 0;
 		for (Player p : previousRounds) {
-			opponentWinRate += (double) p.victories.size() / p.previousRounds.size();
-			roundsThisPlayerHasCompleted++;
+			maxWinsPossible += p.getListOfNamesPlayed().size();
 		}
-		if (roundsThisPlayerHasCompleted != 0) {
-			opponentWinRate /= previousRounds.size();
-			opponentWinRate *= 100;
+		int winsActuallyAttained = 0;
+		for (Player p : previousRounds) {
+			winsActuallyAttained += p.getListOfNamesBeaten().size();
 		}
-		cubeOWR = opponentWinRate.intValue()/3;
-		
-		overallOWR = swissOWR;
-		int temp = ((cubeOWR*3)/100);
-		overallOWR += temp;
-		overallOWR *= 10;
+		if (maxWinsPossible > 0) {
+			cubeOWR = (100 * winsActuallyAttained) / maxWinsPossible;
+		} else {
+			cubeOWR = 0;
+		}
+		factorInSwissPerformance(cubeOWR);
+	}
+
+	private void factorInSwissPerformance(int cubeOWR) {
+		if (cubeOWR == 0) {
+			overallOWR = swissOWR;
+		} else {
+			overallOWR = swissOWR;
+			overallOWR *= swissRounds;
+			overallOWR /= 100;
+			overallOWR += ((cubeOWR * 3) / 100);
+			overallOWR *= 10;
+			round(overallOWR, 2);
+		}
+	}
+
+	public static double round(double value, int places) {
+		if (places < 0)
+			throw new IllegalArgumentException();
+		long factor = (long) Math.pow(10, places);
+		value = value * factor;
+		long tmp = Math.round(value);
+		return (double) tmp / factor;
 	}
 
 	@Override
@@ -99,7 +118,7 @@ public class Player implements Comparable<Player> {
 	}
 
 	public int getScore() {
-		return (cubeScore + swissScore) * 3;
+		return (cubeScore + swissScore);
 	}
 
 	public String getName() {
@@ -133,7 +152,7 @@ public class Player implements Comparable<Player> {
 		return victories;
 	}
 
-	public int getOppWr() {
+	public double getOppWr() {
 		return overallOWR;
 	}
 
@@ -146,8 +165,8 @@ public class Player implements Comparable<Player> {
 	}
 
 	public void recalculateScore() {
-		cubeScore = victories.size();
-		overallScore = ((swissScore + cubeScore) * 3);
+		cubeScore = victories.size()*3;
+		overallScore = swissScore + cubeScore;
 	}
 
 	public ArrayList<String> getListOfNamesPlayed() {
@@ -226,5 +245,4 @@ public class Player implements Comparable<Player> {
 	public Object getPod() {
 		return podNumber;
 	}
-
 }
