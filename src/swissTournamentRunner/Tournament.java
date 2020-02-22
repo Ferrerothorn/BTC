@@ -27,12 +27,16 @@ public class Tournament {
 
 		print("How many Swiss rounds did this tournament consist of?");
 		waitForUserInput();
-		numberOfSwissRounds = Integer.parseInt(readInput());
+		try {
+			numberOfSwissRounds = Integer.parseInt(readInput());
+		} catch (Exception e) {
+			print("That wasn't a number. Try again!");
+			signUpPlayers();
+		}
 
 		while (players.size() < 32) {
 			print("Enter the name of the next participant, their number of wins, and their Opponent's win rate, separated by colons.");
 			print("For example:  Steve Dolman:7:55");
-			print("While registering players, you can enter 'drop' to remove a player before beginning.");
 			print("");
 			waitForUserInput();
 			String input = readInput();
