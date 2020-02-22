@@ -397,43 +397,6 @@ public class GUI implements ActionListener {
 		});
 		toolbar.add(repairButton);
 
-		startButton = new JButton("START");
-		startButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() == 0) {
-					JFrame seedPanel = new JFrame("Start Tournament?");
-					seedPanel.setSize(300, 130);
-					seedPanel.setLayout(new MigLayout("", "[grow,fill]"));
-					seedPanel.addWindowListener(new WindowAdapter() {
-						@Override
-						public void windowClosing(WindowEvent e) {
-							t.postListOfConfirmedSignups();
-						}
-					});
-					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.getPlayers()) {
-						playerNames.add(p.getName());
-					}
-					Collections.sort(playerNames);
-					JButton start = new JButton("Start Tournament");
-					seedPanel.add(start);
-					seedPanel.setVisible(true);
-
-					start.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent arg0) {
-							t.allParticipantsIn = true;
-							t.setUserSelection("no");
-							seedPanel.dispose();
-							toolbar.remove(startButton);
-							toolbar.repaint();
-						}
-					});
-				}
-			}
-		});
-		toolbar.add(startButton);
-
 		pairingsBox = new JTextArea(20, 60);
 		pairingsBox.setEditable(false);
 		pairingsBox.setLineWrap(true);
