@@ -45,14 +45,17 @@ public class Tournament {
 				String[] multiplePlayers = input.split(",");
 				for (String p : multiplePlayers) {
 					registerPlayer(p);
+					print("");
 				}
 			} else {
 				registerPlayer(input);
+				print("");
+
 			}
 		}
 	}
 
-//	Hunter Nance:6:69,D.j. Brock:6:67,Peter Sherratt:6:59,Paul Fallon:6:57,William Lo:6:51,Brian Bylicki:5:61,Joshua Twindley:5:61,Emmanuel Onate:5:59,Colin Kauflin:5:57,James Stevenson:5:57,Sam Tuell:5:57,Gaia Filippini:5:53,Marco Greco:5:51,Mohammad Zaiem Ahmad:5:48,Bryan Lue:5:46,Victor Kristansen:4:71,Iris Gerard:4:61,James Ramsden:4:59,Chris Foulds:4:59,Pabz Avestruz III:4:57,Chantelle Emmerton:4:57,Albert Monk:4:57,David Nunez:4:55,Brandon Arruda:4:55,Digger Darckwing:4:55,Braydon Towers:4:51,Raffaele Limatola:4:46,Jimmy Nguyen:4:46,Andrea Piserchia:4:46,Joel Halvars:4:46,Bailey James:4:46,V.d. Mahp:4:46 
+	// Hunter Nance:6:69,D.j. Brock:6:67,Peter Sherratt:6:59,Paul Fallon:6:57,William Lo:6:51,Brian Bylicki:5:61,Joshua Twindley:5:61,Emmanuel Onate:5:59,Colin Kauflin:5:57,James Stevenson:5:57,Sam Tuell:5:57,Gaia Filippini:5:53,Marco Greco:5:51,Mohammad Zaiem Ahmad:5:48,Bryan Lue:5:46,Victor Kristansen:4:71,Iris Gerard:4:61,James Ramsden:4:59,Chris Foulds:4:59,Pabz Avestruz III:4:57,Chantelle Emmerton:4:57,Albert Monk:4:57,David Nunez:4:55,Brandon Arruda:4:55,Digger Darckwing:4:55,Braydon Towers:4:51,Raffaele Limatola:4:46,Jimmy Nguyen:4:46,Andrea Piserchia:4:46,Joel Halvars:4:46,Bailey James:4:46,V.d. Mahp:4:46
 	private void registerPlayer(String input) {
 		if (input.contains(":")) {
 			String[] playerInfo = input.split(":");
@@ -69,8 +72,7 @@ public class Tournament {
 
 			try {
 				Player p = new Player(playerInfo[0], Integer.parseInt(playerInfo[1]), Integer.parseInt(playerInfo[2]),
-						pod);
-				p.swissRounds = numberOfSwissRounds;
+						pod, numberOfSwissRounds);
 				players.add(p);
 				print("Player '" + playerInfo[0] + "' added.");
 				GUI.addResultsString("" + getPlayers().size() + ") " + playerInfo[0]);
