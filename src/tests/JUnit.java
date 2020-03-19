@@ -849,7 +849,7 @@ public class JUnit {
 
 	public String playerList(Tournament t) {
 		String names = "";
-		for (Player p : t.players) {
+		for (Player p : Tournament.players) {
 			names += p.getName();
 			names += ",";
 		}

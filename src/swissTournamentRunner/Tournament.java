@@ -243,16 +243,14 @@ public class Tournament {
 
 					String pScore = Integer.toString(temp.get(i - 1).getScore());
 					String pOWR = Integer.toString(temp.get(i - 1).getOppWr()) + "%";
-					String dealt = Integer.toString(temp.get(i - 1).getDamageDealt());
-					String received = Integer.toString(temp.get(i - 1).getDamageReceived());
+					String pOOWR = Integer.toString(temp.get(i - 1).getOppOppWr()) + "%";
 
 					participantString += Utils.rpad(
 							"" + i + ") " + temp.get(i - 1).getName() + "                         ",
 							longestPlayerNameLength + 7) + "   "
 							+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
 							+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  "
-							+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
-							+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
+							+ Utils.rpad(("Opp Opp WR: " + pOOWR + "   "), 18) + "  "
 							+ Utils.rpad("Win Pattern: " + temp.get(i - 1).getWinPattern(), 24) + "  " + '\n';
 				}
 			}
@@ -266,15 +264,13 @@ public class Tournament {
 
 				String pScore = Integer.toString(temp.get(j - 1).getScore());
 				String pOWR = Integer.toString(temp.get(j - 1).getOppWr()) + "%";
-				String dealt = Integer.toString(temp.get(j - 1).getDamageDealt());
-				String received = Integer.toString(temp.get(j - 1).getDamageReceived());
+				String pOOWR = Integer.toString(temp.get(j - 1).getOppOppWr()) + "%";
 
 				participantString += Utils.rpad("" + j + ") " + temp.get(j - 1).getName() + "                         ",
 						longestPlayerNameLength + 7) + "   "
 						+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
 						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "    "
-						+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
-						+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
+						+ Utils.rpad(("Opp Opp WR: " + pOOWR + "   "), 18) + "  "
 						+ Utils.rpad("Win Pattern: " + temp.get(j - 1).getWinPattern(), 24) + "  " + '\n';
 			}
 		}
@@ -383,39 +379,8 @@ public class Tournament {
 					if (!((b.getP1().getName().equals("BYE") || (b.getP2().getName().equals("BYE"))))) {
 						waitForUserInput();
 						String winner = readInput();
-						int p1dd;
-						int p2dd;
-
-						if (winner.equals("2")) {
-							print("How much damage did " + b.getP2().getName() + " deal?");
-							waitForUserInput();
-							p2dd = Integer.parseInt(readInput());
-							if (p2dd > 7) {
-								p2dd = 7;
-							}
-							print("How much damage did " + b.getP1().getName() + " deal?");
-							waitForUserInput();
-							p1dd = Integer.parseInt(readInput());
-							if (p1dd > 7) {
-								p1dd = 7;
-							}
-						} else {
-							print("How much damage did " + b.getP1().getName() + " deal?");
-							waitForUserInput();
-							p1dd = Integer.parseInt(readInput());
-							if (p1dd > 7) {
-								p1dd = 7;
-							}
-							print("How much damage did " + b.getP2().getName() + " deal?");
-							waitForUserInput();
-							p2dd = Integer.parseInt(readInput());
-							if (p2dd > 7) {
-								p2dd = 7;
-							}
-						}
-
-						b.setP1DealtDamage(p1dd);
-						b.setP2DealtDamage(p2dd);
+						b.setP1DealtDamage(0);
+						b.setP2DealtDamage(0);
 
 						if (!b.getP1().getName().equals("BYE") && !b.getP2().getName().equals("BYE")
 								&& ((winner.equals("1") && b.getElo(b.getP1()) > 50)

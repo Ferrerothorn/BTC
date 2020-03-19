@@ -8,8 +8,7 @@ public class Player implements Comparable<Player> {
 	private String winPattern;
 	int score = 0;
 	int oppWr = 0;
-	private int damageDealt = 0;
-	private int damageReceived = 0;
+	int oppOppWr = 0;
 	public int lastDocumentedPosition = 0;
 	public ArrayList<Player> previousRounds = new ArrayList<>();
 	ArrayList<Player> victories = new ArrayList<>();
@@ -22,6 +21,7 @@ public class Player implements Comparable<Player> {
 		name = myName;
 		score = myScore;
 		oppWr = myOppWr;
+		oppOppWr = myOppOppWr;
 	}
 
 	public void updatePositionInRankings(ArrayList<Player> players) {
@@ -63,6 +63,28 @@ public class Player implements Comparable<Player> {
 		}
 	}
 
+	public void recalculateOppOppWr() {
+		int maxWinsPossible = 0;
+		for (Player p : previousRounds) {
+			for (Player q : p.previousRounds) {
+				maxWinsPossible += q.getListOfNamesPlayed().size();
+			}
+		}
+
+		int winsActuallyAttained = 0;
+		for (Player p : previousRounds) {
+			for (Player q : p.previousRounds) {
+				winsActuallyAttained += q.getListOfNamesBeaten().size();
+			}
+		}
+		
+		if (maxWinsPossible > 0) {
+			oppOppWr = (100 * winsActuallyAttained) / maxWinsPossible;
+		} else {
+			oppOppWr = 0;
+		}
+	}
+
 	@Override
 	public int compareTo(Player p) {
 
@@ -83,16 +105,16 @@ public class Player implements Comparable<Player> {
 			return -1;
 		} else if (this.oppWr < p.getOppWr()) {
 			return 1;
-		} else if (this.getDamageDealt() > p.getDamageDealt()) {
+		} else if (this.oppOppWr > p.getOppOppWr()) {
 			return -1;
-		} else if (this.getDamageDealt() < p.getDamageDealt()) {
+		} else if (this.oppWr < p.getOppOppWr()) {
 			return 1;
-		} else if (this.getDamageReceived() < p.getDamageReceived()) {
-			return -1;
-		} else if (this.getDamageReceived() > p.getDamageReceived()) {
-			return 1;
-		}
+		} 
 		return 0;
+	}
+
+	int getOppOppWr() {
+		return oppOppWr;
 	}
 
 	public int getScore() {
@@ -173,59 +195,16 @@ public class Player implements Comparable<Player> {
 	public void updateParticipantStats(ArrayList<Battle> bs) {
 		recalculateScore();
 		recalculateOppWr();
-		setDamageDealt(totalDamageDealt(bs));
-		setDamageReceived(totalDamageReceived(bs));
+		recalculateOppOppWr();
 		updateWinPattern();
 	}
-
-	public int totalDamageDealt(ArrayList<Battle> bs) {
-		int total = 0;
-		for (Battle b : bs) {
-			if (b.getP1().equals(this)) {
-				total += b.getP1Damage();
-			}
-			if (b.getP2().equals(this)) {
-				total += b.getP2Damage();
-			}
-		}
-		return total;
-	}
-
-	public int totalDamageReceived(ArrayList<Battle> bs) {
-		int total = 0;
-		for (Battle b : bs) {
-			if (b.getP1().equals(this)) {
-				total += b.getP2Damage();
-			}
-			if (b.getP2().equals(this)) {
-				total += b.getP1Damage();
-			}
-		}
-		return total;
-	}
-
+	
 	public String getWinPattern() {
 		return winPattern;
 	}
 
 	public void setWinPattern(String winPattern) {
 		this.winPattern = winPattern;
-	}
-
-	public int getDamageReceived() {
-		return damageReceived;
-	}
-
-	public void setDamageReceived(int damageReceived) {
-		this.damageReceived = damageReceived;
-	}
-
-	public int getDamageDealt() {
-		return damageDealt;
-	}
-
-	public void setDamageDealt(int damageDealt) {
-		this.damageDealt = damageDealt;
 	}
 
 }
