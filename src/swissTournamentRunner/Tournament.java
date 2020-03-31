@@ -182,6 +182,10 @@ public class Tournament {
 		for (Player p : players) {
 			p.updateParticipantStats(completedBattles);
 		}
+		for (Player p : players) {
+			p.recalculateOppDamageReceived(completedBattles);
+		}
+		
 		sortRankings();
 		for (Player p : players) {
 			p.updatePositionInRankings(players);
@@ -243,16 +247,16 @@ public class Tournament {
 
 					String pScore = Integer.toString(temp.get(i - 1).getScore());
 					String pOWR = Integer.toString(temp.get(i - 1).getOppWr()) + "%";
-					String dealt = Integer.toString(temp.get(i - 1).getDamageDealt());
 					String received = Integer.toString(temp.get(i - 1).getDamageReceived());
+					String oppReceived = Integer.toString(temp.get(i - 1).getOppDamageReceived());
 
 					participantString += Utils.rpad(
 							"" + i + ") " + temp.get(i - 1).getName() + "                         ",
 							longestPlayerNameLength + 7) + "   "
 							+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
 							+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  "
-							+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
-							+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
+							+ Utils.rpad(("Dam. Received: " + received + "  "), 19) + "  "
+							+ Utils.rpad(("Opp. Dam. Received: " + oppReceived + "  "), 24) + "  "
 							+ Utils.rpad("Win Pattern: " + temp.get(i - 1).getWinPattern(), 24) + "  " + '\n';
 				}
 			}
@@ -266,15 +270,15 @@ public class Tournament {
 
 				String pScore = Integer.toString(temp.get(j - 1).getScore());
 				String pOWR = Integer.toString(temp.get(j - 1).getOppWr()) + "%";
-				String dealt = Integer.toString(temp.get(j - 1).getDamageDealt());
 				String received = Integer.toString(temp.get(j - 1).getDamageReceived());
+				String oppReceived = Integer.toString(temp.get(j - 1).getOppDamageReceived());
 
 				participantString += Utils.rpad("" + j + ") " + temp.get(j - 1).getName() + "                         ",
 						longestPlayerNameLength + 7) + "   "
 						+ Utils.rpad("Score: " + pScore + "                         ", 15) + "   "
-						+ Utils.rpad("Opp WR: " + pOWR + "                         ", 12) + "    "
-						+ Utils.rpad(("Dealt: " + dealt + "  "), 14) + "  "
-						+ Utils.rpad(("Received: " + received + "  "), 14) + "  "
+						+ Utils.rpad(("Opp WR: " + pOWR + "  "), 14) + "  "
+						+ Utils.rpad(("Dam. Received: " + received + "  "), 19) + "  "
+						+ Utils.rpad(("Opp. Dam. Received: " + oppReceived + "  "), 24) + "  "
 						+ Utils.rpad("Win Pattern: " + temp.get(j - 1).getWinPattern(), 24) + "  " + '\n';
 			}
 		}
@@ -390,32 +394,20 @@ public class Tournament {
 							print("How much damage did " + b.getP2().getName() + " deal?");
 							waitForUserInput();
 							p2dd = Integer.parseInt(readInput());
-							if (p2dd > 7) {
-								p2dd = 7;
-							}
 							print("How much damage did " + b.getP1().getName() + " deal?");
 							waitForUserInput();
 							p1dd = Integer.parseInt(readInput());
-							if (p1dd > 7) {
-								p1dd = 7;
-							}
 						} else {
 							print("How much damage did " + b.getP1().getName() + " deal?");
 							waitForUserInput();
 							p1dd = Integer.parseInt(readInput());
-							if (p1dd > 7) {
-								p1dd = 7;
-							}
 							print("How much damage did " + b.getP2().getName() + " deal?");
 							waitForUserInput();
 							p2dd = Integer.parseInt(readInput());
-							if (p2dd > 7) {
-								p2dd = 7;
-							}
 						}
 
-						b.setP1DealtDamage(p1dd);
-						b.setP2DealtDamage(p2dd);
+						b.setP1DamageDealt(p1dd);
+						b.setP2DamageDealt(p2dd);
 
 						if (!b.getP1().getName().equals("BYE") && !b.getP2().getName().equals("BYE")
 								&& ((winner.equals("1") && b.getElo(b.getP1()) > 50)
@@ -786,7 +778,7 @@ public class Tournament {
 	public String getResultsOfAllMatchesSoFar() {
 		String results = "";
 		for (Battle b : completedBattles) {
-			results += b.getP1().getName() + " [" + b.getP1Damage() + " - " + b.getP2Damage() + "] "
+			results += b.getP1().getName() + " [" + b.getP1DamageDealt() + " - " + b.getP2DamageDealt() + "] "
 					+ b.getP2().getName() + "\n";
 		}
 		return results;

@@ -8,8 +8,9 @@ public class Player implements Comparable<Player> {
 	private String winPattern;
 	int score = 0;
 	int oppWr = 0;
-	private int damageDealt = 0;
+	public int damageDealt = 0;
 	private int damageReceived = 0;
+	private int oppDamageReceived = 0;
 	public int lastDocumentedPosition = 0;
 	public ArrayList<Player> previousRounds = new ArrayList<>();
 	ArrayList<Player> victories = new ArrayList<>();
@@ -22,6 +23,14 @@ public class Player implements Comparable<Player> {
 		name = myName;
 		score = myScore;
 		oppWr = myOppWr;
+	}
+
+	public int getDamageReceived() {
+		return damageReceived;
+	}
+
+	public int getOppDamageReceived() {
+		return oppDamageReceived;
 	}
 
 	public void updatePositionInRankings(ArrayList<Player> players) {
@@ -65,7 +74,6 @@ public class Player implements Comparable<Player> {
 
 	@Override
 	public int compareTo(Player p) {
-
 		if (this.lastDocumentedPosition == 0 && p.lastDocumentedPosition == 0) {
 			if (this.name.compareTo(p.name) < 0) {
 				return -1;
@@ -83,13 +91,13 @@ public class Player implements Comparable<Player> {
 			return -1;
 		} else if (this.oppWr < p.getOppWr()) {
 			return 1;
-		} else if (this.getDamageDealt() > p.getDamageDealt()) {
-			return -1;
-		} else if (this.getDamageDealt() < p.getDamageDealt()) {
-			return 1;
 		} else if (this.getDamageReceived() < p.getDamageReceived()) {
 			return -1;
 		} else if (this.getDamageReceived() > p.getDamageReceived()) {
+			return 1;
+		} else if (this.getOppDamageReceived() < p.getOppDamageReceived()) {
+			return -1;
+		} else if (this.getOppDamageReceived() > p.getOppDamageReceived()) {
 			return 1;
 		}
 		return 0;
@@ -170,38 +178,39 @@ public class Player implements Comparable<Player> {
 		previousRounds.add(played);
 	}
 
-	public void updateParticipantStats(ArrayList<Battle> bs) {
-		recalculateScore();
-		recalculateOppWr();
-		setDamageDealt(totalDamageDealt(bs));
-		setDamageReceived(totalDamageReceived(bs));
-		updateWinPattern();
-	}
-
-	public int totalDamageDealt(ArrayList<Battle> bs) {
-		int total = 0;
+	private void recalculateDamageDealt(ArrayList<Battle> bs) {
+		damageDealt = 0;
 		for (Battle b : bs) {
-			if (b.getP1().equals(this)) {
-				total += b.getP1Damage();
-			}
-			if (b.getP2().equals(this)) {
-				total += b.getP2Damage();
+			if (b.getP1() == this) {
+				damageDealt += b.getP1DamageDealt();
+			} else if (b.getP2() == this) {
+				damageDealt += b.getP2DamageDealt();
 			}
 		}
-		return total;
 	}
 
-	public int totalDamageReceived(ArrayList<Battle> bs) {
-		int total = 0;
+	private void recalculateDamageReceived(ArrayList<Battle> bs) {
+		damageReceived = 0;
 		for (Battle b : bs) {
-			if (b.getP1().equals(this)) {
-				total += b.getP2Damage();
-			}
-			if (b.getP2().equals(this)) {
-				total += b.getP1Damage();
+			if (b.getP1() == this) {
+				damageReceived += b.getP2DamageDealt();
+			} else if (b.getP2() == this) {
+				damageReceived += b.getP1DamageDealt();
 			}
 		}
-		return total;
+	}
+
+	public void recalculateOppDamageReceived(ArrayList<Battle> bs) {
+		oppDamageReceived = 0;
+		for (Player p : previousRounds) {
+			for (Battle b : bs) {
+				if (b.getP1() == p) {
+					oppDamageReceived += b.getP2DamageDealt();
+				} else if (b.getP2() == p) {
+					oppDamageReceived += b.getP1DamageDealt();
+				}
+			}
+		}
 	}
 
 	public String getWinPattern() {
@@ -212,20 +221,11 @@ public class Player implements Comparable<Player> {
 		this.winPattern = winPattern;
 	}
 
-	public int getDamageReceived() {
-		return damageReceived;
+	public void updateParticipantStats(ArrayList<Battle> bs) {
+		recalculateScore();
+		recalculateOppWr();
+		recalculateDamageDealt(bs);
+		recalculateDamageReceived(bs);
+		updateWinPattern();
 	}
-
-	public void setDamageReceived(int damageReceived) {
-		this.damageReceived = damageReceived;
-	}
-
-	public int getDamageDealt() {
-		return damageDealt;
-	}
-
-	public void setDamageDealt(int damageDealt) {
-		this.damageDealt = damageDealt;
-	}
-
 }

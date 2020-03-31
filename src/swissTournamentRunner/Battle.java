@@ -6,19 +6,11 @@ public class Battle implements Comparable<Battle> {
 	Player p2;
 	int tableNumber;
 	public boolean wasSeeded = false;
-	private int p1DealtDamage = 0;
-	private int p2DealtDamage = 0;
-
-	public int getP1Damage() {
-		return getP1DealtDamage();
-	}
-
-	public int getP2Damage() {
-		return getP2DealtDamage();
-	}
+	private int p1DamageDealt = 0;
+	private int p2DamageDealt = 0;
 
 	public String toString() {
-		return p1.getName() + "," + p2.getName() + ";" + getP1DealtDamage() + "," + getP2DealtDamage() + "/";
+		return p1.getName() + "," + p2.getName() + ";" + getP1DamageDealt() + "," + getP2DamageDealt() + "/";
 	}
 
 	public Battle(Player myP1, Player myP2) {
@@ -29,8 +21,8 @@ public class Battle implements Comparable<Battle> {
 	public Battle(Player myP1, Player myP2, int i, int j) {
 		p1 = myP1;
 		p2 = myP2;
-		setP1DealtDamage(i);
-		setP2DealtDamage(j);
+		setP1DamageDealt(i);
+		setP2DamageDealt(j);
 	}
 
 	public Player getP1() {
@@ -107,28 +99,20 @@ public class Battle implements Comparable<Battle> {
 	public boolean contains(String name) {
 		return p1.getName().toLowerCase().contains(name) || p2.getName().toLowerCase().contains(name);
 	}
-
-	public void setP1Damage(int parseInt) {
-		setP1DealtDamage(parseInt);
+	
+	public int getP1DamageDealt() {
+		return p1DamageDealt;
 	}
 
-	public void setP2Damage(int parseInt) {
-		setP2DealtDamage(parseInt);
+	public void setP1DamageDealt(int newP1DamageDealt) {
+		this.p1DamageDealt = newP1DamageDealt;
 	}
 
-	public int getP1DealtDamage() {
-		return p1DealtDamage;
+	public int getP2DamageDealt() {
+		return p2DamageDealt;
 	}
 
-	public void setP1DealtDamage(int p1DealtDamage) {
-		this.p1DealtDamage = p1DealtDamage;
-	}
-
-	public int getP2DealtDamage() {
-		return p2DealtDamage;
-	}
-
-	public void setP2DealtDamage(int p2DealtDamage) {
-		this.p2DealtDamage = p2DealtDamage;
+	public void setP2DamageDealt(int newP2DamageDealt) {
+		this.p2DamageDealt = newP2DamageDealt;
 	}
 }
