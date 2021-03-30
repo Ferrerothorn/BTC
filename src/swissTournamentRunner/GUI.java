@@ -485,11 +485,11 @@ public class GUI implements ActionListener {
 
 					JCheckBox lhsPlayer = new JCheckBox("");
 					lhsPlayer.setSelected(false);
-					JComboBox lhsPlayerDealtDamage = new JComboBox(
-							new String[] { "0", "1", "2", "3", "4", "5", "6", "7", });
+					JTextField lhsPlayerDealtDamageInput = new JTextField(40);
 					JComboBox listOfGames = new JComboBox(games);
-					JComboBox rhsPlayerDealtDamage = new JComboBox(
-							new String[] { "0", "1", "2", "3", "4", "5", "6", "7", });
+					
+					//omg
+					JTextField rhsPlayerDealtDamageInput = new JTextField(40);
 					JCheckBox rhsPlayer = new JCheckBox("");
 					rhsPlayer.setSelected(false);
 
@@ -502,9 +502,9 @@ public class GUI implements ActionListener {
 					reportGameWindow.add(p2Label, "wrap");
 
 					reportGameWindow.add(lhsPlayer);
-					reportGameWindow.add(lhsPlayerDealtDamage);
+					reportGameWindow.add(lhsPlayerDealtDamageInput);
 					reportGameWindow.add(listOfGames, "span 3");
-					reportGameWindow.add(rhsPlayerDealtDamage);
+					reportGameWindow.add(rhsPlayerDealtDamageInput);
 					reportGameWindow.add(rhsPlayer, "wrap");
 					reportGameWindow.add(submitResults, "span");
 
@@ -518,8 +518,18 @@ public class GUI implements ActionListener {
 								String[] combatants = listOfGames.getSelectedItem().toString().split(" vs. ");
 								Battle b = t.findBattleByName(combatants[0]);
 
-								t.currentBattles.remove(b);
-
+								int lhsPlayerDealtDamage = 0;
+								int rhsPlayerDealtDamage = 0;
+								
+								try {
+									lhsPlayerDealtDamage = Integer.parseInt(lhsPlayerDealtDamageInput.getText().toString());
+									rhsPlayerDealtDamage = Integer.parseInt(rhsPlayerDealtDamageInput.getText().toString());
+								}
+								catch(Exception exception){
+									reportGameWindow.dispose();
+								}
+									
+									
 								if (b.getP1().getName().equals("BYE")) {
 									b.getP2().beats(b.getP1());
 									t.completedBattles.add(b);
@@ -539,11 +549,17 @@ public class GUI implements ActionListener {
 								} else {
 									Boolean isDraw = (lhsPlayer.isSelected() == rhsPlayer.isSelected());
 									if (isDraw) {
+										t.currentBattles.remove(b);
 										Utils.handleBattleWinner(b, "0");
+<<<<<<< Updated upstream
 										b.setP1DamageDealt(
 												Integer.parseInt(lhsPlayerDealtDamage.getSelectedItem().toString()));
 										b.setP2DamageDealt(
 												Integer.parseInt(rhsPlayerDealtDamage.getSelectedItem().toString()));
+=======
+										b.setP1DamageDealt(lhsPlayerDealtDamage);
+										b.setP2DamageDealt(rhsPlayerDealtDamage);
+>>>>>>> Stashed changes
 										t.completedBattles.add(b);
 										pairingsBox
 												.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
@@ -552,11 +568,17 @@ public class GUI implements ActionListener {
 										resultsBox.setCaretPosition(0);
 										reportGameWindow.dispose();
 									} else if (lhsPlayer.isSelected()) {
+										t.currentBattles.remove(b);
 										Utils.handleBattleWinner(b, "1");
+<<<<<<< Updated upstream
 										b.setP1DamageDealt(
 												Integer.parseInt(lhsPlayerDealtDamage.getSelectedItem().toString()));
 										b.setP2DamageDealt(
 												Integer.parseInt(rhsPlayerDealtDamage.getSelectedItem().toString()));
+=======
+										b.setP1DamageDealt(lhsPlayerDealtDamage);
+										b.setP2DamageDealt(rhsPlayerDealtDamage);
+>>>>>>> Stashed changes
 										t.completedBattles.add(b);
 										pairingsBox
 												.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
@@ -565,11 +587,17 @@ public class GUI implements ActionListener {
 										resultsBox.setCaretPosition(0);
 										reportGameWindow.dispose();
 									} else if (rhsPlayer.isSelected()) {
+										t.currentBattles.remove(b);
 										Utils.handleBattleWinner(b, "2");
+<<<<<<< Updated upstream
 										b.setP1DamageDealt(
 												Integer.parseInt(lhsPlayerDealtDamage.getSelectedItem().toString()));
 										b.setP2DamageDealt(
 												Integer.parseInt(rhsPlayerDealtDamage.getSelectedItem().toString()));
+=======
+										b.setP1DamageDealt(lhsPlayerDealtDamage);
+										b.setP2DamageDealt(rhsPlayerDealtDamage);
+>>>>>>> Stashed changes
 										t.completedBattles.add(b);
 										pairingsBox
 												.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
@@ -578,13 +606,16 @@ public class GUI implements ActionListener {
 										resultsBox.setCaretPosition(0);
 										reportGameWindow.dispose();
 									}
-								}
+								}}
+								
+					
+								
+								
 								if (t.currentBattles.size() == 0) {
 									t.setUserSelection("k");
 								}
 								t.save();
 							}
-						}
 					});
 
 				}
