@@ -12,6 +12,7 @@ public class Player implements Comparable<Player> {
 	private int damageReceived = 0;
 	private int oppDamageReceived = 0;
 	public int lastDocumentedPosition = 0;
+	public boolean isDropped = false;
 	public ArrayList<Player> previousRounds = new ArrayList<>();
 	ArrayList<Player> victories = new ArrayList<>();
 
@@ -227,5 +228,13 @@ public class Player implements Comparable<Player> {
 		recalculateDamageDealt(bs);
 		recalculateDamageReceived(bs);
 		updateWinPattern();
+	}
+
+	public void setDropped(boolean b) {
+		isDropped = b;
+	}
+
+	public boolean isDropped() {
+		return isDropped;
 	}
 }

@@ -27,7 +27,6 @@ public class PlayerCreator {
 			String input = t.readInput();
 			processPlayerName(input);
 		}
-		t.addBye();
 	}
 
 	public void processPlayerName(String input) throws NumberFormatException {

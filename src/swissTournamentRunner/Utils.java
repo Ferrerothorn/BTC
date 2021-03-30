@@ -111,5 +111,12 @@ public class Utils {
 		}
 		return null;
 	}
+
+	public static String sanitise(String sanitiseThis) {
+		String processedName = sanitiseThis;
+		processedName = processedName.replaceAll("é", "e");
+		processedName = processedName.replaceAll("ê", "e");
+		return processedName;
+	}
 	
 }

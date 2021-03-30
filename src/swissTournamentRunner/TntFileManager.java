@@ -81,7 +81,6 @@ public class TntFileManager {
 				while (!line.contains("VICTORIES")) {
 					t.addBatchFromFile(line);
 					line = br.readLine();
-					t.addBye();
 				}
 				line = br.readLine();
 				while (!line.contains("GAMES")) {
@@ -135,6 +134,9 @@ public class TntFileManager {
 				String[] droppedNames = propertyPair[1].split(",");
 				for (String s : droppedNames) {
 					t.getDroppedPlayers().add(t.findPlayerByName(s));
+				}
+				for (Player p : t.getDroppedPlayers()) {
+					p.setDropped(true);
 				}
 				break;
 			case "correctpredictions":

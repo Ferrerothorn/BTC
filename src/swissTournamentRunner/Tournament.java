@@ -59,7 +59,9 @@ public class Tournament {
 	public void addPlayer(String p1) {
 		if (!doesPlayerExist(p1)) {
 			if (p1.length() > 0) {
-				players.add(new Player(p1));
+				String temp = Utils.sanitise(p1);
+				temp = Utils.trimWhitespace(temp);
+				players.add(new Player(temp));
 			}
 		}
 		while (numberOfRounds < (logBase2(players.size()))) {
@@ -101,7 +103,6 @@ public class Tournament {
 		if (!allParticipantsIn) {
 			postListOfConfirmedSignups();
 		}
-		addBye();
 	}
 
 	public void postListOfConfirmedSignups() {
@@ -168,12 +169,6 @@ public class Tournament {
 		return false;
 	}
 
-	public void addBye() {
-		if (findPlayerByName("BYE") == null && livePlayerCount() % 2 == 1) {
-			addPlayer("BYE");
-		}
-	}
-
 	public void shufflePlayers() {
 		Collections.shuffle(players);
 	}
@@ -185,7 +180,7 @@ public class Tournament {
 		for (Player p : players) {
 			p.recalculateOppDamageReceived(completedBattles);
 		}
-		
+
 		sortRankings();
 		for (Player p : players) {
 			p.updatePositionInRankings(players);
@@ -193,10 +188,18 @@ public class Tournament {
 	}
 
 	public void generatePairings(int attempts) {
+		if (numberOfRounds < logBase2(getLivePlayerCount())) {
+			numberOfRounds++;
+		}
 		if (currentBattles.size() == 0 || activeGamesWereSeeded(currentBattles)) {
-			while (livePlayerCount() > 0 && attempts <= 100) {
+			if (getLivePlayerCount() % 2 == 1) {
+				boolean byeExists = checkByeExists();
+				boolean byeNeeded = checkByeNeeded();
+				facilitateByeAddition(byeExists, byeNeeded);
+			}
+			while (getLivePlayerCount() > 0 && attempts <= 100) {
 				Player p1 = players.remove(0);
-				if (!dropped.contains(p1)) {
+				if (p1.isDropped() == false) {
 					pairThisGuyUp(p1, currentBattles, attempts);
 				} else {
 					players.add(p1);
@@ -220,6 +223,41 @@ public class Tournament {
 				index++;
 			}
 		}
+	}
+
+	private void facilitateByeAddition(boolean byeExists, boolean byeNeeded) {
+		if (byeExists) {
+			Player bye = findPlayerByName("BYE");
+			if (byeNeeded) {
+				if (bye.isDropped() == true) {
+					bye.setDropped(false);
+					dropped.remove(bye);
+				}
+				else {
+					bye.setDropped(true);
+					dropped.add(bye);
+				}
+			} else {
+				bye = findPlayerByName("BYE");
+				bye.setDropped(true);
+				dropped.add(bye);
+			}
+		} else {
+			if (byeNeeded) {
+				players.add(new Player("BYE"));
+			}
+		}
+	}
+
+	private boolean checkByeExists() {
+		if (findPlayerByName("BYE") != null) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean checkByeNeeded() {
+		return ((getLivePlayerCount() % 2) == 1);
 	}
 
 	public String generateInDepthRankings(ArrayList<Player> ps) {
@@ -311,7 +349,7 @@ public class Tournament {
 			while (!opponentFound) {
 				Player temp = players.get(playerIndex);
 				if (!p1.getOpponentsList().contains(temp) && !temp.getOpponentsList().contains(p1)
-						&& !dropped.contains(temp)) {
+						&& temp.isDropped() == false) {
 					temp = players.remove(playerIndex);
 					Battle b = new Battle(p1, temp);
 					targetBattleList.add(b);
@@ -654,10 +692,9 @@ public class Tournament {
 	public void addBatch(String playerList) {
 		String[] names = playerList.split(",");
 		for (String s : names) {
-			addPlayer(Utils.trimWhitespace(s));
+			addPlayer(Utils.sanitise(Utils.trimWhitespace(s)));
 			postListOfConfirmedSignups();
 		}
-		addBye();
 	}
 
 	public void renamePlayer(String playerToRename, String newName) {
@@ -676,7 +713,6 @@ public class Tournament {
 				break;
 			}
 		}
-		addBye();
 	}
 
 	public void alterTopCut(String newSize) throws NumberFormatException {
@@ -974,27 +1010,29 @@ public class Tournament {
 
 	public void dropPlayer(String string) {
 		Player toDrop = findPlayerByName(string);
-		if (toDrop != null && !dropped.contains(toDrop) && currentBattles.size() > 1) {
-			dropped.add(toDrop);
-			if (!players.contains(findPlayerByName("BYE"))) {
-				players.add(new Player("BYE"));
-			} else if (players.contains(findPlayerByName("BYE")) && !dropped.contains(findPlayerByName("BYE"))) {
-				dropped.add(findPlayerByName("BYE"));
-			} else if (!string.equals("BYE") && players.contains(findPlayerByName("BYE"))
-					&& dropped.contains(findPlayerByName("BYE"))) {
-				dropped.remove(findPlayerByName("BYE"));
-			}
-		} else {
-			print("Can't drop this player. You can't drop a player in the last battle, or they may not exist/be dropped already.");
-		}
+		toDrop.setDropped(true);
+		dropped.add(toDrop);
+		/*
+		 * if (toDrop != null && !dropped.contains(toDrop) && currentBattles.size() > 1)
+		 * { dropped.add(toDrop); if (!players.contains(findPlayerByName("BYE"))) {
+		 * players.add(new Player("BYE")); } else if
+		 * (players.contains(findPlayerByName("BYE")) &&
+		 * !dropped.contains(findPlayerByName("BYE"))) {
+		 * dropped.add(findPlayerByName("BYE")); } else if (!string.equals("BYE") &&
+		 * players.contains(findPlayerByName("BYE")) &&
+		 * dropped.contains(findPlayerByName("BYE"))) {
+		 * dropped.remove(findPlayerByName("BYE")); } } else {
+		 * print("Can't drop this player. You can't drop a player in the last battle, or they may not exist/be dropped already."
+		 * ); }
+		 */
 	}
 
-	public int livePlayerCount() {
+	public int getLivePlayerCount() {
 		return players.size() - dropped.size();
 	}
 
 	public void recalculateRounds() {
-		while (numberOfRounds > logBase2(livePlayerCount())) {
+		while (numberOfRounds > logBase2(getLivePlayerCount())) {
 			numberOfRounds--;
 		}
 	}

@@ -115,4 +115,5 @@ public class Battle implements Comparable<Battle> {
 	public void setP2DamageDealt(int newP2DamageDealt) {
 		this.p2DamageDealt = newP2DamageDealt;
 	}
+
 }
