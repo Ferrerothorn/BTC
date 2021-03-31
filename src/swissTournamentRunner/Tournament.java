@@ -24,7 +24,7 @@ public class Tournament {
 	public String elo = "off";
 	boolean allParticipantsIn = false;
 	public static int topCutThreshold = 0;
-	public int numberOfRounds;
+	public int numberOfRounds = 0;
 	public int roundNumber = 1;
 	public GUI gui;
 	public int x_elimination = 99999;
@@ -818,12 +818,20 @@ public class Tournament {
 
 			Collections.sort(players);
 			output += "Congratulations to " + players.get(0).getName() + " on winning this tournament!\n";
-			output += "Props to " + p1.getName() + " for enduring the toughest range of opponents.\n";
-			output += p3.getName()
-					+ " can thank their lucky stars for being generally paired down the most considering their win rate.\n";
-			output += "Commiserations to " + p4.getName() + " for being paired up unusually often.\n";
-			output += "Of the " + predictionsMade + " match result predictions made, " + correctPredictions
-					+ " were correct.\n";
+			if (p1 != null) {
+				output += "Props to " + p1.getName() + " for enduring the toughest range of opponents.\n";
+			}
+			if (p3 != null) {
+				output += p3.getName()
+						+ " can thank their lucky stars for being generally paired down the most considering their win rate.\n";
+			}
+			if (p4 != null) {
+				output += "Commiserations to " + p4.getName() + " for being paired up unusually often.\n";
+			}
+			if (predictionsMade > 0) {
+				output += "Of the " + predictionsMade + " match result predictions made, " + correctPredictions
+						+ " were correct.\n";
+			}
 		} catch (IndexOutOfBoundsException e) {
 			System.out.println("Exception thrown: Tried to access unavailable player.");
 		}
@@ -834,7 +842,7 @@ public class Tournament {
 		Collections.sort(players);
 		Collections.reverse(players);
 		for (Player p : players) {
-			if (p.getOppWr() > 50 && !dropped.contains(p)) {
+			if (p.getOppWr() > 50 && !dropped.contains(p) && !p.isDropped()) {
 				return p;
 			}
 		}
@@ -844,7 +852,7 @@ public class Tournament {
 	private Player fetchBiggestMilker() {
 		Collections.sort(players);
 		for (Player p : players) {
-			if (p.getOppWr() < 50 && !dropped.contains(p) && !p.getName().equals("BYE")) {
+			if (p.getOppWr() < 50 && !dropped.contains(p) && !p.isDropped() && !p.getName().equals("BYE")) {
 				return p;
 			}
 		}
@@ -855,7 +863,7 @@ public class Tournament {
 		int highestOWR = 0;
 		Player hardest = null;
 		for (Player p : players) {
-			if (p.getOppWr() > highestOWR && !p.getName().equals("BYE") && !dropped.contains(p)) {
+			if (p.getOppWr() > highestOWR && !p.getName().equals("BYE") && !p.isDropped()) {
 				hardest = p;
 				highestOWR = p.getOppWr();
 			}
