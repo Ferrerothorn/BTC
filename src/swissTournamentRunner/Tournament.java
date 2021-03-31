@@ -782,8 +782,9 @@ public class Tournament {
 		String results = "";
 		for (Battle b : completedBattles) {
 			if (b.contains(p)) {
-				results += b.getP1().getName() + " " + b.getP1().hasBeaten(b.getP2()) + " [" + b.getP1DamageDealt() + " - "
-						+ b.getP2DamageDealt() + "] " + b.getP2().hasBeaten(b.getP1()) + " " + b.getP2().getName() + "\n";
+				results += b.getP1().getName() + " " + b.getP1().hasBeaten(b.getP2()) + " [" + b.getP1DamageDealt()
+						+ " - " + b.getP2DamageDealt() + "] " + b.getP2().hasBeaten(b.getP1()) + " "
+						+ b.getP2().getName() + "\n";
 			}
 		}
 		return results;
