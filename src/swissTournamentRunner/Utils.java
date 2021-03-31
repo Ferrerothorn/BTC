@@ -114,9 +114,63 @@ public class Utils {
 
 	public static String sanitise(String sanitiseThis) {
 		String processedName = sanitiseThis;
-		processedName = processedName.replaceAll("é", "e");
-		processedName = processedName.replaceAll("ê", "e");
-		return processedName;
+		processedName = processedName.replaceAll("ï¿½", "A");
+		processedName = processedName.replaceAll("ï¿½", "a");
+		processedName = processedName.replaceAll("ï¿½", "A");	
+		processedName = processedName.replaceAll("ï¿½", "a");
+		processedName = processedName.replaceAll("ï¿½", "A");	
+		processedName = processedName.replaceAll("ï¿½", "a");
+		processedName = processedName.replaceAll("ï¿½", "A");
+		processedName = processedName.replaceAll("ï¿½", "a");
+		processedName = processedName.replaceAll("ï¿½", "A");
+		processedName = processedName.replaceAll("ï¿½", "a");
+		processedName = processedName.replaceAll("ï¿½", "C");
+		processedName = processedName.replaceAll("ï¿½", "c");
+		processedName = processedName.replaceAll("ï¿½", "E");
+		processedName = processedName.replaceAll("ï¿½", "e");
+		processedName = processedName.replaceAll("ï¿½", "E");
+		processedName = processedName.replaceAll("ï¿½", "e");
+		processedName = processedName.replaceAll("ï¿½", "E");
+		processedName = processedName.replaceAll("ï¿½", "e");
+		processedName = processedName.replaceAll("ï¿½", "E");
+		processedName = processedName.replaceAll("ï¿½", "e");
+		processedName = processedName.replaceAll("ï¿½", "I");
+		processedName = processedName.replaceAll("ï¿½", "i");
+		processedName = processedName.replaceAll("ï¿½", "I");
+		processedName = processedName.replaceAll("ï¿½", "i");
+		processedName = processedName.replaceAll("ï¿½", "I");
+		processedName = processedName.replaceAll("ï¿½", "i");
+		processedName = processedName.replaceAll("ï¿½", "I");
+		processedName = processedName.replaceAll("ï¿½", "i");
+		processedName = processedName.replaceAll("ï¿½", "N");
+		processedName = processedName.replaceAll("ï¿½", "n");
+		processedName = processedName.replaceAll("ï¿½", "O");
+		processedName = processedName.replaceAll("ï¿½", "o");
+		processedName = processedName.replaceAll("ï¿½", "O");
+		processedName = processedName.replaceAll("ï¿½", "o");
+		processedName = processedName.replaceAll("ï¿½", "O");
+		processedName = processedName.replaceAll("ï¿½", "o");
+		processedName = processedName.replaceAll("ï¿½", "O");
+		processedName = processedName.replaceAll("ï¿½", "o");
+		processedName = processedName.replaceAll("ï¿½", "O");
+		processedName = processedName.replaceAll("ï¿½", "o");
+		processedName = processedName.replaceAll("ï¿½", "S");
+		processedName = processedName.replaceAll("ï¿½", "s");
+		processedName = processedName.replaceAll("ï¿½", "U");
+		processedName = processedName.replaceAll("ï¿½", "u");
+		processedName = processedName.replaceAll("ï¿½", "U");
+		processedName = processedName.replaceAll("ï¿½", "u");
+		processedName = processedName.replaceAll("ï¿½", "U");
+		processedName = processedName.replaceAll("ï¿½", "u");
+		processedName = processedName.replaceAll("ï¿½", "U");
+		processedName = processedName.replaceAll("ï¿½", "u");
+		processedName = processedName.replaceAll("ï¿½", "Y");
+		processedName = processedName.replaceAll("ï¿½", "y");
+		processedName = processedName.replaceAll("ï¿½", "Y");
+		processedName = processedName.replaceAll("ï¿½", "y");
+		processedName = processedName.replaceAll("ï¿½", "Z");
+		processedName = processedName.replaceAll("ï¿½", "z");
+		return trimWhitespace(processedName);
 	}
 	
 }
