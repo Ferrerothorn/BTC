@@ -74,7 +74,6 @@ public class GUI implements ActionListener {
 							t.allParticipantsIn = true;
 							t.setUserSelection("no");
 							seedPanel.dispose();
-//							toolbar.remove(startButton);
 							startButton.setVisible(false);
 							toolbar.repaint();
 						}
@@ -197,8 +196,9 @@ public class GUI implements ActionListener {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							String selected = players.getSelectedItem().toString();
-							t.printHistory(t.findPlayerByName(selected));
-							t.save();
+							pairingsBox.setCaretPosition(0);
+							pairingsBox.setText(t.getResultsOfAllMatchesByPlayerSoFar(t.findPlayerByName(selected)) + "\n");
+							postString(t.getCurrentBattles(t.currentBattles, t.roundString));
 						}
 					});
 				}
