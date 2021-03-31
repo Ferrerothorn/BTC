@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -128,9 +127,7 @@ public class GUI implements ActionListener {
 		randomPlayerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (Tournament.players.size() > 0) {
-					Random r = new Random();
-					int rand = r.nextInt(Tournament.players.size());
-					postString(Tournament.players.get(rand).getName() + " chosen for prize draw.");
+					postString(Utils.getRandomPlayer(tourney).getName() + " chosen for prize draw.");
 				}
 			}
 		});
