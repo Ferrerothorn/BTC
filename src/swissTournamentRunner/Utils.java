@@ -1,6 +1,7 @@
 package swissTournamentRunner;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Utils {
 
@@ -171,6 +172,16 @@ public class Utils {
 		processedName = processedName.replaceAll("Ž", "Z");
 		processedName = processedName.replaceAll("ž", "z");
 		return trimWhitespace(processedName);
+	}
+
+	public static Player getRandomPlayer(Tournament t) {
+		Random r = new Random();
+		int rand = r.nextInt(t.getPlayers().size());
+		Player p = t.getPlayers().get(rand);
+		if (p.isDropped() || p.getName().equals("BYE")) {
+			return getRandomPlayer(t);
+		}
+		return p;
 	}
 	
 }
