@@ -987,9 +987,14 @@ public class Tournament {
 	}
 
 	public void dropPlayer(String string) {
-		Player toDrop = findPlayerByName(string);
-		toDrop.setDropped(true);
-		dropped.add(toDrop);
+		if (getLivePlayerCount() > 2) {
+			Player toDrop = findPlayerByName(string);
+			toDrop.setDropped(true);
+			dropped.add(toDrop);
+			numberOfRounds = (logBase2(getLivePlayerCount()));
+		} else {
+			print("You can't drop a player when there are only 2, or less, remaining players.");
+		}
 	}
 
 	public int getLivePlayerCount() {
