@@ -60,7 +60,7 @@ public class Tournament {
 		if (!doesPlayerExist(p1)) {
 			if (p1.length() > 0) {
 				String temp = Utils.sanitise(p1);
-				temp = Utils.trimWhitespace(temp);
+				temp = Utils.sanitise(temp);
 				players.add(new Player(temp));
 			}
 		}
@@ -232,8 +232,7 @@ public class Tournament {
 				if (bye.isDropped() == true) {
 					bye.setDropped(false);
 					dropped.remove(bye);
-				}
-				else {
+				} else {
 					bye.setDropped(true);
 					dropped.add(bye);
 				}
@@ -692,7 +691,7 @@ public class Tournament {
 	public void addBatch(String playerList) {
 		String[] names = playerList.split(",");
 		for (String s : names) {
-			addPlayer(Utils.sanitise(Utils.trimWhitespace(s)));
+			addPlayer(Utils.sanitise(Utils.sanitise(s)));
 			postListOfConfirmedSignups();
 		}
 	}
@@ -1012,19 +1011,6 @@ public class Tournament {
 		Player toDrop = findPlayerByName(string);
 		toDrop.setDropped(true);
 		dropped.add(toDrop);
-		/*
-		 * if (toDrop != null && !dropped.contains(toDrop) && currentBattles.size() > 1)
-		 * { dropped.add(toDrop); if (!players.contains(findPlayerByName("BYE"))) {
-		 * players.add(new Player("BYE")); } else if
-		 * (players.contains(findPlayerByName("BYE")) &&
-		 * !dropped.contains(findPlayerByName("BYE"))) {
-		 * dropped.add(findPlayerByName("BYE")); } else if (!string.equals("BYE") &&
-		 * players.contains(findPlayerByName("BYE")) &&
-		 * dropped.contains(findPlayerByName("BYE"))) {
-		 * dropped.remove(findPlayerByName("BYE")); } } else {
-		 * print("Can't drop this player. You can't drop a player in the last battle, or they may not exist/be dropped already."
-		 * ); }
-		 */
 	}
 
 	public int getLivePlayerCount() {
@@ -1064,7 +1050,7 @@ public class Tournament {
 	public void addBatchFromFile(String line) {
 		String[] names = line.split(",");
 		for (String s : names) {
-			Player p = new Player(Utils.trimWhitespace(s));
+			Player p = new Player(Utils.sanitise(s));
 			players.add(p);
 			postListOfConfirmedSignups();
 		}
