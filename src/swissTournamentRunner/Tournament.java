@@ -633,24 +633,6 @@ public class Tournament {
 		return "on";
 	}
 
-	void printHistory(Player p) {
-		if (p.getOpponentsList().size() > 0) {
-			for (String s : p.getListOfNamesPlayed()) {
-				String output = p.getName() + " vs. " + s + " (";
-				if (p.getListOfNamesBeaten().contains(s)) {
-					output += p.getName();
-				} else {
-					output += s;
-				}
-				output += " won)";
-				print(output);
-			}
-		} else {
-			print("No games involving " + p.getName() + " have been reported yet.");
-		}
-		GUI.pairingsBox.setCaretPosition(GUI.pairingsBox.getText().length());
-	}
-
 	private void generateRRpairings() {
 		currentBattles.clear();
 		for (Player p : players) {
