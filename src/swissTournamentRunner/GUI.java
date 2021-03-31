@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -74,7 +73,6 @@ public class GUI implements ActionListener {
 							t.allParticipantsIn = true;
 							t.setUserSelection("no");
 							seedPanel.dispose();
-//							toolbar.remove(startButton);
 							startButton.setVisible(false);
 							toolbar.repaint();
 						}
@@ -129,9 +127,7 @@ public class GUI implements ActionListener {
 		randomPlayerButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (Tournament.players.size() > 0) {
-					Random r = new Random();
-					int rand = r.nextInt(Tournament.players.size());
-					postString(Tournament.players.get(rand).getName() + " chosen for prize draw.");
+					postString(Utils.getRandomPlayer(tourney).getName() + " chosen for prize draw.");
 				}
 			}
 		});
@@ -197,8 +193,9 @@ public class GUI implements ActionListener {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							String selected = players.getSelectedItem().toString();
-							t.printHistory(t.findPlayerByName(selected));
-							t.save();
+							pairingsBox.setCaretPosition(0);
+							pairingsBox.setText(t.getResultsOfAllMatchesByPlayerSoFar(t.findPlayerByName(selected)) + "\n");
+							postString(t.getCurrentBattles(t.currentBattles, t.roundString));
 						}
 					});
 				}

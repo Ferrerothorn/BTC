@@ -237,4 +237,28 @@ public class Player implements Comparable<Player> {
 	public boolean isDropped() {
 		return isDropped;
 	}
+
+	public String hasBeaten(Player p2) {
+		if (this.getName().equals("BYE")) {
+			return "(L)";
+		}
+		if (p2.getName().equals("BYE")) {
+			return "(W)";
+		}
+		if (this.getListOfNamesPlayed().contains(p2.getName()) &&
+				p2.getListOfNamesPlayed().contains(this.getName()) &&
+				!this.getListOfNamesBeaten().contains(p2.getName()) &&
+				!p2.getListOfNamesBeaten().contains(this.getName())) {
+			return "(T)";
+		}
+		if (this.getListOfNamesBeaten().contains(p2.getName()) &&
+				!p2.getListOfNamesBeaten().contains(this.getName())) {
+			return "(W)";
+		}
+		if (!this.getListOfNamesBeaten().contains(p2.getName()) &&
+				p2.getListOfNamesBeaten().contains(this.getName())) {
+			return "(L)";
+		}
+		return "(?)";		
+	}
 }
