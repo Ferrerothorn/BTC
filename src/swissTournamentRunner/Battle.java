@@ -99,7 +99,7 @@ public class Battle implements Comparable<Battle> {
 	public boolean contains(String name) {
 		return p1.getName().toLowerCase().contains(name) || p2.getName().toLowerCase().contains(name);
 	}
-	
+
 	public int getP1DamageDealt() {
 		return p1DamageDealt;
 	}
@@ -116,4 +116,17 @@ public class Battle implements Comparable<Battle> {
 		this.p2DamageDealt = newP2DamageDealt;
 	}
 
+	public Player getOtherPlayer(Player p) {
+		if (p.equals(getP1())) {
+			return p2;
+		}
+		return p1;
+	}
+
+	public int getPlayerDamageDealt(Player p) {
+		if (p == p1) {
+			return p.damageDealt;
+		}
+		return p1.damageDealt;
+	}
 }
