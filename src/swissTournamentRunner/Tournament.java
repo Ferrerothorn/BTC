@@ -73,30 +73,7 @@ public class Tournament {
 	}
 
 	public void addLatePlayer(String p1) {
-		if (doesPlayerExist(p1) && dropped.contains(findPlayerByName(p1))) {
-			dropped.remove(findPlayerByName(p1));
-			if (!dropped.contains(findPlayerByName("BYE"))) {
-				dropped.add(findPlayerByName("BYE"));
-			}
-		}
-
-		if (doesPlayerExist("BYE") && !doesPlayerExist(p1)) {
-			players.add(new Player(p1));
-			if (dropped.contains(findPlayerByName("BYE"))) {
-				dropped.remove(findPlayerByName("BYE"));
-			} else {
-				dropPlayer("BYE");
-			}
-			currentBattles.add(new Battle(findPlayerByName(p1), findPlayerByName("BYE")));
-			GUI.pairingsBox.setText(getCurrentBattles(currentBattles, roundString));
-		} else if (!doesPlayerExist(p1)) {
-			if (p1.length() > 0) {
-				players.add(new Player(p1));
-				players.add(new Player("BYE"));
-				currentBattles.add(new Battle(findPlayerByName(p1), findPlayerByName("BYE")));
-				GUI.pairingsBox.setText(getCurrentBattles(currentBattles, roundString));
-			}
-		}
+		players.add(new Player(p1));
 		while (numberOfRounds < (logBase2(players.size()))) {
 			numberOfRounds++;
 		}
