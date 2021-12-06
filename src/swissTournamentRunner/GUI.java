@@ -548,15 +548,10 @@ public class GUI implements ActionListener {
 									if (isDraw) {
 										t.currentBattles.remove(b);
 										Utils.handleBattleWinner(b, "0");
-<<<<<<< Updated upstream
-										b.setP1DamageDealt(
-												Integer.parseInt(lhsPlayerDealtDamage.getSelectedItem().toString()));
-										b.setP2DamageDealt(
-												Integer.parseInt(rhsPlayerDealtDamage.getSelectedItem().toString()));
-=======
 										b.setP1DamageDealt(lhsPlayerDealtDamage);
 										b.setP2DamageDealt(rhsPlayerDealtDamage);
->>>>>>> Stashed changes
+										b.setP1DamageDealt(lhsPlayerDealtDamage);
+										b.setP2DamageDealt(rhsPlayerDealtDamage);
 										t.completedBattles.add(b);
 										pairingsBox
 												.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
@@ -567,15 +562,10 @@ public class GUI implements ActionListener {
 									} else if (lhsPlayer.isSelected()) {
 										t.currentBattles.remove(b);
 										Utils.handleBattleWinner(b, "1");
-<<<<<<< Updated upstream
-										b.setP1DamageDealt(
-												Integer.parseInt(lhsPlayerDealtDamage.getSelectedItem().toString()));
-										b.setP2DamageDealt(
-												Integer.parseInt(rhsPlayerDealtDamage.getSelectedItem().toString()));
-=======
 										b.setP1DamageDealt(lhsPlayerDealtDamage);
 										b.setP2DamageDealt(rhsPlayerDealtDamage);
->>>>>>> Stashed changes
+										b.setP1DamageDealt(lhsPlayerDealtDamage);
+										b.setP2DamageDealt(rhsPlayerDealtDamage);
 										t.completedBattles.add(b);
 										pairingsBox
 												.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
@@ -586,15 +576,10 @@ public class GUI implements ActionListener {
 									} else if (rhsPlayer.isSelected()) {
 										t.currentBattles.remove(b);
 										Utils.handleBattleWinner(b, "2");
-<<<<<<< Updated upstream
-										b.setP1DamageDealt(
-												Integer.parseInt(lhsPlayerDealtDamage.getSelectedItem().toString()));
-										b.setP2DamageDealt(
-												Integer.parseInt(rhsPlayerDealtDamage.getSelectedItem().toString()));
-=======
 										b.setP1DamageDealt(lhsPlayerDealtDamage);
 										b.setP2DamageDealt(rhsPlayerDealtDamage);
->>>>>>> Stashed changes
+										b.setP1DamageDealt(lhsPlayerDealtDamage);
+										b.setP2DamageDealt(rhsPlayerDealtDamage);
 										t.completedBattles.add(b);
 										pairingsBox
 												.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");

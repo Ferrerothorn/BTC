@@ -123,12 +123,12 @@ public class Tournament {
 
 		for (Battle b : battles) {
 			String playerOneString = b.getP1().getName() + " (" + b.getP1().getScore()
-					+ " pts)                          ";
+					+ " pts)";
 			String playerTwoString = b.getP2().getName() + " (" + b.getP2().getScore()
-					+ " pts)                          ";
+					+ " pts)";
 
 			String battleString = Utils.rpad("Table " + b.getTableNumber() + ") ", 11);
-			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 8) + "vs.    ";
+			battleString += Utils.rpad(playerOneString, longestPlayerNameLength + 8) + " vs.    ";
 			battleString += Utils.rpad(playerTwoString + "       ", longestPlayerNameLength + 8);
 			if (getElo().equals("on")) {
 				battleString += "[" + b.getElo(b.getP1()) + "% - " + b.getElo(b.getP2()) + "%]";
@@ -577,11 +577,18 @@ public class Tournament {
 		case "acr":
 			while (currentBattles.size() > 0) {
 				Battle b = currentBattles.remove(0);
-				Random r = new Random();
-				int win = r.nextInt(2);
-				win++;
-				Utils.handleBattleWinner(b, Integer.toString(win));
-			}
+				if (b.getP1().getName().equals("BYE")){
+					Utils.handleBattleWinner(b, Integer.toString(2));
+				}
+				else if (b.getP2().getName().equals("BYE")){
+					Utils.handleBattleWinner(b, Integer.toString(1));
+				}
+				else {
+					Random r = new Random();
+					int win = r.nextInt(2);
+					win++;
+					Utils.handleBattleWinner(b, Integer.toString(win));
+				}}
 			updateParticipantStats();
 			sortRankings();
 			GUI.postResultsString(generateInDepthRankings(players));

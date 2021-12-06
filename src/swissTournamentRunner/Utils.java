@@ -11,8 +11,8 @@ public class Utils {
 		}
 	}
 
-	public static void handleBattleWinner(Battle b, String winner) {
-		switch (winner) {
+	public static void handleBattleWinner(Battle b, String whichPlayerWon) {
+		switch (whichPlayerWon) {
 		case "1":
 			b.getP1().beats(b.getP2());
 			b = null;
