@@ -17,6 +17,6 @@ public class RunTourney {
 
 	private static void showCredits() {
 		GUI.postString("Welcome to FFTCG BTC, the Final Fantasy TCG Swiss Tournament Bracket Organiser!");
-		GUI.postString("(Spring 2021 Edition - Made by Steve Dolman)");
+		GUI.postString("(Summer 2022 Edition - Made by Steve Dolman)");
 	}
 }

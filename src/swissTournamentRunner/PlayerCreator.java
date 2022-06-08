@@ -2,7 +2,7 @@ package swissTournamentRunner;
 
 public class PlayerCreator {
 
-	private Tournament t;
+	private final Tournament t;
 
 	public PlayerCreator(Tournament tourney) {
 		t = tourney;

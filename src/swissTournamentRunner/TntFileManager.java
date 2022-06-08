@@ -46,13 +46,13 @@ public class TntFileManager {
 			output += "predictionsMade:" + t.getPredictionsMade() + "\n";
 			output += "correctPredictions:" + t.getCorrectPredictions() + "\n";
 			output += "damageDealtAndTaken:" + t.listAllDamageInCompletedGames() + "\n";
-			String s = "";
+			StringBuilder s = new StringBuilder();
 			for (Player p : t.getDroppedPlayers()) {
-				s += p.getName();
-				s += ",";
+				s.append(p.getName());
+				s.append(",");
 			}
 			if (s.length() > 0) {
-				s = s.substring(0, s.length() - 1);
+				s = new StringBuilder(s.substring(0, s.length() - 1));
 			}
 			output += "Dropped:" + s + "\n";
 			try {
@@ -182,7 +182,7 @@ public class TntFileManager {
 
 			String hasBeaten = information[1];
 			hasBeaten = hasBeaten.replaceAll("\\[", "");
-			hasBeaten = hasBeaten.replaceAll("\\]", "");
+			hasBeaten = hasBeaten.replaceAll("]", "");
 			String[] playersBeaten = hasBeaten.split(",");
 			for (String s : playersBeaten) {
 				if (s.length() > 0) {
@@ -192,7 +192,7 @@ public class TntFileManager {
 
 			String hasPlayed = information[2];
 			hasPlayed = hasPlayed.replaceAll("\\[", "");
-			hasPlayed = hasPlayed.replaceAll("\\]", "");
+			hasPlayed = hasPlayed.replaceAll("]", "");
 			String[] playersPlayed = hasPlayed.split(",");
 			for (String s : playersPlayed) {
 				if (s.length() > 0) {

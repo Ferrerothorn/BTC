@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -38,7 +39,6 @@ public class GUI implements ActionListener {
 		tourney = t;
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setLayout(new MigLayout("wrap ", "[grow,fill]"));
-
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		frame.setSize(screenSize.width, screenSize.height);
@@ -46,609 +46,524 @@ public class GUI implements ActionListener {
 		toolbar = new JToolBar("Admin Tools");
 
 		startButton = new JButton("START");
-		startButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() == 0) {
-					JFrame seedPanel = new JFrame("Start Tournament?");
-					seedPanel.setSize(300, 130);
-					seedPanel.setLayout(new MigLayout("", "[grow,fill]"));
-					seedPanel.addWindowListener(new WindowAdapter() {
-						@Override
-						public void windowClosing(WindowEvent e) {
-							t.postListOfConfirmedSignups();
-						}
-					});
-					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.getPlayers()) {
-						playerNames.add(p.getName());
+		startButton.addActionListener(e -> {
+			if (t.currentBattles.size() == 0) {
+				JFrame seedPanel = new JFrame("Start Tournament?");
+				seedPanel.setSize(300, 130);
+				seedPanel.setLayout(new MigLayout("", "[grow,fill]"));
+				seedPanel.addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosing(WindowEvent e) {
+						t.postListOfConfirmedSignups();
 					}
-					Collections.sort(playerNames);
-					JButton start = new JButton("Start Tournament");
-					seedPanel.add(start);
-					seedPanel.setVisible(true);
+				});
+				JButton start = new JButton("Start Tournament");
+				seedPanel.add(start);
+				seedPanel.setVisible(true);
 
-					start.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent arg0) {
-							t.allParticipantsIn = true;
-							t.setUserSelection("no");
-							seedPanel.dispose();
-							startButton.setVisible(false);
-							toolbar.repaint();
-						}
-					});
-				}
+				start.addActionListener(arg0 -> {
+					t.allParticipantsIn = true;
+					t.setUserSelection("no");
+					seedPanel.dispose();
+					startButton.setVisible(false);
+					toolbar.repaint();
+				});
 			}
 		});
 		toolbar.add(startButton);
 		
 		JButton addRoundButton = new JButton("Edit # of Rounds");
-		addRoundButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame addRoundBox = new JFrame("New Round Number");
-					addRoundBox.setSize(500, 100);
-					addRoundBox.setLayout(new GridLayout());
-					JTextField input = new JTextField("Enter new round number here.");
-					JButton addRoundButton = new JButton("Submit");
-					addRoundBox.add(input);
-					addRoundBox.add(addRoundButton);
-					addRoundBox.setVisible(true);
-					addRoundButton.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String newMax = input.getText();
-							t.alterRoundNumbers(newMax);
-							t.save();
-							addRoundBox.dispose();
-						}
-					});
-				}
+		addRoundButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				JFrame addRoundBox = new JFrame("New Round Number");
+				addRoundBox.setSize(500, 100);
+				addRoundBox.setLayout(new GridLayout());
+				JTextField input = new JTextField("Enter new round number here.");
+				JButton addRoundButton1 = new JButton("Submit");
+				addRoundBox.add(input);
+				addRoundBox.add(addRoundButton1);
+				addRoundBox.setVisible(true);
+				addRoundButton1.addActionListener(e1 -> {
+					String newMax = input.getText();
+					t.alterRoundNumbers(newMax);
+					t.save();
+					addRoundBox.dispose();
+				});
 			}
 		});
 		toolbar.add(addRoundButton);
 
 		JButton eloButton = new JButton("ELO");
-		eloButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					t.elo = t.toggle(t.elo);
-					pairingsBox.setCaretPosition(0);
-					pairingsBox.setText("ELO switched " + t.elo + ".\n");
+		eloButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				t.elo = t.toggle(t.elo);
+				pairingsBox.setCaretPosition(0);
+				pairingsBox.setText("ELO switched " + t.elo + ".\n");
 
-					postString(t.getCurrentBattles(t.currentBattles, t.roundString));
-					t.save();
-				}
+				postString(t.getCurrentBattles(t.currentBattles, t.roundString));
+				t.save();
 			}
 		});
 		toolbar.add(eloButton);
 
 		JButton randomPlayerButton = new JButton("Random Player");
-		randomPlayerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (Tournament.players.size() > 0) {
-					postString(Utils.getRandomPlayer(tourney).getName() + " chosen for prize draw.");
-				}
+		randomPlayerButton.addActionListener(e -> {
+			if (Tournament.players.size() > 0) {
+				postString(Utils.getRandomPlayer(tourney).getName() + " chosen for prize draw.");
 			}
 		});
 		toolbar.add(randomPlayerButton);
 
 		JButton topCutButton = new JButton("Top Cut");
-		topCutButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame topCutBox = new JFrame("New Top Cut Size");
-					topCutBox.setSize(500, 100);
-					topCutBox.setLayout(new GridLayout());
-					JTextField input = new JTextField("Enter desired Top Cut size here.");
-					JButton submitButton = new JButton("Submit");
-					topCutBox.add(input);
-					topCutBox.add(submitButton);
-					topCutBox.setVisible(true);
-					submitButton.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String newTCsize = input.getText();
-							t.alterTopCut(newTCsize);
-							t.save();
-							topCutBox.dispose();
-						}
-					});
-				}
+		topCutButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				JFrame topCutBox = new JFrame("New Top Cut Size");
+				topCutBox.setSize(500, 100);
+				topCutBox.setLayout(new GridLayout());
+				JTextField input = new JTextField("Enter desired Top Cut size here.");
+				JButton submitButton = new JButton("Submit");
+				topCutBox.add(input);
+				topCutBox.add(submitButton);
+				topCutBox.setVisible(true);
+				submitButton.addActionListener(e12 -> {
+					String newTopCutSize = input.getText();
+					t.alterTopCut(newTopCutSize);
+					t.save();
+					topCutBox.dispose();
+				});
 			}
 		});
 		toolbar.add(topCutButton);
 
 		JButton matches = new JButton("All Matches");
-		matches.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					pairingsBox.setCaretPosition(0);
-					pairingsBox.setText(t.getResultsOfAllMatchesSoFar() + "\n");
-					postString(t.getCurrentBattles(t.currentBattles, t.roundString));
-				}
+		matches.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				pairingsBox.setCaretPosition(0);
+				pairingsBox.setText(t.getResultsOfAllMatchesSoFar() + "\n");
+				postString(t.getCurrentBattles(t.currentBattles, t.roundString));
 			}
 		});
 		toolbar.add(matches);
 
 		JButton matchesOfButton = new JButton("One Player's Matches");
-		matchesOfButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame matchesOfButtonFrame = new JFrame("Show results for specified player's reported matches");
-					matchesOfButtonFrame.setSize(550, 150);
-					matchesOfButtonFrame.setLayout(new MigLayout("", "[grow,fill]"));
-					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.getPlayers()) {
-						playerNames.add(p.getName());
-					}
-					Collections.sort(playerNames);
-					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					JComboBox players = new JComboBox(ps);
-					JButton submitGetMatches = new JButton("Submit");
-					matchesOfButtonFrame.add(players, "span 3,wrap");
-					matchesOfButtonFrame.add(submitGetMatches);
-					matchesOfButtonFrame.setVisible(true);
-					submitGetMatches.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String selected = players.getSelectedItem().toString();
-							pairingsBox.setCaretPosition(0);
-							pairingsBox.setText(t.getResultsOfAllMatchesByPlayerSoFar(t.findPlayerByName(selected)) + "\n");
-							postString(t.getCurrentBattles(t.currentBattles, t.roundString));
-						}
-					});
+		matchesOfButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				JFrame matchesOfButtonFrame = new JFrame("Show results for specified player's reported matches");
+				matchesOfButtonFrame.setSize(550, 150);
+				matchesOfButtonFrame.setLayout(new MigLayout("", "[grow,fill]"));
+				ArrayList<String> playerNames = new ArrayList<>();
+				for (Player p : t.getPlayers()) {
+					playerNames.add(p.getName());
 				}
+				Collections.sort(playerNames);
+				String[] ps = playerNames.toArray(new String[0]);
+				JComboBox<String> players = new JComboBox<>(ps);
+				JButton submitGetMatches = new JButton("Submit");
+				matchesOfButtonFrame.add(players, "span 3,wrap");
+				matchesOfButtonFrame.add(submitGetMatches);
+				matchesOfButtonFrame.setVisible(true);
+				submitGetMatches.addActionListener(e18 -> {
+					String selected = Objects.requireNonNull(players.getSelectedItem()).toString();
+					pairingsBox.setCaretPosition(0);
+					pairingsBox.setText(t.getResultsOfAllMatchesByPlayerSoFar(t.findPlayerByName(selected)) + "\n");
+					postString(t.getCurrentBattles(t.currentBattles, t.roundString));
+				});
 			}
 		});
 		toolbar.add(matchesOfButton);
 
 		JButton addPlayersButton = new JButton("Add Players");
-		addPlayersButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame addPlayersBox = new JFrame("Add Player(s)");
-					addPlayersBox.setSize(700, 150);
-					addPlayersBox.setLayout(new GridLayout());
-					JTextField input = new JTextField("Enter new player's name here.");
-					JButton submitButton = new JButton("Submit");
-					addPlayersBox.add(input);
-					addPlayersBox.add(submitButton);
-					addPlayersBox.setVisible(true);
-					submitButton.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String newPlayer = input.getText();
-							t.addLatePlayer(newPlayer);
-							t.save();
-							addPlayersBox.dispose();
-						}
-					});
-				}
+		addPlayersButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				JFrame addPlayersBox = new JFrame("Add Player(s)");
+				addPlayersBox.setSize(700, 150);
+				addPlayersBox.setLayout(new GridLayout());
+				JTextField input = new JTextField("Enter new player's name here.");
+				JButton submitButton = new JButton("Submit");
+				addPlayersBox.add(input);
+				addPlayersBox.add(submitButton);
+				addPlayersBox.setVisible(true);
+				submitButton.addActionListener(e13 -> {
+					String newPlayer = input.getText();
+					t.addLatePlayer(newPlayer);
+					t.save();
+					addPlayersBox.dispose();
+				});
 			}
 		});
 		toolbar.add(addPlayersButton);
 
 		JButton dropPlayersButton = new JButton("Drop Player");
-		dropPlayersButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame dropPlayersBox = new JFrame("Drop Player");
-					dropPlayersBox.setSize(450, 130);
-					dropPlayersBox.setLayout(new GridLayout());
-					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.getPlayers()) {
-						if (!t.getDroppedPlayers().contains(p)) {
-							playerNames.add(p.getName());
-						}
+		dropPlayersButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				JFrame dropPlayersBox = new JFrame("Drop Player");
+				dropPlayersBox.setSize(450, 130);
+				dropPlayersBox.setLayout(new GridLayout());
+				ArrayList<String> playerNames = new ArrayList<>();
+				for (Player p : t.getPlayers()) {
+					if (!t.getDroppedPlayers().contains(p)) {
+						playerNames.add(p.getName());
 					}
-					Collections.sort(playerNames);
-					playerNames.remove("BYE");
-					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					JComboBox input = new JComboBox(ps);
-					JButton dropSubmitButton = new JButton("Submit");
-					dropPlayersBox.add(input);
-					dropPlayersBox.add(dropSubmitButton);
-					dropPlayersBox.setVisible(true);
-					dropSubmitButton.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String dropPlayer = input.getSelectedItem().toString();
-							tourney.dropPlayer(dropPlayer);
-							t.save();
-							dropPlayersBox.dispose();
-							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-						}
-					});
 				}
+				Collections.sort(playerNames);
+				playerNames.remove("BYE");
+				String[] ps = playerNames.toArray(new String[0]);
+				JComboBox<String> input = new JComboBox<>(ps);
+				JButton dropSubmitButton = new JButton("Submit");
+				dropPlayersBox.add(input);
+				dropPlayersBox.add(dropSubmitButton);
+				dropPlayersBox.setVisible(true);
+				dropSubmitButton.addActionListener(e14 -> {
+					String dropPlayer = Objects.requireNonNull(input.getSelectedItem()).toString();
+					tourney.dropPlayer(dropPlayer);
+					t.save();
+					dropPlayersBox.dispose();
+					pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+				});
 			}
 		});
 		toolbar.add(dropPlayersButton);
 
 		JButton editNameButton = new JButton("Edit Name");
-		editNameButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame nameEditor = new JFrame("Edit Name");
-					nameEditor.setSize(400, 100);
-					nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
-					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.getPlayers()) {
-						playerNames.add(p.getName());
-					}
-					playerNames.remove("BYE");
-					Collections.sort(playerNames);
-					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					JComboBox players = new JComboBox(ps);
-					JTextField editedName = new JTextField("Enter new name here.");
-					JButton submitEditName = new JButton("Submit");
-					players.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							editedName.setText(players.getSelectedItem().toString());
-						}
-					});
-					nameEditor.add(players, "span 3,wrap");
-					nameEditor.add(editedName, "span 2");
-					nameEditor.add(submitEditName);
-					nameEditor.setVisible(true);
-					submitEditName.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String oldName = players.getSelectedItem().toString();
-							String newName = editedName.getText();
-							t.renamePlayer(oldName, newName);
-							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-							resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
-							t.save();
-							nameEditor.dispose();
-						}
-					});
+		editNameButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				JFrame nameEditor = new JFrame("Edit Name");
+				nameEditor.setSize(400, 100);
+				nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
+				ArrayList<String> playerNames = new ArrayList<>();
+				for (Player p : t.getPlayers()) {
+					playerNames.add(p.getName());
 				}
+				playerNames.remove("BYE");
+				Collections.sort(playerNames);
+				String[] ps = playerNames.toArray(new String[0]);
+				JComboBox<String> players = new JComboBox<>(ps);
+				JTextField editedName = new JTextField("Enter new name here.");
+				JButton submitEditName = new JButton("Submit");
+				players.addActionListener(e15 -> editedName.setText(Objects.requireNonNull(players.getSelectedItem()).toString()));
+				nameEditor.add(players, "span 3,wrap");
+				nameEditor.add(editedName, "span 2");
+				nameEditor.add(submitEditName);
+				nameEditor.setVisible(true);
+				submitEditName.addActionListener(e16 -> {
+					String oldName = Objects.requireNonNull(players.getSelectedItem()).toString();
+					String newName = editedName.getText();
+					t.renamePlayer(oldName, newName);
+					pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+					resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+					t.save();
+					nameEditor.dispose();
+				});
 			}
 		});
 		toolbar.add(editNameButton);
 
 		JButton reopenGameButton = new JButton("Reopen Game");
-		reopenGameButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame reopenGameEditor = new JFrame("Reopen Game");
-					reopenGameEditor.setSize(400, 100);
-					reopenGameEditor.setLayout(new MigLayout("", "[grow,fill]"));
-					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Battle b : t.completedBattles) {
-						playerNames.add(b.getP1().getName() + " vs. " + b.getP2().getName());
-					}
-					Collections.sort(playerNames);
-					String[] games = playerNames.toArray(new String[playerNames.size()]);
-					JComboBox listOfGames = new JComboBox(games);
-					JButton submitEditName = new JButton("Submit");
-					reopenGameEditor.add(listOfGames, "span 4");
-					reopenGameEditor.add(submitEditName);
-					reopenGameEditor.setVisible(true);
-					submitEditName.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String s = listOfGames.getSelectedItem().toString();
-							String[] combatants = s.split(" vs. ");
-							Player p1 = t.findPlayerByName(combatants[0]);
-							Player p2 = t.findPlayerByName(combatants[1]);
-
-							for (Battle b : t.completedBattles) {
-								if (b.getP1().getName().equals(combatants[0])
-										&& b.getP2().getName().equals(combatants[1])) {
-									b.setP1DamageDealt(0);
-									b.setP2DamageDealt(0);
-									t.reopenBattle(p1, p2);
-									t.completedBattles.remove(b);
-									t.updateParticipantStats();
-									pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-									resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
-									postString("Game between " + p1.getName() + " and " + p2.getName() + " reopened.");
-									t.save();
-									reopenGameEditor.dispose();
-									break;
-								}
-							}
-						}
-					});
+		reopenGameButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				JFrame reopenGameEditor = new JFrame("Reopen Game");
+				reopenGameEditor.setSize(400, 100);
+				reopenGameEditor.setLayout(new MigLayout("", "[grow,fill]"));
+				ArrayList<String> playerNames = new ArrayList<>();
+				for (Battle b : t.completedBattles) {
+					playerNames.add(b.getP1().getName() + " vs. " + b.getP2().getName());
 				}
+				Collections.sort(playerNames);
+				String[] games = playerNames.toArray(new String[0]);
+				JComboBox<String> listOfGames = new JComboBox<>(games);
+				JButton submitEditName = new JButton("Submit");
+				reopenGameEditor.add(listOfGames, "span 4");
+				reopenGameEditor.add(submitEditName);
+				reopenGameEditor.setVisible(true);
+				submitEditName.addActionListener(e19 -> {
+					String s = Objects.requireNonNull(listOfGames.getSelectedItem()).toString();
+					String[] combatants = s.split(" vs. ");
+					Player p1 = t.findPlayerByName(combatants[0]);
+					Player p2 = t.findPlayerByName(combatants[1]);
+
+					for (Battle b : t.completedBattles) {
+						if (b.getP1().getName().equals(combatants[0])
+								&& b.getP2().getName().equals(combatants[1])) {
+							b.setP1DamageDealt(0);
+							b.setP2DamageDealt(0);
+							t.reopenBattle(p1, p2);
+							t.completedBattles.remove(b);
+							t.updateParticipantStats();
+							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+							resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+							postString("Game between " + p1.getName() + " and " + p2.getName() + " reopened.");
+							t.save();
+							reopenGameEditor.dispose();
+							break;
+						}
+					}
+				});
 			}
 		});
 		toolbar.add(reopenGameButton);
 
 		JButton seedPairingButton = new JButton("Edit Pairings");
-		seedPairingButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame seedEditor = new JFrame("Choose two players to 'swap seats'");
-					seedEditor.setSize(800, 100);
-					seedEditor.setLayout(new MigLayout("", "[grow,fill]"));
-					ArrayList<String> ongoingMatchNames = new ArrayList<String>();
-					for (Battle b : t.currentBattles) {
-						ongoingMatchNames.add(b.getP1().getName() + " vs. " + b.getP2().getName());
-					}
-					Collections.sort(ongoingMatchNames);
-					JButton submitSeed = new JButton("Submit");
-
-					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Battle b : t.currentBattles) {
-						playerNames.add(b.getP1().getName());
-						playerNames.add(b.getP2().getName());
-					}
-					Collections.sort(playerNames);
-
-					String[] ps = playerNames.toArray(new String[playerNames.size()]);
-					JComboBox player1 = new JComboBox(ps);
-					JComboBox player2 = new JComboBox(ps);
-					seedEditor.add(player1, "span 2");
-					seedEditor.add(player2, "span 2");
-					seedEditor.add(submitSeed, "span 1");
-					seedEditor.setVisible(true);
-
-					submitSeed.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							String p1name = player1.getSelectedItem().toString();
-							String p2name = player2.getSelectedItem().toString();
-
-							Player p1 = t.findPlayerByName(p1name);
-							Player p2 = t.findPlayerByName(p2name);
-
-							Battle p1Battle = t.findBattleByName(p1name);
-							Battle p2Battle = t.findBattleByName(p2name);
-
-							if (p1Battle.getP1().equals(p1)) {
-								if (p2Battle.getP1().equals(p2)) {
-									Player temp = p1;
-									p1Battle.setPlayer("1", p2);
-									p2Battle.setPlayer("1", temp);
-								} else {
-									Player temp = p1;
-									p1Battle.setPlayer("1", p2);
-									p2Battle.setPlayer("2", temp);
-								}
-							}
-							if (p1Battle.getP2().equals(p1)) {
-								if (p2Battle.getP1().equals(p2)) {
-									Player temp = p1;
-									p1Battle.setPlayer("2", p2);
-									p2Battle.setPlayer("1", temp);
-								} else {
-									Player temp = p1;
-									p1Battle.setPlayer("2", p2);
-									p2Battle.setPlayer("2", temp);
-								}
-							}
-							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-							resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
-							t.save();
-						}
-					});
+		seedPairingButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				JFrame seedEditor = new JFrame("Choose two players to 'swap seats'");
+				seedEditor.setSize(800, 100);
+				seedEditor.setLayout(new MigLayout("", "[grow,fill]"));
+				ArrayList<String> ongoingMatchNames = new ArrayList<>();
+				for (Battle b : t.currentBattles) {
+					ongoingMatchNames.add(b.getP1().getName() + " vs. " + b.getP2().getName());
 				}
+				Collections.sort(ongoingMatchNames);
+				JButton submitSeed = new JButton("Submit");
+
+				ArrayList<String> playerNames = new ArrayList<>();
+				for (Battle b : t.currentBattles) {
+					playerNames.add(b.getP1().getName());
+					playerNames.add(b.getP2().getName());
+				}
+				Collections.sort(playerNames);
+
+				String[] ps = playerNames.toArray(new String[0]);
+				JComboBox<String> player1 = new JComboBox<>(ps);
+				JComboBox<String> player2 = new JComboBox<>(ps);
+				seedEditor.add(player1, "span 2");
+				seedEditor.add(player2, "span 2");
+				seedEditor.add(submitSeed, "span 1");
+				seedEditor.setVisible(true);
+
+				submitSeed.addActionListener(e110 -> {
+					String p1name = Objects.requireNonNull(player1.getSelectedItem()).toString();
+					String p2name = Objects.requireNonNull(player2.getSelectedItem()).toString();
+
+					Player p1 = t.findPlayerByName(p1name);
+					Player p2 = t.findPlayerByName(p2name);
+
+					Battle p1Battle = t.findBattleByName(p1name);
+					Battle p2Battle = t.findBattleByName(p2name);
+
+					if (p1Battle.getP1().equals(p1)) {
+						if (p2Battle.getP1().equals(p2)) {
+							p1Battle.setPlayer("1", p2);
+							p2Battle.setPlayer("1", p1);
+						} else {
+							p1Battle.setPlayer("1", p2);
+							p2Battle.setPlayer("2", p1);
+						}
+					}
+					if (p1Battle.getP2().equals(p1)) {
+						if (p2Battle.getP1().equals(p2)) {
+							p1Battle.setPlayer("2", p2);
+							p2Battle.setPlayer("1", p1);
+						} else {
+							p1Battle.setPlayer("2", p2);
+							p2Battle.setPlayer("2", p1);
+						}
+					}
+					pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+					resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+					t.save();
+				});
 			}
 		});
 		toolbar.add(seedPairingButton);
 
 		JButton findInRankings = new JButton("Find Ranking");
-		findInRankings.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFrame nameEditor = new JFrame("Find Position In Rankings");
-				nameEditor.setSize(400, 115);
-				nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
-				ArrayList<String> playerNames = new ArrayList<String>();
-				for (Player p : t.getPlayers()) {
-					playerNames.add(p.getName());
-				}
-				Collections.sort(playerNames);
-				String[] ps = playerNames.toArray(new String[playerNames.size()]);
-				JComboBox players = new JComboBox(ps);
-				JButton submitEditName = new JButton("Submit");
-				nameEditor.add(players, "span 2, wrap");
-				nameEditor.add(submitEditName);
-				nameEditor.setVisible(true);
-				submitEditName.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						Player p1 = t.findPlayerByName(players.getSelectedItem().toString());
-						t.print(p1.getName() + " is currently #" + p1.getPositionInRankings() + " in the rankings.\n");
-						t.save();
-					}
-				});
+		findInRankings.addActionListener(e -> {
+			JFrame nameEditor = new JFrame("Find Position In Rankings");
+			nameEditor.setSize(400, 115);
+			nameEditor.setLayout(new MigLayout("", "[grow,fill]"));
+			ArrayList<String> playerNames = new ArrayList<>();
+			for (Player p : t.getPlayers()) {
+				playerNames.add(p.getName());
 			}
+			Collections.sort(playerNames);
+			String[] ps = playerNames.toArray(new String[0]);
+			JComboBox<String> players = new JComboBox<>(ps);
+			JButton submitEditName = new JButton("Submit");
+			nameEditor.add(players, "span 2, wrap");
+			nameEditor.add(submitEditName);
+			nameEditor.setVisible(true);
+			submitEditName.addActionListener(e17 -> {
+				Player p1 = t.findPlayerByName(Objects.requireNonNull(players.getSelectedItem()).toString());
+				t.print(p1.getName() + " is currently #" + p1.getPositionInRankings() + " in the rankings.\n");
+				t.save();
+			});
 		});
 		toolbar.add(findInRankings);
 
 		JButton reportGameButton = new JButton("Report Win");
-		reportGameButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
+		reportGameButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
 
-					JFrame reportGameWindow = new JFrame("Report Win (tick box next to winner)");
-					reportGameWindow.setSize(560, 130);
-					reportGameWindow.setLayout(new MigLayout("", "[grow,fill]"));
+				JFrame reportGameWindow = new JFrame("Report Win (tick box next to winner)");
+				reportGameWindow.setSize(560, 130);
+				reportGameWindow.setLayout(new MigLayout("", "[grow,fill]"));
 
-					ArrayList<String> currentBattles = new ArrayList<String>();
-					for (Battle b : t.currentBattles) {
-						currentBattles.add(b.getP1().getName() + " vs. " + b.getP2().getName());
-					}
-					String[] games = currentBattles.toArray(new String[currentBattles.size()]);
+				ArrayList<String> currentBattles = new ArrayList<>();
+				for (Battle b : t.currentBattles) {
+					currentBattles.add(b.getP1().getName() + " vs. " + b.getP2().getName());
+				}
+				String[] games = currentBattles.toArray(new String[0]);
 
-					JLabel p1Label = new JLabel("Winner?");
-					JLabel p1Dam = new JLabel("Dam. dealt");
-					JLabel blank = new JLabel("Game to report");
-					JLabel p2Dam = new JLabel("Dam. dealt");
-					JLabel p2Label = new JLabel("Winner?");
+				JLabel p1Label = new JLabel("Winner?");
+				JLabel p1Dam = new JLabel("Dam. dealt");
+				JLabel blank = new JLabel("Game to report");
+				JLabel p2Dam = new JLabel("Dam. dealt");
+				JLabel p2Label = new JLabel("Winner?");
 
-					JCheckBox lhsPlayer = new JCheckBox("");
-					lhsPlayer.setSelected(false);
-					JTextField lhsPlayerDealtDamageInput = new JTextField(40);
-					JComboBox listOfGames = new JComboBox(games);
-					
-					//omg
-					JTextField rhsPlayerDealtDamageInput = new JTextField(40);
-					JCheckBox rhsPlayer = new JCheckBox("");
-					rhsPlayer.setSelected(false);
+				JCheckBox lhsPlayer = new JCheckBox("");
+				lhsPlayer.setSelected(false);
+				JTextField lhsPlayerDealtDamageInput = new JTextField(40);
+				JComboBox<String> listOfGames = new JComboBox<>(games);
 
-					JButton submitResults = new JButton("Submit");
+				//omg
+				JTextField rhsPlayerDealtDamageInput = new JTextField(40);
+				JCheckBox rhsPlayer = new JCheckBox("");
+				rhsPlayer.setSelected(false);
 
-					reportGameWindow.add(p1Label);
-					reportGameWindow.add(p1Dam);
-					reportGameWindow.add(blank, "span 3");
-					reportGameWindow.add(p2Dam);
-					reportGameWindow.add(p2Label, "wrap");
+				JButton submitResults = new JButton("Submit");
 
-					reportGameWindow.add(lhsPlayer);
-					reportGameWindow.add(lhsPlayerDealtDamageInput);
-					reportGameWindow.add(listOfGames, "span 3");
-					reportGameWindow.add(rhsPlayerDealtDamageInput);
-					reportGameWindow.add(rhsPlayer, "wrap");
-					reportGameWindow.add(submitResults, "span");
+				reportGameWindow.add(p1Label);
+				reportGameWindow.add(p1Dam);
+				reportGameWindow.add(blank, "span 3");
+				reportGameWindow.add(p2Dam);
+				reportGameWindow.add(p2Label, "wrap");
 
-					reportGameWindow.setVisible(true);
+				reportGameWindow.add(lhsPlayer);
+				reportGameWindow.add(lhsPlayerDealtDamageInput);
+				reportGameWindow.add(listOfGames, "span 3");
+				reportGameWindow.add(rhsPlayerDealtDamageInput);
+				reportGameWindow.add(rhsPlayer, "wrap");
+				reportGameWindow.add(submitResults, "span");
 
-					submitResults.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							if (lhsPlayer.isSelected() || rhsPlayer.isSelected()) {
+				reportGameWindow.setVisible(true);
 
-								String[] combatants = listOfGames.getSelectedItem().toString().split(" vs. ");
-								Battle b = t.findBattleByName(combatants[0]);
+				submitResults.addActionListener(e111 -> {
+					if (lhsPlayer.isSelected() || rhsPlayer.isSelected()) {
 
-								int lhsPlayerDealtDamage = 0;
-								int rhsPlayerDealtDamage = 0;
-								
-								try {
-									lhsPlayerDealtDamage = Integer.parseInt(lhsPlayerDealtDamageInput.getText().toString());
-									rhsPlayerDealtDamage = Integer.parseInt(rhsPlayerDealtDamageInput.getText().toString());
-								}
-								catch(Exception exception){
-									reportGameWindow.dispose();
-								}
-									
-									
-								if (b.getP1().getName().equals("BYE")) {
-									b.getP2().beats(b.getP1());
-									t.completedBattles.add(b);
-									pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-									resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
-									pairingsBox.setCaretPosition(0);
-									resultsBox.setCaretPosition(0);
-									reportGameWindow.dispose();
-								} else if (b.getP2().getName().equals("BYE")) {
-									b.getP1().beats(b.getP2());
-									t.completedBattles.add(b);
-									pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-									resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
-									pairingsBox.setCaretPosition(0);
-									resultsBox.setCaretPosition(0);
-									reportGameWindow.dispose();
-								} else {
-									Boolean isDraw = (lhsPlayer.isSelected() == rhsPlayer.isSelected());
-									if (isDraw) {
-										t.currentBattles.remove(b);
-										Utils.handleBattleWinner(b, "0");
-										b.setP1DamageDealt(lhsPlayerDealtDamage);
-										b.setP2DamageDealt(rhsPlayerDealtDamage);
-										b.setP1DamageDealt(lhsPlayerDealtDamage);
-										b.setP2DamageDealt(rhsPlayerDealtDamage);
-										t.completedBattles.add(b);
-										pairingsBox
-												.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-										resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
-										pairingsBox.setCaretPosition(0);
-										resultsBox.setCaretPosition(0);
-										reportGameWindow.dispose();
-									} else if (lhsPlayer.isSelected()) {
-										t.currentBattles.remove(b);
-										Utils.handleBattleWinner(b, "1");
-										b.setP1DamageDealt(lhsPlayerDealtDamage);
-										b.setP2DamageDealt(rhsPlayerDealtDamage);
-										b.setP1DamageDealt(lhsPlayerDealtDamage);
-										b.setP2DamageDealt(rhsPlayerDealtDamage);
-										t.completedBattles.add(b);
-										pairingsBox
-												.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-										resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
-										pairingsBox.setCaretPosition(0);
-										resultsBox.setCaretPosition(0);
-										reportGameWindow.dispose();
-									} else if (rhsPlayer.isSelected()) {
-										t.currentBattles.remove(b);
-										Utils.handleBattleWinner(b, "2");
-										b.setP1DamageDealt(lhsPlayerDealtDamage);
-										b.setP2DamageDealt(rhsPlayerDealtDamage);
-										b.setP1DamageDealt(lhsPlayerDealtDamage);
-										b.setP2DamageDealt(rhsPlayerDealtDamage);
-										t.completedBattles.add(b);
-										pairingsBox
-												.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
-										resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
-										pairingsBox.setCaretPosition(0);
-										resultsBox.setCaretPosition(0);
-										reportGameWindow.dispose();
-									}
-								}}
-								
-					
-								
-								
-								if (t.currentBattles.size() == 0) {
-									t.setUserSelection("k");
-								}
-								t.save();
+						String[] combatants = Objects.requireNonNull(listOfGames.getSelectedItem()).toString().split(" vs. ");
+						Battle b = t.findBattleByName(combatants[0]);
+
+						int lhsPlayerDealtDamage = 0;
+						int rhsPlayerDealtDamage = 0;
+
+						try {
+							lhsPlayerDealtDamage = Integer.parseInt(lhsPlayerDealtDamageInput.getText());
+							rhsPlayerDealtDamage = Integer.parseInt(rhsPlayerDealtDamageInput.getText());
+						}
+						catch(Exception exception){
+							reportGameWindow.dispose();
+						}
+
+
+						if (b.getP1().getName().equals("BYE")) {
+							b.getP2().beats(b.getP1());
+							t.completedBattles.add(b);
+							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+							resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+							pairingsBox.setCaretPosition(0);
+							resultsBox.setCaretPosition(0);
+							reportGameWindow.dispose();
+						} else if (b.getP2().getName().equals("BYE")) {
+							b.getP1().beats(b.getP2());
+							t.completedBattles.add(b);
+							pairingsBox.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+							resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+							pairingsBox.setCaretPosition(0);
+							resultsBox.setCaretPosition(0);
+							reportGameWindow.dispose();
+						} else {
+							boolean isDraw = (lhsPlayer.isSelected() == rhsPlayer.isSelected());
+							if (isDraw) {
+								t.currentBattles.remove(b);
+								Utils.handleBattleWinner(b, "0");
+								b.setP1DamageDealt(lhsPlayerDealtDamage);
+								b.setP2DamageDealt(rhsPlayerDealtDamage);
+								b.setP1DamageDealt(lhsPlayerDealtDamage);
+								b.setP2DamageDealt(rhsPlayerDealtDamage);
+								t.completedBattles.add(b);
+								pairingsBox
+										.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+								resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+								pairingsBox.setCaretPosition(0);
+								resultsBox.setCaretPosition(0);
+								reportGameWindow.dispose();
+							} else if (lhsPlayer.isSelected()) {
+								t.currentBattles.remove(b);
+								Utils.handleBattleWinner(b, "1");
+								b.setP1DamageDealt(lhsPlayerDealtDamage);
+								b.setP2DamageDealt(rhsPlayerDealtDamage);
+								b.setP1DamageDealt(lhsPlayerDealtDamage);
+								b.setP2DamageDealt(rhsPlayerDealtDamage);
+								t.completedBattles.add(b);
+								pairingsBox
+										.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+								resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+								pairingsBox.setCaretPosition(0);
+								resultsBox.setCaretPosition(0);
+								reportGameWindow.dispose();
+							} else if (rhsPlayer.isSelected()) {
+								t.currentBattles.remove(b);
+								Utils.handleBattleWinner(b, "2");
+								b.setP1DamageDealt(lhsPlayerDealtDamage);
+								b.setP2DamageDealt(rhsPlayerDealtDamage);
+								b.setP1DamageDealt(lhsPlayerDealtDamage);
+								b.setP2DamageDealt(rhsPlayerDealtDamage);
+								t.completedBattles.add(b);
+								pairingsBox
+										.setText(t.getCurrentBattles(t.currentBattles, t.roundString) + "\n");
+								resultsBox.setText(t.generateInDepthRankings(t.getPlayers()) + "\n");
+								pairingsBox.setCaretPosition(0);
+								resultsBox.setCaretPosition(0);
+								reportGameWindow.dispose();
 							}
+						}}
+						if (t.currentBattles.size() == 0) {
+							t.setUserSelection("k");
+						}
+						t.save();
 					});
 
-				}
 			}
 		});
 		toolbar.add(reportGameButton);
 
 		JButton printPairingsButton = new JButton("Print Pairings");
-		printPairingsButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					printFile(t.getCurrentBattles(t.currentBattles, t.roundString));
-				}
+		printPairingsButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				printFile(t.getCurrentBattles(t.currentBattles, t.roundString));
 			}
 		});
 		toolbar.add(printPairingsButton);
 
 		repairButton = new JButton("Re-pair Round");
-		repairButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (t.currentBattles.size() > 0) {
-					JFrame repairPanel = new JFrame("Re-Pair Round?");
-					repairPanel.setSize(400, 130);
-					repairPanel.setLayout(new MigLayout("", "[grow,fill]"));
-					repairPanel.addWindowListener(new WindowAdapter() {
-						@Override
-						public void windowClosing(WindowEvent e) {
-						}
-					});
-					ArrayList<String> playerNames = new ArrayList<String>();
-					for (Player p : t.getPlayers()) {
-						playerNames.add(p.getName());
+		repairButton.addActionListener(e -> {
+			if (t.currentBattles.size() > 0) {
+				JFrame repairPanel = new JFrame("Re-Pair Round?");
+				repairPanel.setSize(400, 130);
+				repairPanel.setLayout(new MigLayout("", "[grow,fill]"));
+				repairPanel.addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosing(WindowEvent e) {
 					}
-					Collections.sort(playerNames);
-					JButton repair = new JButton("This is a destructive operation. Are you sure?");
-					repairPanel.add(repair);
-					repairPanel.setVisible(true);
-
-					repair.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent arg0) {
-							t.currentBattles.clear();
-							t.sortRankings();
-							repairPanel.dispose();
-							t.generatePairings(0);
-							t.refreshScreen();
-							t.print(t.getCurrentBattles(t.currentBattles, t.roundString));
-							t.save();
-						}
-					});
+				});
+				ArrayList<String> playerNames = new ArrayList<>();
+				for (Player p : t.getPlayers()) {
+					playerNames.add(p.getName());
 				}
+				Collections.sort(playerNames);
+				JButton repair = new JButton("This is a destructive operation. Are you sure?");
+				repairPanel.add(repair);
+				repairPanel.setVisible(true);
+
+				repair.addActionListener(arg0 -> {
+					t.currentBattles.clear();
+					t.sortRankings();
+					repairPanel.dispose();
+					t.generatePairings(0);
+					t.refreshScreen();
+					t.print(t.getCurrentBattles(t.currentBattles, t.roundString));
+					t.save();
+				});
 			}
 		});
 		toolbar.add(repairButton);
@@ -693,10 +608,6 @@ public class GUI implements ActionListener {
 		}
 	}
 
-	public static String getTextFromArea() {
-		return pairingsBox.getText();
-	}
-
 	public static void createAndShowGUI(Boolean show) {
 		frame.pack();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -737,6 +648,7 @@ public class GUI implements ActionListener {
 			try {
 				job.print(myDoc, attributeSet);
 			} catch (PrintException pe) {
+				pe.printStackTrace();
 			}
 		}
 	}

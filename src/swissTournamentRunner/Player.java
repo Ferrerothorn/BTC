@@ -1,5 +1,7 @@
 package swissTournamentRunner;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Player implements Comparable<Player> {
@@ -8,9 +10,8 @@ public class Player implements Comparable<Player> {
 	private String winPattern;
 	int score = 0;
 	int oppWr = 0;
-	public int damageDealt = 0;
-	private int damageReceived = 0;
-	private int oppDamageReceived = 0;
+	public double damageDealt = 0;
+	private double damageReceived = 0;
 	public int lastDocumentedPosition = 0;
 	public boolean isDropped = false;
 	public ArrayList<Player> previousRounds = new ArrayList<>();
@@ -20,18 +21,8 @@ public class Player implements Comparable<Player> {
 		name = string;
 	}
 
-	public Player(String myName, int myScore, int myTb, int myOppWr, int myOppOppWr) {
-		name = myName;
-		score = myScore;
-		oppWr = myOppWr;
-	}
-
-	public int getDamageReceived() {
+	public double getDamageReceived() {
 		return damageReceived;
-	}
-
-	public int getOppDamageReceived() {
-		return oppDamageReceived;
 	}
 
 	public void updatePositionInRankings(ArrayList<Player> players) {
@@ -92,16 +83,38 @@ public class Player implements Comparable<Player> {
 			return -1;
 		} else if (this.oppWr < p.getOppWr()) {
 			return 1;
+		} else if (this.getAverageDamageReceived() < p.getAverageDamageReceived()) {
+			return -1;
+		} else if (this.getAverageDamageReceived() > p.getAverageDamageReceived()) {
+			return 1;
+		} else if (this.getAverageDamageDealt() > p.getAverageDamageDealt()) {
+			return -1;
+		} else if (this.getAverageDamageDealt() < p.getAverageDamageDealt()) {
+			return 1;
 		} else if (this.getDamageReceived() < p.getDamageReceived()) {
 			return -1;
 		} else if (this.getDamageReceived() > p.getDamageReceived()) {
 			return 1;
-		} else if (this.getOppDamageReceived() < p.getOppDamageReceived()) {
-			return -1;
-		} else if (this.getOppDamageReceived() > p.getOppDamageReceived()) {
-			return 1;
 		}
 		return 0;
+	}
+
+	public double getAverageDamageDealt() {
+		DecimalFormat df = new DecimalFormat("#.##");
+		df.setRoundingMode(RoundingMode.CEILING);
+		if(previousRounds.size()>0){
+			return (damageDealt/(previousRounds.size()));
+		}
+		return 0.0;
+	}
+
+	public double getAverageDamageReceived() {
+		DecimalFormat df = new DecimalFormat("#.##");
+		df.setRoundingMode(RoundingMode.CEILING);
+		if(previousRounds.size()>0){
+			return (damageReceived/previousRounds.size());
+		}
+		return 0.0;
 	}
 
 	public int getScore() {
@@ -197,19 +210,6 @@ public class Player implements Comparable<Player> {
 				damageReceived += b.getP2DamageDealt();
 			} else if (b.getP2() == this) {
 				damageReceived += b.getP1DamageDealt();
-			}
-		}
-	}
-
-	public void recalculateOppDamageReceived(ArrayList<Battle> bs) {
-		oppDamageReceived = 0;
-		for (Player p : previousRounds) {
-			for (Battle b : bs) {
-				if (b.getP1() == p) {
-					oppDamageReceived += b.getP2DamageDealt();
-				} else if (b.getP2() == p) {
-					oppDamageReceived += b.getP1DamageDealt();
-				}
 			}
 		}
 	}

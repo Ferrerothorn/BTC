@@ -50,10 +50,7 @@ public class Battle implements Comparable<Battle> {
 	}
 
 	public boolean contains(Player winner) {
-		if (p1 == winner || p2 == winner) {
-			return true;
-		}
-		return false;
+		return p1 == winner || p2 == winner;
 	}
 
 	public int getElo(Player p) {
@@ -116,17 +113,4 @@ public class Battle implements Comparable<Battle> {
 		this.p2DamageDealt = newP2DamageDealt;
 	}
 
-	public Player getOtherPlayer(Player p) {
-		if (p.equals(getP1())) {
-			return p2;
-		}
-		return p1;
-	}
-
-	public int getPlayerDamageDealt(Player p) {
-		if (p == p1) {
-			return p.damageDealt;
-		}
-		return p1.damageDealt;
-	}
 }
